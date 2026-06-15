@@ -1,0 +1,1555 @@
+{
+  "metadata": {
+    "model_name": "qwen32b",
+    "dataset_name": "gpqa",
+    "n_problems": 100,
+    "seed": 42,
+    "temperature": 0.5,
+    "max_depth": 100,
+    "max_tokens_per_thought": null,
+    "model_seed": null,
+    "cache_key": "c2302a8559664d8f63161df4524c71cf"
+  },
+  "chains": [
+    {
+      "problem_id": "gpqa_327",
+      "problem_number": 1,
+      "chain": [
+        "Adding maleic anhydride to the reaction shifts the equilibrium to the right because maleic anhydride can be converted into maleonitrile, which is a product of the reaction. According to Le Chatelier's principle, adding more of a product will cause the equilibrium to shift in the direction that consumes the added product, thus shifting the reaction to the right to produce more maleonitrile and 2,3-dimethylbuta-1,3-diene.",
+        "Therefore, the correct answer is \\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_57",
+      "problem_number": 2,
+      "chain": [
+        "The reaction involves the electrophilic addition of hydrogen bromide (HBr) to the alkene group in ((2,2-dimethylbut-3-en-1-yl)oxy)benzene.",
+        "Given the structure of the starting material, the alkene is a terminal alkene, which would typically react with HBr to form a bromoalkane at the terminal carbon.",
+        "The bromination can occur at either the 3-position or the 4-position of the butenyl group, leading to two possible brominated products.",
+        "Looking at the options, A) (4-bromo-2,2-dimethylbutoxy)benzene and (3-bromo-2,2-dimethylbutoxy)benzene matches the expected products of the reaction.",
+        "Therefore, the correct answer is \\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_12",
+      "problem_number": 3,
+      "chain": [
+        "To find the eigenvector corresponding to the eigenvalue $+\\hbar/2$ for the operator $\\vec{P}$ along an arbitrary direction $\\vec{n}$ lying in the x-z plane, we need to express $\\vec{P}$ in terms of its components and then find the eigenvector for the given eigenvalue.",
+        "Given that $\\vec{n}$ lies in the x-z plane, we can express $\\vec{n}$ as $(\\sin \\theta, 0, \\cos \\theta)$, where $\\theta$ is the angle with the z-axis.",
+        "The operator $\\vec{P}$ along the direction $\\vec{n}$ is given by $\\vec{P} \\cdot \\vec{n} = P_x \\sin \\theta + P_z \\cos \\theta$.",
+        "Substituting the given matrices for $P_x$ and $P_z$, we get:\n\\[ P_x = \\frac{\\hbar}{2} \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix} \\]\n\\[ P_z = \\frac{\\hbar}{2} \\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix} \\]\nSo,\n\\[ \\vec{P} \\cdot \\vec{n} = \\frac{\\hbar}{2} \\left( \\sin \\theta \\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix} + \\cos \\theta \\begin{pmatrix} 1 & 0 \\\\ 0 & -1 \\end{pmatrix} \\right) \\]\n\\[ = \\frac{\\hbar}{2} \\begin{pmatrix} \\cos \\theta & \\sin \\theta \\\\ \\sin \\theta & -\\cos \\theta \\end{pmatrix} \\]\nWe need to find the eigenvector corresponding to the eigenvalue $+\\hbar/2$.",
+        "The eigenvalue equation is:\n\\[ \\frac{\\hbar}{2} \\begin{pmatrix} \\cos \\theta & \\sin \\theta \\\\ \\sin \\theta & -\\cos \\theta \\end{pmatrix} \\begin{pmatrix} a \\\\ b \\end{pmatrix} = \\frac{\\hbar}{2} \\begin{pmatrix} a \\\\ b \\end{pmatrix} \\]\nThis simplifies to:\n\\[ \\begin{pmatrix} \\cos \\theta & \\sin \\theta \\\\ \\sin \\theta & -\\cos \\theta \\end{pmatrix} \\begin{pmatrix} a \\\\ b \\end{pmatrix} = \\begin{pmatrix} a \\\\ b \\end{pmatrix} \\]\nThis gives us the system of equations:\n\\[ \\cos \\theta \\cdot a + \\sin \\theta \\cdot b = a \\]\n\\[ \\sin \\theta \\cdot a - \\cos \\theta \\cdot b = b \\]\nFrom the first equation:\n\\[ \\cos \\theta \\cdot a + \\sin \\theta \\cdot b = a \\]\n\\[ \\sin \\theta \\cdot b = a (1 - \\cos \\theta) \\]\n\\[ b = \\frac{a (1 - \\cos \\theta)}{\\sin \\theta} \\]\nFrom the second equation:\n\\[ \\sin \\theta \\cdot a - \\cos \\theta \\cdot b = b \\]\n\\[ \\sin \\theta \\cdot a = b (1 + \\cos \\theta) \\]\n\\[ a = \\frac{b (1 + \\cos \\theta)}{\\sin \\theta} \\]\nSubstituting $b = \\frac{a (1 - \\cos \\theta)}{\\sin \\theta}$ into the second equation:\n\\[ a = \\frac{\\frac{a (1 - \\cos \\theta)}{\\sin \\theta} (1 + \\cos \\theta)}{\\sin \\theta} \\]\n\\[ a = \\frac{a (1 - \\cos^2 \\theta)}{\\sin^2 \\theta} \\]\n\\[ a = a \\]\nThis is consistent, so we can choose $a = \\cos(\\theta/2)$ and $b = \\sin(\\theta/2)$, which are normalized.",
+        "Thus, the elements of the normalized eigenvector are $(\\cos(\\theta/2), \\sin(\\theta/2))$.",
+        "Therefore, the correct answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_379",
+      "problem_number": 4,
+      "chain": [
+        "The density matrix $\\rho=\\frac{1}{2}\\left(\\left|0\\right\\rangle \\left\\langle 0\\right|+\\left|1\\right\\rangle \\left\\langle 1\\right|\\right)$ is a mixture of the states $\\left|0\\right\\rangle$ and $\\left|1\\right\\rangle$ with equal probabilities. This means that the system is in a classical mixture of the two states, not a coherent superposition.",
+        "In the Bloch sphere representation, the state $\\left|0\\right\\rangle$ corresponds to the north pole (1,0,0) and the state $\\left|1\\right\\rangle$ corresponds to the south pole (1,0,0) but with opposite sign, i.e., (-1,0,0).",
+        "Since the density matrix is a classical mixture with equal probabilities, the geometrical position in the qubits space will be at the center of the Bloch sphere, which is the origin (0,0,0).",
+        "Therefore, the correct answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_140",
+      "problem_number": 5,
+      "chain": [
+        "The |3,0,0\\rangle state can decay to the |1,0,0\\rangle state via two dipole transitions, which means the angular momentum must change by \\pm 1 in each step.",
+        "The first transition from |3,0,0\\rangle to an intermediate state must change the angular momentum from 0 to 1, so the intermediate state must be |2,1,m\\rangle where m can be -1, 0, or 1.",
+        "The second transition from the intermediate state |2,1,m\\rangle to the final state |1,0,0\\rangle must change the angular momentum from 1 to 0, which is possible for all m values (-1, 0, 1).",
+        "However, the probability of each transition depends on the selection rules and the specific m values. The most straightforward transitions are those where the m value remains the same or changes by \\pm 1.",
+        "Among the given options, the transitions |3,0,0\\rangle \\rightarrow |2,1,0\\rangle \\rightarrow |1,0,0\\rangle and |3,0,0\\rangle \\rightarrow |2,1,-1\\rangle \\rightarrow |1,0,0\\rangle and |3,0,0\\rangle \\rightarrow |2,1,1\\rangle \\rightarrow |1,0,0\\rangle are all valid.",
+        "The probabilities given are \\frac{1}{3}, \\frac{2}{3}, \\frac{1}{4}, and \\frac{1}{4}. The most likely probability for a dipole transition, considering the symmetry and the conservation of angular momentum, is \\frac{1}{3} for the transition |3,0,0\\rangle \\rightarrow |2,1,0\\rangle \\rightarrow |1,0,0\\rangle.",
+        "Therefore, the correct answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_125",
+      "problem_number": 6,
+      "chain": [
+        "Given a 60% w/v dibasic strong acid (MW : 120 g/mol), we need to calculate its molarity (x). 60% w/v means 60 g of acid per 100 mL of solution. The number of moles of acid is 60 g / 120 g/mol = 0.5 mol. Therefore, the molarity x = 0.5 mol / 0.1 L = 5 M.",
+        "Now, 200 mL of this 5 M acid is diluted with 800 mL of water. The total volume becomes 1000 mL. The molarity y after dilution can be calculated using the dilution formula: M1V1 = M2V2. Here, M1 = 5 M, V1 = 200 mL, V2 = 1000 mL. So, 5 M \u00d7 200 mL = y \u00d7 1000 mL, which gives y = 1 M.",
+        "100 mL of this 1 M acid reacts with 300 mL 0.3 M NaOH. The number of moles of acid is 1 M \u00d7 0.1 L = 0.1 mol. The number of moles of NaOH is 0.3 M \u00d7 0.3 L = 0.09 mol. Since the acid is dibasic, it can react with 0.045 mol of NaOH per mole of acid. The remaining moles of acid after reaction with NaOH is 0.1 - 0.045 = 0.055 mol. The remaining volume is 100 mL, so the molarity Z = 0.055 mol / 0.1 L = 0.55 M.",
+        "The remaining acid is further allowed to react with a strong diacidic base. We need to calculate the volume of 0.3 M diacidic base required to neutralize 500 mL of the remaining acid completely. The number of moles of remaining acid is 0.55 M \u00d7 0.5 L = 0.275 mol. Since the base is diacidic, it can neutralize 0.275 mol of acid with 0.1375 mol of base. The volume of 0.3 M base required is 0.1375 mol / 0.3 M = 0.4583 L = 458.3 mL.",
+        "Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_114",
+      "problem_number": 7,
+      "chain": [
+        "The energy levels for a single particle in a one-dimensional infinite potential well are given by \\( E_n = \\frac{n^2 \\pi^2 \\hbar^2}{2mL^2} = n^2 E \\), where \\( E = \\frac{\\pi^2 \\hbar^2}{2mL^2} \\).",
+        "Since the particles are spin-1/2 and identical, they must obey the Pauli exclusion principle, meaning no two particles can occupy the same quantum state simultaneously.",
+        "For the ground state, the lowest energy configuration is to place one particle in each of the lowest energy levels until all four particles are accommodated. The lowest energy levels are \\( n = 1, 2, 3, 4 \\).",
+        "The total energy for the ground state is \\( E_{\\text{ground}} = E_1 + E_2 + E_3 + E_4 = E(1^2 + 2^2 + 3^2 + 4^2) = E(1 + 4 + 9 + 16) = 30E \\).",
+        "For the first excited state, we need to promote one of the particles to the next available energy level. The lowest energy promotion is to move the particle from \\( n = 4 \\) to \\( n = 5 \\).",
+        "The total energy for the first excited state is \\( E_{\\text{first excited}} = E_1 + E_2 + E_3 + E_5 = E(1^2 + 2^2 + 3^2 + 5^2) = E(1 + 4 + 9 + 25) = 39E \\).",
+        "For the second excited state, we need to promote another particle to the next available energy level. The lowest energy promotion is to move the particle from \\( n = 3 \\) to \\( n = 6 \\).",
+        "The total energy for the second excited state is \\( E_{\\text{second excited}} = E_1 + E_2 + E_6 + E_5 = E(1^2 + 2^2 + 5^2 + 6^2) = E(1 + 4 + 25 + 36) = 66E \\).",
+        "However, we need to check the options provided. The closest match to our calculated values is option C, which gives the energies as 30E, 39E, and 50E.",
+        "Therefore, the correct answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_71",
+      "problem_number": 8,
+      "chain": [
+        "To determine which mutation will most probably eliminate the anti-nutritional compound, we need to examine the changes in the DNA sequence and their potential impact on the protein produced by the gene. The most effective way to eliminate the compound would be to introduce a frameshift mutation or a premature stop codon, which would disrupt the protein's function entirely.",
+        "Mutant 1 changes a T to a C at position 8, which could alter the amino acid sequence but does not introduce a premature stop codon or a frameshift.",
+        "Mutant 2 changes a T to an A at position 10, which could also alter the amino acid sequence but does not introduce a premature stop codon or a frameshift.",
+        "Mutant 3 changes a T to a C at position 10 and a T to a G at position 18, which could alter the amino acid sequence but does not introduce a premature stop codon or a frameshift.",
+        "Mutant 4 deletes a G at position 14, which introduces a frameshift mutation. This will alter all subsequent amino acids and likely result in a non-functional protein.",
+        "Therefore, the mutation most likely to eliminate the anti-nutritional compound is Mutant 4, as it introduces a frameshift mutation.",
+        "\\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_377",
+      "problem_number": 9,
+      "chain": [
+        "NaNH2 is a strong base that can deprotonate the benzene ring under the right conditions, but in this case, it's reacting with 1-bromobenzene-2-d. The bromine is a leaving group, and NaNH2 acts as a nucleophile.",
+        "The reaction is a nucleophilic aromatic substitution (SNAr), where the nitrogen from NaNH2 replaces the bromine on the benzene ring.",
+        "Since the deuterium (D) is a stable isotope of hydrogen and does not affect the reaction mechanism, the only product is 1-aminobenzene-2-d.",
+        "Therefore, there is only one possible organic product from this reaction.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_52",
+      "problem_number": 10,
+      "chain": [
+        "Given the electrostatic potential \\Phi(z)=\\frac{q}{4\\pi\\varepsilon_{0}}\\frac{1}{\\sqrt{R^{2}+z^{2}}}, we need to approximate this expression for \\( z \\ll R \\). We can use the Taylor expansion formula for small \\( z \\). First, rewrite the potential in a form suitable for Taylor expansion: \\(\\Phi(z) = \\frac{q}{4\\pi\\varepsilon_{0}R}\\frac{1}{\\sqrt{1 + \\frac{z^2}{R^2}}}\\).",
+        "Using the Taylor expansion formula \\((1+x)^{\\varepsilon} \\approx 1 + \\varepsilon x + \\frac{1}{2}\\varepsilon(\\varepsilon-1)x^2\\) for \\(|x| \\ll 1\\), we set \\( x = \\frac{z^2}{R^2} \\) and \\(\\varepsilon = -\\frac{1}{2}\\). Then, \\((1 + \\frac{z^2}{R^2})^{-\\frac{1}{2}} \\approx 1 - \\frac{1}{2}\\frac{z^2}{R^2} + \\frac{1}{2}(-\\frac{1}{2})(-\\frac{3}{2})\\left(\\frac{z^2}{R^2}\\right)^2\\).",
+        "Simplifying the expansion, we get \\((1 + \\frac{z^2}{R^2})^{-\\frac{1}{2}} \\approx 1 - \\frac{1}{2}\\frac{z^2}{R^2} + \\frac{3}{8}\\left(\\frac{z^2}{R^2}\\right)^2\\).",
+        "Since we are only interested in the lowest non-zero power of \\( z \\), we can neglect higher-order terms. Thus, \\((1 + \\frac{z^2}{R^2})^{-\\frac{1}{2}} \\approx 1 - \\frac{1}{2}\\frac{z^2}{R^2}\\).",
+        "Substituting this back into the expression for \\(\\Phi(z)\\), we get \\(\\Phi(z) = \\frac{q}{4\\pi\\varepsilon_{0}R}\\left(1 - \\frac{z^2}{2R^2}\\right)\\).",
+        "Therefore, the electrostatic potential \\(\\Phi(z)\\) to the lowest non-zero power of \\( z \\) is \\(\\boxed{A}\\)."
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_346",
+      "problem_number": 11,
+      "chain": [
+        "The reaction of compound A with HCN suggests that compound A is a ketone, as it forms a cyanohydrin (compound B).",
+        "The reduction of compound B with H2 and Pd likely converts the nitrile group to an amine, but since the problem does not mention the presence of an amine in the final products, it's more likely that the reduction step converts the nitrile to a carboxylic acid or directly to an alcohol, which is not mentioned, so we'll assume it's a reduction to an alcohol or carboxylic acid.",
+        "The reaction of compound C with HNO2 likely forms a diazonium salt or an aldehyde, but since the problem mentions the elimination of an inert gas to form compound E, it suggests that compound C is likely an alcohol that is oxidized to an aldehyde (compound D) and then dehydrated to form an alkene (compound E).",
+        "The IR spectrum of compound A showing a strong peak at around 1750 cm^-1 indicates the presence of a carbonyl group, confirming that compound A is a ketone.",
+        "The IR spectrum of compound E showing a strong peak at around 1715 cm^-1 suggests that compound E is an ester or an aldehyde, but since the problem does not mention esterification, it is more likely that compound E is an aldehyde.",
+        "The hint about compound A reacting with a phosphorous ylide to form 1,2-dimethyl-4-(propan-2-ylidene)cyclopentane suggests that compound A is 2,3,4-trimethylcyclopentan-1-one, as the ylide addition would form the cyclopentane derivative mentioned.",
+        "Given that compound A is 2,3,4-trimethylcyclopentan-1-one, the reaction with HCN forms a cyanohydrin, which upon reduction forms an alcohol, and upon oxidation and dehydration forms an aldehyde. The structure of compound E, therefore, must be the aldehyde corresponding to the ketone, which is 2,3,4-trimethylcyclopentan-1-one.",
+        "The correct choice that matches the structure of compound E is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_444",
+      "problem_number": 12,
+      "chain": [
+        "In the first step, POCl3 reacts with a chiral alcohol to form a dialkylphosphonate with one chiral center, which will have two diastereomeric phosphorus environments due to the chirality of the alcohol. This will result in two peaks in the 31P NMR spectrum.",
+        "In the second step, the dialkylphosphonate reacts with a different chiral alcohol, introducing a second chiral center. However, the phosphorus atom's environment will now be defined by the chirality of the second alcohol, which means that the two diastereomeric phosphorus environments from the first step will each react to form a single diastereomer, resulting in a single phosphorus environment.",
+        "Therefore, the two peaks from the first step will change to a single peak as the reaction progresses to completion in the final step.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_279",
+      "problem_number": 13,
+      "chain": [
+        "To find the interplanar distance of the (111) plane in a rhombohedral crystal, we first need to use the formula for the interplanar distance \\(d_{hkl}\\) in a crystal, which is given by:",
+        "\\[ d_{hkl} = \\frac{a}{\\sqrt{h^2 + k^2 + l^2 + 2(hk\\cos\\alpha + hl\\cos\\beta + kl\\cos\\gamma)}} \\]\nwhere \\(a\\) is the lattice parameter (interatomic distance), and \\(\\alpha\\), \\(\\beta\\), and \\(\\gamma\\) are the angles between the lattice vectors. For a rhombohedral crystal, \\(\\alpha = \\beta = \\gamma = 30^\\circ\\).",
+        "Substituting \\(a = 10\\) Angstrom, \\(h = 1\\), \\(k = 1\\), and \\(l = 1\\), we get:",
+        "\\[ d_{111} = \\frac{10}{\\sqrt{1^2 + 1^2 + 1^2 + 2(1 \\cdot 1 \\cdot \\cos 30^\\circ + 1 \\cdot 1 \\cdot \\cos 30^\\circ + 1 \\cdot 1 \\cdot \\cos 30^\\circ)}} \\]\n\\[ d_{111} = \\frac{10}{\\sqrt{1 + 1 + 1 + 2(3 \\cdot \\cos 30^\\circ)}} \\]\n\\[ d_{111} = \\frac{10}{\\sqrt{3 + 6 \\cdot \\cos 30^\\circ}} \\]\nSince \\(\\cos 30^\\circ = \\frac{\\sqrt{3}}{2}\\), we have:",
+        "\\[ d_{111} = \\frac{10}{\\sqrt{3 + 6 \\cdot \\frac{\\sqrt{3}}{2}}} \\]\n\\[ d_{111} = \\frac{10}{\\sqrt{3 + 3\\sqrt{3}}} \\]\n\\[ d_{111} = \\frac{10}{\\sqrt{3 + 3 \\cdot 1.732}} \\]\n\\[ d_{111} = \\frac{10}{\\sqrt{3 + 5.196}} \\]\n\\[ d_{111} = \\frac{10}{\\sqrt{8.196}} \\]\n\\[ d_{111} = \\frac{10}{2.863} \\]\n\\[ d_{111} \\approx 3.49 \\times 2.863 \\approx 9.08 \\]\nThus, the interplanar distance of the (111) plane is approximately 9.08 Angstrom.",
+        "Therefore, the correct answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_44",
+      "problem_number": 14,
+      "chain": [
+        "The problem involves determining the mass of the pseudo-Goldstone boson \\(H_2\\) through radiative corrections in an extended Standard Model. The Lagrangian provided includes terms for the singlet fermions \\(N_{iR}\\), the scalar-doublet \\(S\\), and the singlet scalar \\(\\phi\\). The vacuum expectation values (VEVs) are given as \\(\\langle \\phi \\rangle = x\\) and \\(\\langle h \\rangle = v\\), with \\(\\langle \\phi \\rangle^2 = x^2 + v^2\\).",
+        "The mass of the pseudo-Goldstone boson \\(H_2\\) is influenced by radiative corrections, which typically involve contributions from various particles in the theory. The radiative corrections are often expressed in terms of the masses of these particles and their couplings.",
+        "The correct form of the mass correction for \\(H_2\\) should be proportional to the inverse of the VEV squared, \\(\\frac{1}{x^2 + v^2}\\), and involve a sum of terms weighted by the masses of the particles involved, including the Higgs boson \\(h_1\\), the W boson \\(W\\), the Z boson \\(Z\\), the top quark \\(t\\), charged Higgs \\(H^\\pm\\), neutral Higgs \\(H^0\\), and pseudoscalar \\(A^0\\), as well as the singlet fermions \\(N_i\\).",
+        "Among the given options, the correct form of the mass correction for \\(H_2\\) is:\n\\[ M_{h_2}^2 = \\frac{1}{8\\pi^2 (x^2 + v^2)} \\left\\{ \\alpha_1 M_{h_1}^4 + \\alpha_2 M_W^4 + \\alpha_3 M_Z^4 - \\alpha_4 M_t^4 + \\alpha_5 M_{H^\\pm}^4 + \\alpha_6 M_{H^0}^4 + \\alpha_7 M_{A^0}^4 - \\alpha_8 \\sum M_{N_i}^4 \\right\\} \\]\nThis matches option B.",
+        "Thus, the correct answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_302",
+      "problem_number": 15,
+      "chain": [
+        "The most cost-effective and basic approach to generate preliminary data for drug development would be one that requires minimal resources and can be done quickly. In vitro testing requires physical resources and can be time-consuming. In silico testing, on the other hand, primarily relies on computational resources and can be done relatively quickly and at a lower cost. Between the in silico options, using PDB formats is more basic and widely available compared to developing crystal structures, which can be complex and time-consuming. Therefore, the most cost-effective and basic approach would be C) In silico testing of drug interaction with the PDB formats of proteins.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_216",
+      "problem_number": 16,
+      "chain": [
+        "Starting with methyl (E)-but-2-enoate, the treatment with quinuclidine and acetone suggests a Wittig reaction, which would form an alkene from the carbonyl group in the ester. This would result in a conjugated diene.",
+        "The product 1, being a conjugated diene, will have a structure that could be represented as CH3-CH=CH-CH=OAc, where OAc represents the acetate group from the ester.",
+        "When product 1 is treated with excess methylmagnesium bromide, a Grignard reagent, it will add to the carbonyl group, forming a tertiary alcohol. The structure of product 2 will be CH3-CH=CH-CH(OH)-CH3.",
+        "To determine the number of chemically distinct non-exchanging hydrogen signals in the 1H NMR spectrum of product 2, we need to consider the different chemical environments of the hydrogen atoms.",
+        "The molecule CH3-CH=CH-CH(OH)-CH3 has the following distinct hydrogen environments:\n1. The methyl group (CH3) at the end of the chain.\n2. The methine (CH) hydrogen attached to the carbon with the double bond.\n3. The methylene (CH2) hydrogens attached to the carbon with the double bond.\n4. The methylene (CH2) hydrogens attached to the carbon with the hydroxyl group.\n5. The hydroxyl hydrogen (OH) is typically exchangeable and not considered in the count of non-exchanging hydrogens.\n6. The methyl group (CH3) attached to the carbon with the hydroxyl group.",
+        "Therefore, there are 5 chemically distinct non-exchanging hydrogen environments in product 2.",
+        "However, the question asks for the number of chemically distinct non-exchanging hydrogen signals, and since the methyl groups at both ends of the molecule are identical, they will give a single signal each, resulting in a total of 4 distinct signals.",
+        "Thus, the answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_16",
+      "problem_number": 17,
+      "chain": [
+        "To determine the energy of \\(\\gamma\\)-rays whose lifetimes would be limited by the process \\(\\gamma\\gamma \\rightarrow e^{+}e^{-}\\), we need to consider the threshold energy for this process. The threshold energy is the minimum energy required for the annihilation to produce a pair of electron and positron. The rest mass energy of an electron (or positron) is \\(m_e c^2 = 0.511 \\, \\text{MeV}\\).",
+        "The total rest mass energy of the electron-positron pair is \\(2 \\times 0.511 \\, \\text{MeV} = 1.022 \\, \\text{MeV}\\). For the annihilation to occur, the total energy of the two photons must be at least 1.022 MeV. Given that one of the photons is from the CMB with an average energy of \\(10^{-3} \\, \\text{eV}\\), we need to find the energy of the \\(\\gamma\\)-ray that, when combined with the CMB photon, meets this threshold.",
+        "Let \\(E_\\gamma\\) be the energy of the \\(\\gamma\\)-ray. The total energy of the two photons is \\(E_\\gamma + 10^{-3} \\, \\text{eV}\\). This must be at least 1.022 MeV. Therefore, \\(E_\\gamma + 10^{-3} \\, \\text{eV} \\geq 1.022 \\, \\text{MeV}\\).",
+        "Converting 1.022 MeV to eV: \\(1.022 \\, \\text{MeV} = 1.022 \\times 10^6 \\, \\text{eV}\\). So, \\(E_\\gamma \\geq 1.022 \\times 10^6 \\, \\text{eV} - 10^{-3} \\, \\text{eV}\\). Since \\(10^{-3} \\, \\text{eV}\\) is negligible compared to \\(1.022 \\times 10^6 \\, \\text{eV}\\), we can approximate \\(E_\\gamma \\approx 1.022 \\times 10^6 \\, \\text{eV}\\).",
+        "Converting \\(1.022 \\times 10^6 \\, \\text{eV}\\) to GeV: \\(1.022 \\times 10^6 \\, \\text{eV} = 1.022 \\times 10^{-3} \\, \\text{GeV}\\). This value is much smaller than the options provided, so we need to consider the energy scale of the options given.",
+        "Given the options, we need to find the closest match. The energy of \\(\\gamma\\)-rays that would have their lifetimes limited by this process is in the range of \\(10^5\\) GeV. The closest match to this range is \\(1.8 \\times 10^5 \\, \\text{GeV}\\).",
+        "Therefore, the answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_15",
+      "problem_number": 18,
+      "chain": [
+        "The commutator of two gamma matrices, i/2 [gamma^mu, gamma^nu], is related to the structure of the Lorentz algebra in the context of the Dirac equation. It does not directly contribute to the four-momentum of the Dirac field, which is typically associated with the momentum operator. However, it does play a role in generating Lorentz transformations, which are a subset of the Poincar\u00e9 transformations. Lorentz transformations include rotations and boosts, which are directly related to the angular momentum and the structure of spacetime symmetries. Therefore, the correct interpretation is that it generates all Lorentz transformations of the Dirac field, which is a subset of the Poincar\u00e9 transformations and is related to angular momentum. This corresponds to statement 4 and indirectly to statement 1, as Lorentz transformations include rotations that contribute to angular momentum.",
+        "Therefore, the correct answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_47",
+      "problem_number": 19,
+      "chain": [
+        "To determine the most accurate statement about enhancers in embryonic stem cells, let's evaluate each option one by one.",
+        "Option A suggests that loop extrusion is essential for enhancer-mediated gene regulation. While loop extrusion is an important mechanism in the three-dimensional organization of chromatin and can facilitate enhancer-promoter interactions, it is not necessarily essential for all enhancer-mediated gene regulation.",
+        "Option B mentions that active enhancers are associated with a unique chromatin signature, specifically trimethylation of histone 3, lysine 27 (H3K27me3) and monomethylation of histone 3, lysine 4 (H3K4me1). H3K4me1 is indeed a hallmark of enhancers, but H3K27me3 is typically associated with repressed regions rather than active enhancers. Therefore, this statement is not accurate.",
+        "Option C states that Polycomb complexes are involved in mediating long-range contacts between enhancers and promoters. Polycomb complexes are known for their role in gene repression and can be involved in chromatin interactions, but they are not primarily known for mediating long-range contacts between enhancers and promoters.",
+        "Option D suggests that enhancers function largely on gene promoters located in different topologically associating domains (TADs). While enhancers can interact with promoters across TAD boundaries, it is not accurate to say that they function largely on promoters in different TADs. Enhancers often interact with promoters within the same TAD.",
+        "Given the evaluations above, none of the options are entirely accurate, but the most accurate statement, considering the current understanding of enhancers in embryonic stem cells, is that active enhancers are associated with a unique chromatin signature, though the specific histone modifications mentioned in option B are not entirely correct. However, among the provided options, B is the closest to being accurate.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_111",
+      "problem_number": 20,
+      "chain": [
+        "The problem involves the Boltzmann distribution, which describes the distribution of particles over various energy states in thermal equilibrium. The ratio of the number of particles in two different energy levels is given by the Boltzmann factor. Here, the number of excited iron atoms in star_1 is twice that of star_2, indicating a difference in their effective temperatures.",
+        "The Boltzmann factor for two energy levels \\( E_1 \\) and \\( E_2 \\) is given by \\( \\frac{N_1}{N_2} = e^{-\\frac{E_1 - E_2}{kT}} \\), where \\( N_1 \\) and \\( N_2 \\) are the number of particles in each energy level, \\( E_1 \\) and \\( E_2 \\) are the energies of the levels, \\( k \\) is the Boltzmann constant, and \\( T \\) is the temperature.",
+        "Given that the number of excited atoms in star_1 is twice that of star_2, we have \\( \\frac{N_1}{N_2} = 2 \\). This implies \\( 2 = e^{-\\frac{E_1 - E_2}{kT_1}} \\) for star_1 and \\( 1 = e^{-\\frac{E_1 - E_2}{kT_2}} \\) for star_2.",
+        "Taking the natural logarithm of both sides, we get \\( \\ln(2) = -\\frac{E_1 - E_2}{kT_1} \\) for star_1 and \\( 0 = -\\frac{E_1 - E_2}{kT_2} \\) for star_2. Since the energy difference \\( E_1 - E_2 = 1.38 \\times 10^{-23} \\) J, we can write \\( \\ln(2) = \\frac{1.38 \\times 10^{-23}}{kT_1} \\) and \\( 0 = \\frac{1.38 \\times 10^{-23}}{kT_2} \\).",
+        "To find the relationship between \\( T_1 \\) and \\( T_2 \\), we equate the two expressions for the energy difference: \\( \\ln(2) = \\frac{1.38 \\times 10^{-23}}{kT_1} \\) and \\( 0 = \\frac{1.38 \\times 10^{-23}}{kT_2} \\). Simplifying, we get \\( \\ln(2) = \\frac{1}{T_1} - \\frac{1}{T_2} \\).",
+        "Rewriting the equation, we have \\( \\ln(2) = \\frac{T_2 - T_1}{T_1 T_2} \\). This matches the form \\( \\ln(2) = \\frac{T_2 - T_1}{T_1 T_2} \\), which is equivalent to \\( \\ln(2) = \\frac{T_1 - T_2}{T_1 T_2} \\) with a sign change.",
+        "Therefore, the correct equation is \\( \\ln(2) = \\frac{T_1 - T_2}{T_1 T_2} \\), which corresponds to option A.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_119",
+      "problem_number": 21,
+      "chain": [
+        "Cyclohexanone reacts with bromine to form 1,3-dibromocyclohexanone (product 1) through a bromination reaction.",
+        "Product 1 is heated with sodium hydroxide, which leads to an elimination reaction, forming 2,5-dibromocyclohex-2-enone (product 2).",
+        "Product 2 is treated with thionyl chloride and pyridine, converting the carbonyl group to an acyl chloride, resulting in 2,5-dibromocyclohex-2-enoyl chloride (product 3).",
+        "Product 3 is treated with Lithium tri-tert-butoxyaluminum hydride, which reduces the acyl chloride to an alcohol, forming 2,5-dibromocyclohex-2-enol (product 4).",
+        "To determine the number of chemically distinct hydrogen atoms in product 4, we need to consider the structure of 2,5-dibromocyclohex-2-enol. The double bond and bromine atoms create distinct environments for the hydrogen atoms.",
+        "The structure of 2,5-dibromocyclohex-2-enol has 6 distinct hydrogen atoms due to the presence of the double bond and bromine atoms, which create different chemical environments.",
+        "Therefore, the number of chemically distinct hydrogen atoms in product 4 is 6.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_258",
+      "problem_number": 22,
+      "chain": [
+        "2-methylpropan-1-ol (A) is oxidized to 2-methylpropanal (B) using K2Cr2O4 in H2SO4",
+        "2-methylpropanal (B) is then converted to 2-methylpropanoic acid (C) by reacting with LiOH in a basic environment",
+        "2-methylpropanoic acid (C) reacts with lithium propan-2-ide to form an ester (D) through a Fischer esterification reaction",
+        "The ester (D) is then hydrolyzed back to 2-methylpropanoic acid (E) using H3O+, H2O, and heat",
+        "Finally, 2-methylpropanoic acid (E) reacts with dimethylamine and H+ to form N,N-dimethyl-2-methylpropanamide",
+        "To identify the correct 1H-NMR data, we need to consider the structure of N,N-dimethyl-2-methylpropanamide",
+        "This compound will have a methyl group from the amide, a methyl group from the side chain, and a dimethylamine group",
+        "The correct 1H-NMR data should reflect these features: two methyl groups (d and s), a dimethylamine group (s), and a septet from the CH group adjacent to the methyl groups",
+        "Looking at the options, option A has 1.19 (6H, d), 1.53 (6H, s), 2.33 (1H, sept), 2.72 (6H, s), which matches the expected features",
+        "Therefore, the correct answer is \\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_308",
+      "problem_number": 23,
+      "chain": [
+        "The proton NMR data suggests that compound A is likely an alkylbenzene or a branched alkane with two types of protons. The triplet at 0.9 ppm for 6H suggests a methyl group (CH3) attached to a carbon with two other methyl groups, while the quartet at 1.3 ppm for 4H suggests a methylene group (CH2) attached to two methyl groups. This configuration is consistent with an isobutyl group (CH3CH(CH3)2).",
+        "Given that compound A undergoes monobromination to form compound B, and considering the reactivity of primary, secondary, and tertiary carbons, the bromination is likely to occur at the tertiary carbon of the isobutyl group, leading to the formation of a bromoalkane.",
+        "The subsequent reaction of B with alcoholic KOH suggests a dehydrohalogenation reaction, which would eliminate the bromine and a proton to form an alkene. Given that C has two geometrical isomers, it must be a cis-trans isomerism of an alkene, indicating that the double bond is likely to be in a cyclohexane ring, as this allows for cis-trans isomerism.",
+        "The cis-isomer of C reacting with (1E,3E)-penta-1,3-dien-1-ol suggests a Diels-Alder reaction, which would form a cyclohexene derivative with a hydroxyl group. The stereochemistry of the product will depend on the stereochemistry of the starting materials.",
+        "Considering the options provided and the stereochemistry of the Diels-Alder reaction, the correct answer is the compound that matches the stereochemistry of the starting materials and the reaction outcome, which is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_13",
+      "problem_number": 24,
+      "chain": [
+        "The potential given is V(r, \u03b8) = 1/2 kr^2 + 3/2 kr^2 cos^2(\u03b8). This potential can be seen as a combination of a radial harmonic oscillator term and an angular-dependent term.",
+        "The radial part of the potential, 1/2 kr^2, suggests a harmonic oscillator potential in the radial direction. The angular part, 3/2 kr^2 cos^2(\u03b8), modifies the potential based on the angular position, but it does not change the basic form of the energy spectrum of the radial harmonic oscillator.",
+        "The energy spectrum of a two-dimensional harmonic oscillator is generally given by E = (n_x + n_y + 1) \u210f\u03c9, where \u03c9 = sqrt(k/m) is the angular frequency of the oscillator.",
+        "However, the angular-dependent term modifies the energy levels. Since the angular term is proportional to cos^2(\u03b8), it effectively increases the energy contribution in the angular direction by a factor of 3 compared to the radial direction.",
+        "This means the energy spectrum will be E = (n_x + 3n_y + 3/2) \u210f*sqrt(k/m), where n_x and n_y are quantum numbers corresponding to the radial and angular modes, respectively.",
+        "Therefore, the correct answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_287",
+      "problem_number": 25,
+      "chain": [
+        "The paramagnetic coupling term is given by \\(\\left\\langle H \\right\\rangle = -\\mu_B B m\\), where \\(\\mu_B\\) is the Bohr magneton, \\(B\\) is the magnetic field strength, and \\(m\\) is the magnetic quantum number. For small values of \\(m\\), the coupling term will be small.",
+        "The transition energy \\(\\Delta E\\) of the Hydrogen atom can be calculated using the Rydberg formula: \\(\\Delta E = \\frac{hc}{\\lambda}\\), where \\(h\\) is Planck's constant, \\(c\\) is the speed of light, and \\(\\lambda\\) is the wavelength of the transition. For \\(\\lambda = 0.4861 \\mu m\\), \\(\\Delta E\\) will be in the eV range, which is a much larger energy scale compared to the paramagnetic coupling term.",
+        "Given that the magnetic field \\(B = 1T\\) and \\(\\mu_B\\) is approximately \\(5.788 \\times 10^{-5} eV/T\\), the paramagnetic coupling term will be on the order of \\(10^{-4} eV\\) for \\(m = 1\\), which is significantly smaller than the transition energy \\(\\Delta E\\).",
+        "Therefore, the paramagnetic coupling term \\(\\left\\langle H \\right\\rangle\\) is much smaller than the transition energy \\(\\Delta E\\), leading to the conclusion that \\(\\left\\langle H \\right\\rangle \\ll \\Delta E\\).",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_101",
+      "problem_number": 26,
+      "chain": [
+        "The spin of each atom is 1/2, and the total spin of the molecule is the sum of the individual spins: $S = s_1 + s_2 + s_3 = \\frac{1}{2} (\\sigma_1 + \\sigma_2 + \\sigma_3)$.",
+        "Given the properties of spin vectors, the total spin can take values that are the sum or the difference of the individual spins, leading to possible total spin values of $S = \\frac{3}{2}$ or $S = \\frac{1}{2}$.",
+        "For $S = \\frac{3}{2}$, the multiplicity is $2S + 1 = 2(\\frac{3}{2}) + 1 = 4$, which corresponds to a quadruplet state.",
+        "For $S = \\frac{1}{2}$, the multiplicity is $2S + 1 = 2(\\frac{1}{2}) + 1 = 2$, which corresponds to a doublet state.",
+        "To determine the number of each type of state, we consider the possible combinations of the individual spins. There is only one way to combine the spins to get a total of $S = \\frac{3}{2}$, which is the quadruplet state.",
+        "For $S = \\frac{1}{2}$, there are three ways to combine the spins to get this total, leading to three doublet states.",
+        "Therefore, the correct description of the molecular states of the system is 1 quadruplet and 3 identical doublets.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_366",
+      "problem_number": 27,
+      "chain": [
+        "The reaction was initially proceeding at pH 1, which indicates a high concentration of H+ ions. The accidental addition of an unknown substance increased the pH to 4, indicating a decrease in H+ ion concentration.",
+        "Since the reaction was initially proceeding with H+ ions as a reactant, a decrease in H+ ion concentration would likely slow down the reaction rate.",
+        "The increase in temperature due to an exothermic reaction could potentially increase the reaction rate, but the problem states the reaction became slower.",
+        "The volume and pressure of the solution were not mentioned to have changed significantly.",
+        "Therefore, the most plausible reason for the change in the rate of reaction is the increased pH of the solution.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_332",
+      "problem_number": 28,
+      "chain": [
+        "The operator \\(a a^{\\dagger} + \\frac{1}{2}\\) is related to the Hamiltonian of the quantum harmonic oscillator, where \\(a\\) and \\(a^{\\dagger}\\) are the annihilation and creation operators, respectively. The energy eigenvalues for the quantum harmonic oscillator are given by \\(E_n = \\left(n + \\frac{1}{2}\\right) \\hbar \\omega\\), where \\(n\\) is the quantum number. The operator \\(a a^{\\dagger} + \\frac{1}{2}\\) is equivalent to the energy operator \\(H/\\hbar \\omega\\).",
+        "The wave function \\(\\psi(x)\\) is a superposition of the eigenstates \\(\\phi_0(x)\\), \\(\\phi_1(x)\\), and \\(\\phi_3(x)\\) with coefficients \\(\\frac{1}{\\sqrt{3}}\\), \\(\\frac{1}{\\sqrt{2}}\\), and \\(\\frac{1}{\\sqrt{6}}\\), respectively. The energy of the system is the expectation value of the Hamiltonian operator \\(H\\).",
+        "The expectation value of the energy operator \\(H/\\hbar \\omega\\) is calculated as:\n\\[\n\\langle H/\\hbar \\omega \\rangle = \\sum_{n=0}^{3} c_n^2 \\left(n + \\frac{1}{2}\\right)\n\\]\nwhere \\(c_n\\) are the coefficients of the wave function. Substituting the coefficients and the corresponding quantum numbers, we get:\n\\[\n\\langle H/\\hbar \\omega \\rangle = \\left(\\frac{1}{\\sqrt{3}}\\right)^2 \\left(0 + \\frac{1}{2}\\right) + \\left(\\frac{1}{\\sqrt{2}}\\right)^2 \\left(1 + \\frac{1}{2}\\right) + \\left(\\frac{1}{\\sqrt{6}}\\right)^2 \\left(3 + \\frac{1}{2}\\right)\n\\]\n\\[\n= \\frac{1}{3} \\cdot \\frac{1}{2} + \\frac{1}{2} \\cdot \\frac{3}{2} + \\frac{1}{6} \\cdot \\frac{7}{2}\n\\]\n\\[\n= \\frac{1}{6} + \\frac{3}{4} + \\frac{7}{12}\n\\]\nTo add these fractions, we find a common denominator, which is 12:\n\\[\n= \\frac{2}{12} + \\frac{9}{12} + \\frac{7}{12} = \\frac{18}{12} = \\frac{3}{2}\n\\]\nThus, the value of \\((a a^{\\dagger} + \\frac{1}{2}) \\hbar \\omega\\) for the given wave function is \\(\\frac{3}{2} \\hbar \\omega\\). Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_359",
+      "problem_number": 29,
+      "chain": [
+        "First, I need to compare the sequences to identify the differences between them.",
+        "Species 1 has the sequence ATGTTTCGCTGGTACTCTGTGGATGAACATGATTTTTTCTCGT\u2026TGA.",
+        "Species 2 has the sequence ATGTTCTCGCTGGTACTTCTGTGGATAGAACATATTTATTGTCGTA\u2026TGA.",
+        "Species 3 has the sequence ATGTTTCTCGCTGGTACTTCTGTGGATGAACATATTTATTGTCGT\u2026TGA.",
+        "Species 4 has the sequence ATGTTTCTCGCTGGTACTCTGTGGATGAACATGATTTATTCTCGT\u2026TGA.",
+        "Species 1 and Species 4 differ by the following mutations: TCGC -> TCGT, T -> A, and TTTTT -> TTT.",
+        "Species 2 and Species 3 differ by the following mutations: T -> A, T -> A, and TGA -> TGT.",
+        "Species 3 and Species 4 differ by the following mutations: T -> A and TTT -> TTTT.",
+        "Species 1 and Species 2 differ by the following mutations: T -> C, C -> T, T -> C, G -> A, T -> A, T -> A, TTTTT -> TTTAT, and TCGT -> TCGTA.",
+        "Species 1 and Species 3 differ by the following mutations: T -> C, C -> T, T -> C, T -> A, TTTTT -> TTTAT, and TCGT -> TCGT.",
+        "Species 2 and Species 4 differ by the following mutations: T -> A, T -> A, TGA -> TGT, and TTT -> TTTT.",
+        "From the comparisons, it seems that Species 1 and Species 4 have a closer relationship, and Species 2 and Species 3 have a closer relationship.",
+        "The most probable evolutionary relationship is Species 4 -> Species 1 -> Species 3; Species 4 -> Species 2.",
+        "Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_435",
+      "problem_number": 30,
+      "chain": [
+        "1,3-butadiene can exist in two conformations: s-cis and s-trans. The \u03c0 electrons in these conformations can be analyzed using molecular orbital theory.",
+        "In the s-trans conformation, the \u03c0 orbitals are more delocalized, leading to a lower energy for the lowest occupied \u03c0 state compared to the s-cis conformation.",
+        "A lower energy for the lowest occupied \u03c0 state means that the energy difference between the ground state and the excited state is larger, requiring a higher energy photon to excite the electrons, which corresponds to a shorter wavelength.",
+        "Therefore, 1,3-butadiene will have a shorter wavelength UV absorbance when it is in the s-trans conformation, and the lowest occupied \u03c0 state will be lower in energy in the s-trans conformation.",
+        "The correct answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_214",
+      "problem_number": 31,
+      "chain": [
+        "The patient has moderate anemia with low hemoglobin (8 g/dL) and hematocrit (30%), indicating a need for intervention. The RBC count (3.5 x 10^12/L) is also low, further confirming anemia. The MCV (83 fL) is within the normal range, suggesting that the anemia is not microcytic or macrocytic but normocytic. The MCH (28 pg) and MCHC (32 g/L) are also within normal ranges, indicating that the red blood cells are not hypochromic or hyperchromic. The RDW (19%) is elevated, suggesting variability in red blood cell size, which can occur in iron deficiency anemia. The ferritin level (112 mcg/L) is within the normal range, indicating that iron stores are not depleted.",
+        "Given the patient's history of lung cancer with metastasis, chemotherapy, and the presence of anemia, the anemia is likely due to a combination of factors, including cancer-related anemia and chemotherapy-induced anemia. Oral iron and folate therapy may not be sufficient in this case due to the patient's underlying condition and the potential for poor absorption of oral iron.",
+        "Erythropoietin is a hormone that stimulates red blood cell production and is often used in patients with cancer-related anemia, especially those undergoing chemotherapy. Adding erythropoietin to the therapy can help improve hemoglobin levels and reduce the need for blood transfusions.",
+        "Switching to intravenous iron can also be considered if the patient has poor absorption of oral iron, but the primary issue here seems to be the underlying cancer and chemotherapy, which erythropoietin can address more directly.",
+        "Therefore, the most likely change the pharmacist recommended is to add erythropoietin to the therapy.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_112",
+      "problem_number": 32,
+      "chain": [
+        "To determine the correct IUPAC name for the molecule, we need to follow the rules for naming organic compounds, particularly those for aromatic compounds with multiple substituents. The substituents should be numbered in such a way that the lowest numbers are assigned to the substituents, and they should be listed in alphabetical order, excluding the prefixes like di-, tri-, etc.",
+        "The carboxylic acid group is the highest priority functional group and should be the base of the name. The numbering of the benzene ring should start from the carboxylic acid group.",
+        "The carboxylic acid is at position 1. The cyano group is meta to the carboxylic acid, so it is at position 4. The carbaldehyde (formyl) group is also meta to the carboxylic acid, so it is at position 5. The methoxy group is para to the carboxylic acid, so it is at position 3. The hydroxyl group and the dimethylamino group are both ortho to the carboxylic acid, so they are at positions 2 and 6. The methoxy and the hydroxyl groups are both ortho to the nitrile, so the hydroxyl group must be at position 2 and the dimethylamino group at position 6.",
+        "The correct order of the substituents, in alphabetical order, is: carboxylic acid (benzoic acid), cyano, dimethylamino, formyl, hydroxyl, methoxy.",
+        "Thus, the correct IUPAC name is 2-hydroxy-3-methoxy-4-cyano-5-formyl-6-(dimethylamino)benzoic acid.",
+        "This corresponds to option A.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_229",
+      "problem_number": 33,
+      "chain": [
+        "The Scharfetter-Gummel discretization is used to accurately model the drift-diffusion equation in semiconductor physics, particularly for the current density. The correct form of the Scharfetter-Gummel discretized equation should account for the exponential terms that arise from the Boltzmann distribution and the difference in potential across the mesh points.",
+        "Option A includes a subtraction term with a negative argument for the B function, which is consistent with the Scharfetter-Gummel discretization formula for modeling the current flow across a potential difference.",
+        "Option B incorrectly adds the terms with the same argument for the B function, which does not align with the correct discretization form.",
+        "Option C incorrectly adds the terms with a negative argument for the B function, which also does not align with the correct form.",
+        "Option D incorrectly subtracts the terms with the same argument for the B function, which again does not align with the correct form.",
+        "Therefore, the correct expression for the Scharfetter-Gummel discretized drift-diffusion model equation for current is given by option A.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_301",
+      "problem_number": 34,
+      "chain": [
+        "The Kraus operators must satisfy the completeness relation, \\sum_i A_i^\\dagger A_i = I, where I is the identity matrix.",
+        "Option A is incorrect because the matrices do not satisfy the completeness relation and the probabilities are negative.",
+        "Option B is incorrect because the probabilities associated with the Kraus operators are incorrect. The probability of no bit flip should be (1-p) and the probability of bit flip should be p.",
+        "Option C correctly represents the Kraus operators for a quantum bit flip with probability p. The operator A_0 corresponds to no bit flip with probability (1-p), and A_1 corresponds to a bit flip with probability p.",
+        "Option D is incorrect because the Kraus operators do not represent a valid quantum operation due to the negative entries and incorrect probabilities.",
+        "Therefore, the correct answer is \\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_142",
+      "problem_number": 35,
+      "chain": [
+        "The given compound is 3-iodo-5-methyl-2-nitrophenyl 4-nitrobenzenesulfonate. When this compound is heated with NaOH, a nucleophilic aromatic substitution reaction can occur, where the 4-nitrobenzenesulfonate group is replaced by a hydroxyl group (-OH).",
+        "The position of the hydroxyl group will be at the same position as the 4-nitrobenzenesulfonate group, which is on the phenyl ring. Since the 4-nitrobenzenesulfonate group is not part of the numbering of the phenyl ring (3-iodo-5-methyl-2-nitrophenyl), the hydroxyl group will replace it at the same position, but the numbering of the phenyl ring remains the same.",
+        "Thus, the resulting compound will be 3-iodo-5-methyl-2-nitrophenol.",
+        "Therefore, the correct answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_3",
+      "problem_number": 36,
+      "chain": [
+        "To determine optical activity, we need to identify if there are any chiral centers or chiral axes in the molecules. A chiral center is a carbon atom bonded to four different substituents. A chiral axis is present in molecules with a plane of symmetry that can be rotated to produce non-superimposable mirror images.",
+        "1-methyl-4-(prop-1-en-2-yl)cyclohex-1-ene: This molecule contains a chiral center at the cyclohexene ring, making it optically active.",
+        "2,3,3,3-tetrafluoroprop-1-ene: This molecule does not have a chiral center, and it has a plane of symmetry, making it achiral and not optically active.",
+        "di(cyclohex-2-en-1-ylidene)methane: This molecule does not have a chiral center, and it has a plane of symmetry, making it achiral and not optically active.",
+        "5-(5-methylhexan-2-ylidene)cyclopenta-1,3-diene: This molecule contains a chiral center at the cyclopentadiene ring, making it optically active.",
+        "3-(2-methylbut-1-en-1-ylidene)cyclohex-1-ene: This molecule contains a chiral center at the cyclohexene ring, making it optically active.",
+        "[1,1'-biphenyl]-3,3'-diol: This molecule contains two chiral centers at the hydroxyl groups, making it optically active.",
+        "8,8-dichlorobicyclo[4.2.0]octan-7-one: This molecule does not have a chiral center, and it has a plane of symmetry, making it achiral and not optically active.",
+        "cyclopent-2-en-1-one: This molecule does not have a chiral center, and it has a plane of symmetry, making it achiral and not optically active.",
+        "Counting the optically active molecules, we have 1-methyl-4-(prop-1-en-2-yl)cyclohex-1-ene, 5-(5-methylhexan-2-ylidene)cyclopenta-1,3-diene, 3-(2-methylbut-1-en-1-ylidene)cyclohex-1-ene, and [1,1'-biphenyl]-3,3'-diol, which totals to 4 optically active compounds.",
+        "Therefore, the answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_388",
+      "problem_number": 37,
+      "chain": [
+        "The compound 6-chloro-9-ethyl-2-methylundeca-3,7-dien-5-ol has multiple chiral centers and double bonds that can contribute to stereoisomerism.",
+        "The chiral center at the -ol group and the double bonds at 3,7 positions can contribute to the stereoisomerism.",
+        "For a chiral center, there are 2 possible configurations (R or S).",
+        "For each double bond, there are 2 possible configurations (cis or trans).",
+        "The -ol group contributes 2 configurations, and the two double bonds each contribute 2 configurations, making a total of 2 \u00d7 2 \u00d7 2 = 8 possible stereoisomers.",
+        "Therefore, the number of stereoisomers for the compound is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_81",
+      "problem_number": 38,
+      "chain": [
+        "The critical angle \\(i_0\\) can be calculated using Snell's law: \\(n_1 \\sin(i_0) = n_2 \\sin(90^\\circ)\\), which simplifies to \\(\\sin(i_0) = \\frac{n_2}{n_1}\\). Plugging in the values, we get \\(\\sin(i_0) = \\frac{1.26}{1.75}\\).",
+        "Solving for \\(i_0\\), we get \\(i_0 = \\sin^{-1}\\left(\\frac{1.26}{1.75}\\right) \\approx 47.75^\\circ\\). Since the angle of incidence \\(i = 80^\\circ\\) is greater than \\(i_0\\), total internal reflection occurs.",
+        "The lateral displacement \\(d\\) of the beam can be calculated using the formula \\(d = \\lambda \\left(\\frac{\\cos(i) - \\sqrt{n_1^2 - n_2^2 \\sin^2(i)}}{n_1 \\sin(i)}\\right)\\).",
+        "Substituting the values, we get \\(d = 400 \\left(\\frac{\\cos(80^\\circ) - \\sqrt{1.75^2 - 1.26^2 \\sin^2(80^\\circ)}}{1.75 \\sin(80^\\circ)}\\right)\\).",
+        "Calculating the trigonometric functions, \\(\\cos(80^\\circ) \\approx 0.1736\\) and \\(\\sin(80^\\circ) \\approx 0.9848\\).",
+        "Substituting these values, we get \\(d = 400 \\left(\\frac{0.1736 - \\sqrt{1.75^2 - 1.26^2 \\cdot 0.9848^2}}{1.75 \\cdot 0.9848}\\right)\\).",
+        "Calculating the expression inside the square root, we get \\(1.75^2 - 1.26^2 \\cdot 0.9848^2 \\approx 3.0625 - 1.5876 \\cdot 0.97 \\approx 3.0625 - 1.5407 \\approx 1.5218\\).",
+        "Taking the square root, we get \\(\\sqrt{1.5218} \\approx 1.2336\\).",
+        "Substituting back, we get \\(d = 400 \\left(\\frac{0.1736 - 1.2336}{1.75 \\cdot 0.9848}\\right) \\approx 400 \\left(\\frac{-1.06}{1.7234}\\right) \\approx 400 \\cdot -0.615 \\approx -246 \\text{ nm}\\).",
+        "Since the lateral displacement is a positive value, we take the absolute value, \\(d \\approx 246 \\text{ nm}\\).",
+        "Given the choices, the closest value is 162.29 nm.",
+        "Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_357",
+      "problem_number": 39,
+      "chain": [
+        "The chromosomal translocation event has shifted the introduced gene to a new location in the genome of S. pombe, resulting in the loss of pigment expression in some colonies.",
+        "Genes near the centromere or telomere can be subject to reduced expression due to heterochromatin formation, which can lead to silencing of genes.",
+        "Given that the colonies became colorless, it suggests that the gene's expression was likely reduced or silenced.",
+        "The most likely locations for such silencing to occur are near the centromere or the telomere due to the presence of heterochromatin in these regions.",
+        "Thus, the new location of the gene is likely near the centromere or the telomere.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_432",
+      "problem_number": 40,
+      "chain": [
+        "The pH of the solution depends on the concentration of H+ ions in the solution. Boric acid is a weak acid, and its dissociation in water can be represented as B(OH)3 + H2O \u21cc H3O+ + B(OH)4-.",
+        "The equilibrium constant expression for this reaction is Ka = [H3O+][B(OH)4-]/[B(OH)3]. Given Ka = 7x10^-10 and the initial concentration of boric acid is 10^-5 M, we can set up an ICE table to find the concentration of H3O+ ions.",
+        "Let x be the concentration of H3O+ ions at equilibrium. Then, [H3O+] = [B(OH)4-] = x and [B(OH)3] = 10^-5 - x. Since Ka is very small, we can approximate 10^-5 - x \u2248 10^-5.",
+        "Plugging these into the Ka expression: 7x10^-10 = x^2 / 10^-5. Solving for x gives x^2 = 7x10^-15, so x = sqrt(7x10^-15) \u2248 8.37x10^-8.",
+        "The pH is then calculated as -log[H3O+] = -log(8.37x10^-8) \u2248 7.08.",
+        "Therefore, the answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_174",
+      "problem_number": 41,
+      "chain": [
+        "To determine the stability of carbocations, we need to consider the factors that stabilize them, such as hyperconjugation, inductive effect, and resonance.",
+        "1. CH3OCH2(+) has an oxygen atom adjacent to the positive charge, which can stabilize the carbocation through resonance and inductive effects.",
+        "2. CH2(+)-NO2 has a nitro group adjacent to the positive charge, which is highly electron-withdrawing and destabilizes the carbocation.",
+        "3. CH2(+)-CHO has an aldehyde group adjacent to the positive charge, which is moderately electron-withdrawing and destabilizes the carbocation, but not as much as the nitro group.",
+        "4. CH3COCH2(+) has an acetyl group adjacent to the positive charge, which can stabilize the carbocation through resonance.",
+        "5. CH2(+)-OH has an alcohol group adjacent to the positive charge, which can stabilize the carbocation through resonance and inductive effects, similar to the methoxy group.",
+        "6. CH3CH2(+) is a secondary carbocation, which is more stable than a primary carbocation due to hyperconjugation.",
+        "7. CH2(+)-CH2Cl has a chlorine atom adjacent to the positive charge, which is electron-withdrawing and destabilizes the carbocation, but not as much as the nitro group.",
+        "Comparing the stabilizing and destabilizing effects, the order of stability is: 5 (OH) > 1 (OCH3) > 4 (COCH2) > 6 (CH3CH2) > 7 (CH2Cl) > 3 (CHO) > 2 (NO2).",
+        "Thus, the correct answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_413",
+      "problem_number": 42,
+      "chain": [
+        "The problem involves identifying a compound based on its reaction with nitric acid, the formation of a brown gas (likely nitrogen dioxide), a white precipitate (likely a metal oxide or hydroxide), and a brown-violet solution (indicating the presence of a transition metal ion). The addition of sodium iodide forms a brown precipitate, which could be due to the formation of a complex or iodide salt. The dark blue color in the presence of a reagent suggests the presence of a cobalt(II) ion, which is a known indicator for cobalt. The pale pink crystals formed with potassium fluoride suggest the presence of a fluoride compound, and the percentage of fluorine by weight indicates a specific compound. The element Y, used in special glass, suggests it might be a rare earth element or a transition metal with special optical properties.",
+        "The brown gas (NO2) suggests the presence of nitrogen, which is a non-metal. The white precipitate and brown-violet solution suggest a transition metal, likely cobalt (Co), which is known to form a brown-violet solution in nitric acid. The addition of sodium iodide forms a brown precipitate, which could be due to the formation of a cobalt iodide complex. The dark blue color in the presence of a reagent confirms the presence of cobalt(II) ion. The pale pink crystals with 27.11% fluorine by weight suggest the presence of a fluoride compound, likely cobalt(II) fluoride (CoF2).",
+        "The element Y, used in special glass, could be a rare earth element or a transition metal like lanthanum (La) or cerium (Ce), which are known for their optical properties. The non-metal Z is likely nitrogen (N) based on the formation of NO2. The elements are cobalt (Co), lanthanum (La), and nitrogen (N).",
+        "The atomic weights are: Co = 58.93, La = 138.91, and N = 14.01. The sum of the atomic weights is 58.93 + 138.91 + 14.01 = 211.85, which falls in the range 200-220.",
+        "Therefore, the answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_79",
+      "problem_number": 43,
+      "chain": [
+        "To determine whether a three-body bound state can form, we need to consider the interactions and binding energies of the nucleons.",
+        "Two-body bound states indicate that pairs of nucleons can be bound together, but this does not necessarily imply that a three-body bound state will form.",
+        "The presence of two-body bound states is a necessary but not sufficient condition for a three-body bound state to occur, as the energy and interactions among all three nucleons must also be considered.",
+        "Therefore, a three-body bound state may occur regardless of whether two-body bound states occur, as it depends on the specific energy levels and interactions of all three nucleons.",
+        "Thus, the correct conclusion is that a three-body bound state may occur regardless of whether two-body bound states occur.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_110",
+      "problem_number": 44,
+      "chain": [
+        "To solve this problem, we need to find the wave function for the particle in the given potential and then determine the value of \\( x_0 \\) such that the probability of finding the particle within \\( |x| < x_0 \\) is exactly \\( \\frac{1}{2} \\).",
+        "The potential \\( V(x) = -\\alpha \\delta(x) \\) is a one-dimensional delta function potential well. The wave function for a particle in such a potential can be found by solving the Schr\u00f6dinger equation with the boundary conditions imposed by the delta function.",
+        "The solution to the Schr\u00f6dinger equation for this potential is known to be a symmetric exponential decay function around \\( x = 0 \\). The wave function \\( \\psi(x) \\) can be written as:",
+        "\\[ \\psi(x) = A e^{-\\kappa |x|} \\]\nwhere \\( \\kappa \\) is a constant related to the energy and the potential strength, and \\( A \\) is the normalization constant.",
+        "To find \\( \\kappa \\), we use the boundary condition imposed by the delta function. The continuity of the wave function and the discontinuity in its derivative at \\( x = 0 \\) give us the relation:",
+        "\\[ \\kappa = \\frac{m \\alpha}{\\hbar^2} \\]\nThe wave function is then:",
+        "\\[ \\psi(x) = A e^{-\\frac{m \\alpha}{\\hbar^2} |x|} \\]\nTo find the normalization constant \\( A \\), we use the normalization condition:",
+        "\\[ \\int_{-\\infty}^{\\infty} |\\psi(x)|^2 \\, dx = 1 \\]\n\\[ \\int_{-\\infty}^{\\infty} A^2 e^{-2 \\frac{m \\alpha}{\\hbar^2} |x|} \\, dx = 1 \\]\nThis integral can be split into two parts:",
+        "\\[ 2 \\int_{0}^{\\infty} A^2 e^{-2 \\frac{m \\alpha}{\\hbar^2} x} \\, dx = 1 \\]\n\\[ A^2 \\left[ -\\frac{\\hbar^2}{2 m \\alpha} e^{-2 \\frac{m \\alpha}{\\hbar^2} x} \\right]_{0}^{\\infty} = \\frac{1}{2} \\]\n\\[ A^2 \\frac{\\hbar^2}{2 m \\alpha} = \\frac{1}{2} \\]\n\\[ A^2 = \\frac{m \\alpha}{\\hbar^2} \\]\n\\[ A = \\sqrt{\\frac{m \\alpha}{\\hbar^2}} \\]\nSo the normalized wave function is:",
+        "\\[ \\psi(x) = \\sqrt{\\frac{m \\alpha}{\\hbar^2}} e^{-\\frac{m \\alpha}{\\hbar^2} |x|} \\]\nThe probability density is \\( |\\psi(x)|^2 = \\frac{m \\alpha}{\\hbar^2} e^{-2 \\frac{m \\alpha}{\\hbar^2} |x|} \\).",
+        "To find \\( x_0 \\) such that the probability of finding the particle within \\( |x| < x_0 \\) is exactly \\( \\frac{1}{2} \\), we solve:",
+        "\\[ \\int_{-x_0}^{x_0} \\frac{m \\alpha}{\\hbar^2} e^{-2 \\frac{m \\alpha}{\\hbar^2} |x|} \\, dx = \\frac{1}{2} \\]\n\\[ 2 \\int_{0}^{x_0} \\frac{m \\alpha}{\\hbar^2} e^{-2 \\frac{m \\alpha}{\\hbar^2} x} \\, dx = \\frac{1}{2} \\]\n\\[ \\int_{0}^{x_0} \\frac{m \\alpha}{\\hbar^2} e^{-2 \\frac{m \\alpha}{\\hbar^2} x} \\, dx = \\frac{1}{4} \\]\n\\[ \\left[ -\\frac{\\hbar^2}{2 m \\alpha} e^{-2 \\frac{m \\alpha}{\\hbar^2} x} \\right]_{0}^{x_0} = \\frac{1}{4} \\]\n\\[ -\\frac{\\hbar^2}{2 m \\alpha} e^{-2 \\frac{m \\alpha}{\\hbar^2} x_0} + \\frac{\\hbar^2}{2 m \\alpha} = \\frac{1}{4} \\]\n\\[ \\frac{\\hbar^2}{2 m \\alpha} \\left( 1 - e^{-2 \\frac{m \\alpha}{\\hbar^2} x_0} \\right) = \\frac{1}{4} \\]\n\\[ 1 - e^{-2 \\frac{m \\alpha}{\\hbar^2} x_0} = \\frac{m \\alpha}{2 \\hbar^2} \\]\n\\[ e^{-2 \\frac{m \\alpha}{\\hbar^2} x_0} = \\frac{1}{2} \\]\n\\[ -2 \\frac{m \\alpha}{\\hbar^2} x_0 = \\ln \\left( \\frac{1}{2} \\right) \\]\n\\[ x_0 = \\frac{\\hbar^2}{2 m \\alpha} \\ln(2) \\]\nThus, the value of \\( x_0 \\) is \\( \\ln(2) \\left[ \\frac{\\hbar^2}{2 m \\alpha} \\right]",
+        "So the answer is \\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_390",
+      "problem_number": 45,
+      "chain": [
+        "5-fluorocyclopenta-1,3-diene will react with maleic anhydride in a Diels-Alder reaction, forming a bicyclic compound.",
+        "The Diels-Alder reaction is stereospecific, meaning that the stereochemistry of the starting materials will be retained in the product.",
+        "Given the options, the major product will depend on the stereochemistry of the starting materials and the Diels-Alder reaction's stereochemical outcome.",
+        "The correct stereochemistry of the product is determined by the relative stereochemistry of the diene and dienophile in the Diels-Alder reaction, which typically results in a cis relationship between the substituents added to the diene.",
+        "Considering the options provided, the correct stereochemistry that matches the typical outcome of the Diels-Alder reaction with the given starting materials is option A.",
+        "Therefore, the answer is \\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_172",
+      "problem_number": 46,
+      "chain": [
+        "To solve this problem, we need to consider the relationship between the pressure exerted by the Fermi gas and the gravitational pressure that balances it. The pressure exerted by a Fermi gas in the ground state is related to the density of the gas and the Fermi energy, which in turn is related to the number of particles (electrons) and their mass.",
+        "The gravitational pressure is related to the mass of the gas and the radius of the spherical cloud. In equilibrium, these two pressures must be equal. The pressure exerted by the Fermi gas is proportional to the density raised to some power, and since the density is uniform, it is proportional to the mass M divided by the volume V (which is proportional to R^3).",
+        "The gravitational pressure is proportional to the mass M divided by the radius R raised to some power. To find the exact relationship, we need to balance these two pressures. The pressure exerted by the Fermi gas is proportional to M/R^3, and the gravitational pressure is proportional to M^2/R^4. However, since the problem states that the pressure exerted by the Fermi gas is proportional to a function of the mass M and the radius R, we need to find the correct form that matches the given options.",
+        "Given the options, the correct form that matches the pressure exerted by the Fermi gas in equilibrium with the gravitational pressure is M^2/R^4.",
+        "Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_438",
+      "problem_number": 47,
+      "chain": [
+        "To determine the correct option, we need to analyze each matrix based on the properties of quantum states and the Bloch sphere representation. A quantum state represented by a 2x2 density matrix must be Hermitian, have a trace of 1, and be positive semi-definite. Additionally, a pure state has a rank of 1, while a mixed state has a rank of 2.",
+        "First, let's check if the matrices are Hermitian. A matrix is Hermitian if it is equal to its conjugate transpose.",
+        "Matrix W: \n\\[ W = \\begin{pmatrix} \\frac{1}{2} & \\frac{i}{4} \\\\ -\\frac{i}{4} & \\frac{1}{2} \\end{pmatrix} \\]\nThe conjugate transpose of W is:\n\\[ W^\\dagger = \\begin{pmatrix} \\frac{1}{2} & \\frac{i}{4} \\\\ -\\frac{i}{4} & \\frac{1}{2} \\end{pmatrix} \\]\nSince \\( W = W^\\dagger \\), W is Hermitian.",
+        "Matrix X:\n\\[ X = \\begin{pmatrix} \\frac{1}{3} & 1 \\\\ 1 & \\frac{2}{3} \\end{pmatrix} \\]\nThe conjugate transpose of X is:\n\\[ X^\\dagger = \\begin{pmatrix} \\frac{1}{3} & 1 \\\\ 1 & \\frac{2}{3} \\end{pmatrix} \\]\nSince \\( X = X^\\dagger \\), X is Hermitian.",
+        "Matrix Y:\n\\[ Y = \\begin{pmatrix} \\frac{1}{2} & \\frac{i}{3} \\\\ -\\frac{i}{3} & \\frac{1}{2} \\end{pmatrix} \\]\nThe conjugate transpose of Y is:\n\\[ Y^\\dagger = \\begin{pmatrix} \\frac{1}{2} & \\frac{i}{3} \\\\ -\\frac{i}{3} & \\frac{1}{2} \\end{pmatrix} \\]\nSince \\( Y = Y^\\dagger \\), Y is Hermitian.",
+        "Matrix Z:\n\\[ Z = \\begin{pmatrix} \\frac{2}{3} & \\frac{1}{4} \\\\ \\frac{1}{4} & \\frac{1}{3} \\end{pmatrix} \\]\nThe conjugate transpose of Z is:\n\\[ Z^\\dagger = \\begin{pmatrix} \\frac{2}{3} & \\frac{1}{4} \\\\ \\frac{1}{4} & \\frac{1}{3} \\end{pmatrix} \\]\nSince \\( Z = Z^\\dagger \\), Z is Hermitian.",
+        "Next, we check the trace of each matrix. The trace of a matrix is the sum of its diagonal elements.",
+        "Trace of W: \\( \\text{Tr}(W) = \\frac{1}{2} + \\frac{1}{2} = 1 \\)",
+        "Trace of X: \\( \\text{Tr}(X) = \\frac{1}{3} + \\frac{2}{3} = 1 \\)",
+        "Trace of Y: \\( \\text{Tr}(Y) = \\frac{1}{2} + \\frac{1}{2} = 1 \\)",
+        "Trace of Z: \\( \\text{Tr}(Z) = \\frac{2}{3} + \\frac{1}{3} = 1 \\)",
+        "Now, we need to check if the matrices are positive semi-definite. A matrix is positive semi-definite if all its eigenvalues are non-negative.",
+        "Eigenvalues of W: The characteristic polynomial is \\( \\lambda^2 - \\lambda + \\frac{1}{4} = 0 \\). Solving, we get \\( \\lambda = \\frac{1}{2} \\) (repeated). Both eigenvalues are non-negative, so W is positive semi-definite.",
+        "Eigenvalues of X: The characteristic polynomial is \\( \\lambda^2 - \\lambda - \\frac{1}{9} = 0 \\). Solving, we get \\( \\lambda = \\frac{1}{2} \\pm \\frac{\\sqrt{10}}{6} \\). Both eigenvalues are non-negative, so X is positive semi-definite.",
+        "Eigenvalues of Y: The characteristic polynomial is \\( \\lambda^2 - \\lambda + \\frac{1}{9} = 0 \\). Solving, we get \\( \\lambda = \\frac{1}{2} \\pm \\frac{\\sqrt{5}}{6} \\). Both eigenvalues are non-negative, so Y is positive semi-definite.",
+        "Eigenvalues of Z: The characteristic polynomial is \\( \\lambda^2 - \\lambda + \\frac{11}{144} = 0 \\). Solving, we get \\( \\lambda = \\frac{1}{2} \\pm \\frac{\\sqrt{11}}{12} \\). Both eigenvalues are non-negative, so Z is positive semi-definite.",
+        "Since all matrices are Hermitian, have a trace of 1, and are positive semi-definite, they are all valid quantum states.",
+        "Next, we need to check if any of the states are pure. A pure state has a rank of 1, which means it has only one non-zero eigenvalue.",
+        "W has eigenvalues \\( \\lambda = \\frac{1}{2} \\) (repeated), so it is a mixed state.",
+        "X has eigenvalues \\( \\lambda = \\frac{1}{2} \\pm \\frac{\\sqrt{10}}{6} \\), so it is a mixed state.",
+        "Y has eigenvalues \\( \\lambda = \\frac{1}{2} \\pm \\frac{\\sqrt{5}}{6} \\), so it is a mixed state.",
+        "Z has eigenvalues \\( \\lambda = \\frac{1}{2} \\pm \\frac{\\sqrt{11}}{12} \\), so it is a mixed state.",
+        "Since none of the states are pure, option D is incorrect.",
+        "Now, let's check the Bloch vector of Z. The Bloch vector components are given by the off-diagonal elements of the matrix.",
+        "For Z, the Bloch vector components are \\( \\frac{1}{4} \\) and \\( \\frac{1}{4} \\), which are both non-zero.",
+        "Therefore, option B is correct.",
+        "Option A is incorrect because not all matrices are quantum states (they are, but not all are pure).",
+        "Option C is not directly relevant to the given information, so we do not need to check it.",
+        "Thus, the correct answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_429",
+      "problem_number": 48,
+      "chain": [
+        "The question involves analyzing the 1H NMR spectrum of a compound that has undergone Boc-protection and subsequent reactions. The Boc (tert-butoxycarbonyl) group is a common protecting group used to prevent amine side reactions. It typically appears as a singlet in the 1H NMR spectrum around 1.4 ppm due to the methyl groups of the tert-butyl group.",
+        "Given the options, the singlet at 1.4 ppm is most likely the signal from the Boc group, indicating that the Boc protection was maintained or reintroduced during the synthesis to avoid side reactions.",
+        "Therefore, the correct answer is \\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_194",
+      "problem_number": 49,
+      "chain": [
+        "Analyzing the spatial and temporal tissue distribution of the kinase can provide insights into where and when the kinase is active, which may be relevant to its function in the pathway. This approach would be helpful.",
+        "Using loss-of-function and gain-of-function mutant lines can reveal the effects of altering the kinase's activity, which can help identify its role and downstream components in the pathway. This approach would also be helpful.",
+        "Next-generation RNA sequencing of samples with and without exogenous hydrogen peroxide application can reveal changes in gene expression that may be downstream of the kinase's activity. This approach would be helpful for identifying potential components of the pathway.",
+        "An analysis of cis-region methylation of genes for eukaryotic initiation factors does not directly relate to the downstream pathway of the membrane-associated protein kinase. Methylation of initiation factors could affect translation but does not directly inform about the kinase's signaling pathway.",
+        "Therefore, the approach that will not help the scientist to reveal the components of the pathway is \\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_49",
+      "problem_number": 50,
+      "chain": [
+        "The 1H NMR spectrum shows 5 signals, indicating 5 distinct sets of protons. The singlet at 3.7 ppm is likely due to the OCH3 group, suggesting the presence of a methoxy group.",
+        "The singlet at 2.3 ppm is characteristic of a methyl group (CH3) attached to an aromatic ring, suggesting the presence of a toluene moiety.",
+        "The singlet at 7.1 ppm and the two doublets at 7.0 ppm and 6.7 ppm suggest that there are two substituents on the aromatic ring, one of which is a methoxy group and the other is a methyl group.",
+        "Given the options, the only compound that fits this description is D) 3-Chloro-4-methoxytoluene, which has a methoxy group at the 4-position, a methyl group at the 3-position, and a chlorine at the 5-position, matching the 1H NMR data.",
+        "\\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_183",
+      "problem_number": 51,
+      "chain": [
+        "The reaction sequence starts with 7-(tert-butoxy)bicyclo[2.2.1]hepta-2,5-diene, which is a complex bicyclic compound with a tert-butoxy group.",
+        "The first step involves a reaction with 2 equivalents of 5,6-bis(dibromomethyl)cyclohexa-1,3-diene and sodium iodide, which likely results in a substitution reaction forming product 1.",
+        "Product 1 is then treated with aqueous sulfuric acid, which likely protonates the compound, forming product 2.",
+        "Product 2 is treated with SO3 and pyridine in DMSO, which typically results in sulfonation, forming product 3.",
+        "Finally, product 3 is heated at 150C, which likely leads to a rearrangement or further reaction to form the final product 4.",
+        "Given the complexity of the reactions and the transformations, it is essential to consider the symmetry and the functional groups present in the final product 4.",
+        "The final product 4 likely retains the core structure of the original bicyclic compound but with modifications from the reactions, such as the addition of a sulfonic acid group or other functional groups.",
+        "To determine the number of chemically distinct hydrogen atoms, we need to consider the symmetry and the positions of the hydrogen atoms on the final product 4.",
+        "Given the complexity and the typical outcomes of the reactions, the final product 4 likely has a structure that retains some symmetry, but with distinct hydrogen atoms due to the functional groups added.",
+        "Considering the typical outcomes and the symmetry of the bicyclic core, the most likely number of chemically distinct hydrogen atoms is 8.",
+        "Therefore, the answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_176",
+      "problem_number": 52,
+      "chain": [
+        "To determine the molecular symmetry group of E, we need to identify what E might be based on the given chemical reactions. Let's start with the formation of C from A and B. The bright red product C suggests it might be a coordination complex or a metal oxide, given the color often associated with such compounds.",
+        "Next, C reacts with gas D to form the hazardous product E. The nature of E is not explicitly given, but it is formed from C and D. To determine the symmetry of E, we need to consider the symmetry of C and D and how they combine.",
+        "Since C is a bright red product, it could be a metal oxide or complex. D reacts with B to form H, a solvent, suggesting D could be a small molecule like HCl or NH3. The reaction of C with D to form E suggests E could be a complex or a salt, depending on the nature of C and D.",
+        "Given the hazardous nature of E, it could be a highly reactive compound like a nitrosyl complex or a highly toxic salt. The symmetry group of E would depend on its molecular structure. Common hazardous compounds like nitrosyl complexes often have a linear or planar structure.",
+        "Considering the options provided (C2v, C2, D4h, D\u221eh), the most likely symmetry group for a hazardous compound formed from a reaction involving a bright red product and a gas is C2v, which is common for linear or planar molecules with a central atom and two identical substituents.",
+        "Therefore, the molecular symmetry group of E is most likely \\boxed{C2v}."
+      ],
+      "answer": "C2v",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_309",
+      "problem_number": 53,
+      "chain": [
+        "To design primers for optimal transcript quantification, it's important to ensure that the primers are positioned within exons and that they span an intron if possible to avoid amplifying genomic DNA instead of cDNA. Given the transcript's genomic sequence details, the second exon ends at 8272 bp, and the third exon starts after a large intron of 7367 bp. This suggests that primers spanning this intron would be ideal for specific detection of the transcript.",
+        "Option A places the forward primer at the beginning of the transcript, which is not ideal as it does not span an intron and may amplify genomic DNA.",
+        "Option B places the forward primer around the start of the second exon and the reverse primer around the end of the second exon. This does not span an intron, so it is not ideal for avoiding genomic DNA amplification.",
+        "Option C places the forward primer around the end of the second exon and the reverse primer around the third exon. This spans the large intron and is ideal for specific detection of the transcript.",
+        "Option D places the forward primer around the third exon and the reverse primer around the last exon. While this also spans an intron, it is further downstream and may not be as optimal as option C for quantification.",
+        "Therefore, the best option for optimal transcript quantification is \\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_135",
+      "problem_number": 54,
+      "chain": [
+        "Ring-closing metathesis (RCM) typically involves the formation of a new ring by the coupling of two terminal double bonds. To form 5-isopropyl-3,4-dimethylcyclohex-1-ene, we need a diene where the terminal double bonds can be coupled to form a six-membered ring with the specified substituents.",
+        "The target molecule has a cyclohexene core with a double bond at the 1-position, and substituents at the 3, 4, and 5 positions. The linear precursor must have the same substituents and a double bond at each end that can cyclize to form the cyclohexene ring.",
+        "Option A: 5-isopropyl-3,4-dimethylocta-2,6-diene has internal double bonds at positions 2 and 6, which cannot directly participate in RCM to form the desired cyclohexene ring.",
+        "Option B: 5-isopropyl-3,4-dimethylocta-1,7-diene has terminal double bonds at positions 1 and 7, which can cyclize to form the desired cyclohexene ring with the substituents in the correct positions.",
+        "Option C: 5-isopropyl-3,4-dimethylocta-1,6-diene has a double bond at position 6, which is not a terminal double bond and cannot directly participate in RCM to form the desired cyclohexene ring.",
+        "Option D: 4-isopropyl-5,6-dimethylocta-1,7-diene has substituents in different positions than the target molecule, and thus cannot form the desired cyclohexene ring via RCM.",
+        "Therefore, the correct starting material is \\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_22",
+      "problem_number": 55,
+      "chain": [
+        "To find the inner radius of the torus, we need to use the relationship between the dust sublimation temperature and the luminosity of the AGN. The basic Barvainis model suggests that the inner radius of the torus (R) can be estimated using the formula \\( R = \\left(\\frac{L}{4\\pi \\sigma T^4}\\right)^{1/2} \\), where \\( L \\) is the luminosity, \\( \\sigma \\) is the Stefan-Boltzmann constant, and \\( T \\) is the dust sublimation temperature.",
+        "First, we need to calculate the UV range luminosity using the bolometric correction. Given the bolometric luminosity is \\( 1.5 \\times 10^{46} \\) erg/s and the bolometric correction is 5, the UV range luminosity \\( L_{\\text{UV}} \\) is \\( \\frac{1.5 \\times 10^{46}}{5} = 3 \\times 10^{45} \\) erg/s.",
+        "Next, we substitute the values into the formula. The Stefan-Boltzmann constant \\( \\sigma \\) is \\( 5.67 \\times 10^{-5} \\) erg cm\\(^2\\) K\\(^{-4}\\) s\\(^{-1}\\), and the dust sublimation temperature \\( T \\) is 900 K.",
+        "Substituting these values into the formula, we get \\( R = \\left(\\frac{3 \\times 10^{45}}{4\\pi \\times 5.67 \\times 10^{-5} \\times (900)^4}\\right)^{1/2} \\).",
+        "Calculating the denominator: \\( 4\\pi \\times 5.67 \\times 10^{-5} \\times (900)^4 \\approx 4\\pi \\times 5.67 \\times 10^{-5} \\times 6.56 \\times 10^{10} \\approx 4\\pi \\times 3.73 \\times 10^6 \\approx 4.7 \\times 10^7 \\) erg cm\\(^2\\) s\\(^{-1}\\).",
+        "Now, we can find \\( R \\): \\( R = \\left(\\frac{3 \\times 10^{45}}{4.7 \\times 10^7}\\right)^{1/2} \\approx \\left(6.4 \\times 10^{37}\\right)^{1/2} \\approx 8 \\times 10^{18} \\) cm.",
+        "Converting this to parsecs (1 pc = 3.086 \\times 10\\(^{18}\\) cm), we get \\( R \\approx \\frac{8 \\times 10^{18}}{3.086 \\times 10^{18}} \\approx 2.6 \\) pc.",
+        "Therefore, the inner radius of the torus is closest to 3 pc, so the answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_373",
+      "problem_number": 56,
+      "chain": [
+        "The reaction conditions given (NaNO2, HCl, H2O) suggest a diazotization followed by hydrolysis, which is typically used to convert a primary amine or an alcohol to a carboxylic acid. However, in the context of the question, it seems to be a transformation that converts certain functional groups into diketones.",
+        "For A to produce 4-isopropylcyclohexane-1,2-dione, the starting material must have a functional group that can be converted to a diketone. Given the options, 4-isopropylcyclohexan-1-one (a ketone) can be converted to a diketone through a reaction that introduces another carbonyl group.",
+        "For B to produce 5-methylhexane-2,3-dione, the starting material must similarly be convertible to a diketone. The option 5-methylhexan-2-one (a ketone) can be converted to a diketone through a similar mechanism.",
+        "Therefore, the correct starting materials are A = 4-isopropylcyclohexan-1-one and B = 5-methylhexan-2-one, which corresponds to option A.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_235",
+      "problem_number": 57,
+      "chain": [
+        "The average energy of the system can be calculated using the formula <H> = \u03a3 |c_n|^2 * E_n, where c_n are the coefficients of the state vector in the basis of eigenstates of the Hamiltonian, and E_n are the corresponding eigenvalues.",
+        "The coefficients are given as c_1 = sqrt(1/15), c_2 = sqrt(2/15), c_3 = 2/sqrt(15), and c_4 = 4/sqrt(15).",
+        "The eigenvalues are E_1 = E_o, E_2 = 2E_o, E_3 = 3E_o, and E_4 = 4E_o.",
+        "Now, I will calculate the squared magnitudes of the coefficients: |c_1|^2 = 1/15, |c_2|^2 = 2/15, |c_3|^2 = 4/15, and |c_4|^2 = 16/15.",
+        "Next, I will calculate the product of the squared magnitudes of the coefficients and the corresponding eigenvalues: (1/15) * E_o, (2/15) * 2E_o, (4/15) * 3E_o, and (16/15) * 4E_o.",
+        "Now, I will sum these products to find the average energy: (1/15) * E_o + (4/15) * E_o + (12/15) * E_o + (64/15) * E_o = (81/15) * E_o.",
+        "Therefore, the average energy of the system is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_274",
+      "problem_number": 58,
+      "chain": [
+        "To identify the reactants, product, and type of reaction, we need to analyze the molecular formulas and 1H NMR data provided for compounds A, B, and C.",
+        "Compound A (C6H13Br) has 3 signals, 1 singlet, and 2 triplets. This suggests a structure with a bromine atom and two methyl groups (singlet) and a methylene group (triplet).",
+        "Compound B (C4H6) has 3 signals, 1 singlet, 1 triplet, and 1 quartet. This suggests a structure with a terminal alkyne (quartet) and a methyl group (singlet).",
+        "Compound C (C10H18) has 5 signals, 1 singlet, 3 triplets, and a quartet. This suggests a structure with a terminal alkyne (quartet) and multiple methyl groups (singlet and triplets).",
+        "Given the molecular formulas and NMR data, we can deduce the structures of A and B. A likely has a bromine atom attached to a carbon with two methyl groups, and B is likely a terminal alkyne with a methyl group.",
+        "The reaction between A and B to form C suggests a nucleophilic substitution where the bromine atom in A is replaced by the alkyne group from B.",
+        "Looking at the options, option B describes a nucleophilic substitution between 1-bromo-3,3-dimethylbutane and but-1-yne to form 7,7-dimethyloct-3-yne, which matches our deductions.",
+        "Therefore, the correct answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_63",
+      "problem_number": 59,
+      "chain": [
+        "The reaction described involves the formation of 8,8-diiodobicyclo[4.2.0]octan-7-one from cyclohexene and an unknown reactant A. The structure of the product suggests that the reactant A must have a cyclobutene ring and a ketone group, which is consistent with option B and C. However, the correct structure for the reactant A should be 4,4-diiodocyclobut-2-en-1-one, which matches option B and C. Now, we need to determine the correct sequence of dienes according to their reactivity (most reactive to least reactive). Typically, the reactivity of dienes is influenced by their degree of conjugation and the stability of the resulting carbocation. Among the given dienes, cyclopenta-1,3-diene (option 3) is the most reactive due to its high degree of conjugation and the stability of the resulting carbocation. The next most reactive would be 2,3-dimethylbuta-1,3-diene (option 1) due to the presence of methyl groups which can stabilize the carbocation. The reactivity of (2E,4E)-hexa-2,4-diene (option 2) and (2Z,4Z)-hexa-2,4-diene (option 4) is similar, but the E isomer is slightly more reactive due to less steric hindrance. Therefore, the correct sequence of dienes according to their reactivity is 3, 1, 2, 4. This matches option B.\n\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_193",
+      "problem_number": 60,
+      "chain": [
+        "To determine if the given quantum state is entangled, we need to check if it can be expressed as a tensor product of two separate states. This is the separability criterion for entanglement.",
+        "The given state is $\\left|\\psi\\right\\rangle =\\frac{\\sqrt{6}}{6}\\left(\\left|00\\right\\rangle +\\left|01\\right\\rangle \\right)+\\frac{\\sqrt{3}}{3}\\left(\\left|10\\right\\rangle +\\left|11\\right\\rangle \\right)$.",
+        "We can rewrite this as $\\left|\\psi\\right\\rangle = \\frac{\\sqrt{6}}{6}\\left(\\left|0\\right\\rangle \\left(\\left|0\\right\\rangle +\\left|1\\right\\rangle \\right)\\right) + \\frac{\\sqrt{3}}{3}\\left(\\left|1\\right\\rangle \\left(\\left|0\\right\\rangle +\\left|1\\right\\rangle \\right)\\right)$.",
+        "This can be further simplified to $\\left|\\psi\\right\\rangle = \\left(\\frac{\\sqrt{6}}{6}\\left|0\\right\\rangle + \\frac{\\sqrt{3}}{3}\\left|1\\right\\rangle \\right) \\otimes \\left(\\frac{1}{\\sqrt{2}}\\left(\\left|0\\right\\rangle +\\left|1\\right\\rangle \\right)\\right)$.",
+        "This expression shows that the state can be written as a tensor product of two separate states, indicating that the state is separable and not entangled.",
+        "Therefore, the correct answer is \\boxed{D}. The state does not satisfy the separability criterion, indicating it is entangled."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_40",
+      "problem_number": 61,
+      "chain": [
+        "To determine how many of the given compounds exhibit optical activity, we need to identify which ones have chiral centers or a chiral axis.",
+        "(Z)-1-chloro-2-methylbut-1-ene does not have a chiral center, so it is not optically active.",
+        "(3aR,7aS,E)-8-(chloromethylene)hexahydro-4,7-methanoisobenzofuran-1,3-dione has chiral centers, so it is optically active.",
+        "(2R,3S)-2,3-dimethylsuccinic acid has two chiral centers and different configurations, so it is optically active.",
+        "(2R,3R)-2,3-dimethylsuccinic acid has two chiral centers but the same configuration, so it is not optically active.",
+        "(R)-cyclohex-3-en-1-ol has a chiral center, so it is optically active.",
+        "(1s,3s,5s)-cyclohexane-1,3,5-triol has three chiral centers, so it is optically active.",
+        "1-cyclopentyl-3-methylbutan-1-one does not have a chiral center, so it is not optically active.",
+        "Counting the optically active compounds: (3aR,7aS,E)-8-(chloromethylene)hexahydro-4,7-methanoisobenzofuran-1,3-dione, (2R,3S)-2,3-dimethylsuccinic acid, (R)-cyclohex-3-en-1-ol, and (1s,3s,5s)-cyclohexane-1,3,5-triol.",
+        "Thus, there are 4 optically active compounds.",
+        "Therefore, the answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_282",
+      "problem_number": 62,
+      "chain": [
+        "In the context of diabetes-induced atherosclerosis, PKC activation leads to increased oxidative stress, which is a key factor in the progression of the disease.",
+        "Increased oxidative stress then contributes to endothelial dysfunction, a critical early step in the development of atherosclerosis.",
+        "Therefore, the correct order is Oxidative stress followed by Endothelial dysfunction.",
+        "The correct answer is \\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_150",
+      "problem_number": 63,
+      "chain": [
+        "To solve this problem, we need to identify the reagents that convert (3r,5r,7r)-adamantane-1-carboxylic acid into (3r,5r,7r)-adamantane-1-carbonyl azide and then into (3s,5s,7s)-adamantan-1-amine.",
+        "The first step involves converting a carboxylic acid into a carbonyl azide. This is typically achieved using diphenylphosphoryl azide (DPPA) in the presence of a base like triethylamine (Et3N) and heat.",
+        "The second step involves converting a carbonyl azide into an amine. This is typically achieved by treating the carbonyl azide with an acid like H3O+ (aqueous acid) and heat, which leads to the formation of the amine.",
+        "Given the options, the correct reagents are A = diphenylphosphoryl azide (DPPA) and B = H3O+, Heat.",
+        "Therefore, the correct choice is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_321",
+      "problem_number": 64,
+      "chain": [
+        "Given the atmospheric temperature of the star (Teff = 6000 K), we know that El1 is mostly in the neutral phase, and El2 is mostly ionized.",
+        "For determining surface gravity, lines that are sensitive to changes in pressure and temperature are preferred.",
+        "Neutral lines (I) are generally more sensitive to surface gravity than ionized lines (II) because they are more affected by changes in pressure and temperature.",
+        "Since El1 is mostly in the neutral phase, its neutral lines (El1 I) are more sensitive to surface gravity.",
+        "Therefore, the most sensitive lines to surface gravity are El1 I (neutral).",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_316",
+      "problem_number": 65,
+      "chain": [
+        "The reaction sequence starts with 3-(hydroxymethyl)-5-(prop-1-en-2-yl)cyclohexan-1-one.",
+        "Treatment with sodium hydride and benzyl bromide suggests an alkylation at the hydroxymethyl group, forming a new ether linkage.",
+        "The product 1 is likely 3-((benzyloxy)methyl)-5-(prop-1-en-2-yl)cyclohexan-1-one.",
+        "Treatment with p-toluenesulfonyl hydrazide in the presence of HCl will form a tosylhydrazide derivative at the carbonyl group, creating product 2.",
+        "The subsequent treatment with n-butyllithium and aqueous ammonium chloride likely reduces the double bond in the prop-1-en-2-yl group to an isopropyl group, forming product 3.",
+        "Finally, hydrogenation over Pd/C will reduce any remaining unsaturated bonds, including the tosylhydrazide group, potentially leading to a simpler alcohol structure.",
+        "Given the reduction steps, the final product 4 is most likely to be a simple alcohol with the isopropyl group, which matches option D.",
+        "Therefore, the answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_185",
+      "problem_number": 66,
+      "chain": [
+        "The strain amplitude of gravitational waves is related to the chirp mass of the binary system and the distance to the system. The chirp mass \\( \\mathcal{M} \\) is given by \\(\\mathcal{M} = \\left( \\frac{m_1 m_2}{(m_1 + m_2)^{1/3}} \\right)^{3/5}\\).",
+        "For binary system A, the chirp mass is \\(\\mathcal{M}_A = \\left( \\frac{10 \\cdot 25}{(10 + 25)^{1/3}} \\right)^{3/5} = \\left( \\frac{250}{35^{1/3}} \\right)^{3/5}\\).",
+        "For binary system B, the chirp mass is \\(\\mathcal{M}_B = \\left( \\frac{35 \\cdot 50}{(35 + 50)^{1/3}} \\right)^{3/5} = \\left( \\frac{1750}{85^{1/3}} \\right)^{3/5}\\).",
+        "Since the strain amplitude and frequency of gravitational waves are the same for both systems, the distances must be proportional to the chirp masses. Thus, \\(\\frac{DA}{DB} = \\frac{\\mathcal{M}_B}{\\mathcal{M}_A}\\).",
+        "Calculating the chirp masses: \\(\\mathcal{M}_A = \\left( \\frac{250}{35^{1/3}} \\right)^{3/5} \\approx 11.75\\) and \\(\\mathcal{M}_B = \\left( \\frac{1750}{85^{1/3}} \\right)^{3/5} \\approx 30.65\\).",
+        "Therefore, the ratio of distances is \\(\\frac{DA}{DB} = \\frac{30.65}{11.75} \\approx 2.61\\).",
+        "Taking the reciprocal to find the ratio of DA/DB, we get \\(\\frac{DA}{DB} \\approx \\frac{1}{2.61} \\approx 0.38\\).",
+        "Thus, the answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_295",
+      "problem_number": 67,
+      "chain": [
+        "To find the periodicity of a triple transit, we need to determine the least common multiple (LCM) of the orbital periods of the three planets.",
+        "The orbital periods are 22, 40, and 64 days. We will calculate the LCM of these numbers.",
+        "First, find the prime factorizations: 22 = 2 \u00d7 11, 40 = 2\u00b3 \u00d7 5, and 64 = 2\u2076.",
+        "The LCM is found by taking the highest power of each prime that appears in the factorizations: 2\u2076 \u00d7 5 \u00d7 11.",
+        "Calculate 2\u2076 = 64, then multiply by 5: 64 \u00d7 5 = 320.",
+        "Finally, multiply by 11: 320 \u00d7 11 = 3520.",
+        "Therefore, the periodicity of a triple transit is 3520 days, which corresponds to option A.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_98",
+      "problem_number": 68,
+      "chain": [
+        "Bicyclo[2.2.2]octan-2-one is a cyclic ketone. When irradiated with UV radiation, it likely undergoes a photochemical reaction. Since the molecular weight of the product 1 is the same as that of the starting material, the reaction is likely a rearrangement or isomerization, not an addition or elimination.",
+        "The next step involves stirring product 1 with palladium on carbon under a hydrogen atmosphere, which suggests a hydrogenation reaction. This will reduce any unsaturated bonds present in product 1.",
+        "Given that the starting material is a ketone, and the hydrogenation step reduces unsaturated bonds, it is likely that any double bonds formed in product 1 are reduced back to single bonds in product 2.",
+        "The most deshielded hydrogen nucleus in the 1H NMR spectrum of 2 would be the one attached to the carbonyl carbon, which is typically highly deshielded due to the electronegativity of the oxygen atom.",
+        "In a fully saturated molecule with no adjacent protons on the carbonyl carbon, the hydrogen attached to the carbonyl carbon would not be split by adjacent protons and would appear as a singlet in the 1H NMR spectrum.",
+        "Therefore, the splitting pattern of the most deshielded hydrogen nucleus in the 1H NMR spectrum of 2 is a singlet.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_360",
+      "problem_number": 69,
+      "chain": [
+        "In a quantum field theory with an extra dimension, the presence of the extra dimension leads to a quantization of the momentum in that direction, due to the periodic boundary conditions imposed by the closed nature of the extra dimension.",
+        "The momentum in the extra dimension is quantized in units of \\( \\frac{n}{R} \\), where \\( n \\) is an integer. This quantization leads to a tower of particle masses, where the mass spacing is proportional to the momentum spacing.",
+        "Since the momentum spacing is \\( \\frac{1}{R} \\), the mass spacing will be proportional to \\( \\frac{1}{R} \\).",
+        "The masses themselves will be proportional to the square of the momentum, which means the masses will be proportional to \\( \\left(\\frac{n}{R}\\right)^2 \\), leading to a quadratic spacing in terms of \\( n \\).",
+        "Therefore, the pattern of particle masses is a tower of quadratically-spaced masses, proportional to \\( \\frac{1}{R} \\).",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_35",
+      "problem_number": 70,
+      "chain": [
+        "The disappearance of ChIP-seq peaks when switching from PFA to PFA+DSG fixation suggests that the peaks are sensitive to the crosslinking conditions. DSG (disuccinimidyl glutarate) is used to crosslink proteins to DNA and can also crosslink proteins to proteins. This additional crosslinking can affect the accessibility of the antibody to its target, particularly if the target is in a more dynamic or less stable complex.",
+        "Given that IKAROS is a transcription factor, it is most likely to be found at active promoters and enhancers where it regulates gene expression by binding to DNA and interacting with other proteins in a dynamic complex.",
+        "Therefore, the peaks that disappear with PFA+DSG fixation are most likely to be found at active promoters and enhancers, where the additional crosslinking disrupts the antibody's ability to bind to IKAROS.",
+        "\\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_23",
+      "problem_number": 71,
+      "chain": [
+        "To solve this problem, we need to understand how the roughness of the surface affects the contact angles of water and oil. The key concept here is the Cassie-Baxter equation, which describes the effective contact angle on a rough surface.",
+        "The Cassie-Baxter equation is given by: \\(\\cos \\theta_{eff} = f \\cos \\theta + (1 - f)\\), where \\(f\\) is the fraction of the surface covered by the solid (coating), \\(\\theta\\) is the contact angle on the smooth surface, and \\(\\theta_{eff}\\) is the effective contact angle on the rough surface.",
+        "For water, the smooth surface contact angle is 127\u00b0. The fraction of the surface covered by the coating is 47%, so \\(f = 0.47\\).",
+        "Substituting these values into the Cassie-Baxter equation: \\(\\cos \\theta_{eff} = 0.47 \\cos 127\u00b0 + (1 - 0.47)\\).",
+        "Calculating the cosine of 127\u00b0: \\(\\cos 127\u00b0 \\approx -0.6018\\).",
+        "Substituting this value in: \\(\\cos \\theta_{eff} = 0.47 \\times -0.6018 + 0.53 \\approx -0.2828 + 0.53 = 0.2472\\).",
+        "To find \\(\\theta_{eff}\\), we take the inverse cosine: \\(\\theta_{eff} = \\cos^{-1}(0.2472) \\approx 75.5\u00b0\\).",
+        "However, since the contact angle is measured from the solid surface, we need to consider the supplementary angle: \\(180\u00b0 - 75.5\u00b0 = 104.5\u00b0\\).",
+        "For oil, the smooth surface contact angle is 96\u00b0. Using the same fraction \\(f = 0.47\\): \\(\\cos \\theta_{eff} = 0.47 \\cos 96\u00b0 + (1 - 0.47)\\).",
+        "Calculating the cosine of 96\u00b0: \\(\\cos 96\u00b0 \\approx -0.1045\\).",
+        "Substituting this value in: \\(\\cos \\theta_{eff} = 0.47 \\times -0.1045 + 0.53 \\approx -0.0491 + 0.53 = 0.4809\\).",
+        "To find \\(\\theta_{eff}\\), we take the inverse cosine: \\(\\theta_{eff} = \\cos^{-1}(0.4809) \\approx 61.3\u00b0\\).",
+        "Again, considering the supplementary angle: \\(180\u00b0 - 61.3\u00b0 = 118.7\u00b0\\).",
+        "Comparing these results to the given choices, the closest match is Water = 140\u00b0 and Oil = 118\u00b0.",
+        "Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_338",
+      "problem_number": 72,
+      "chain": [
+        "The problem involves ultra-relativistic particles, so we need to consider their Lorentz factor and how it affects their range before decaying.",
+        "The Lorentz factor (\\(\\gamma\\)) is inversely proportional to the decay time of the particles. A higher \\(\\gamma\\) means the particles live longer and travel farther before decaying.",
+        "Given that one third of the particles reach the detector walls with a \\(\\gamma\\) of 20, we need to find the \\(\\gamma\\) that would allow two thirds of the particles to reach the walls.",
+        "Assuming the decay time is proportional to \\(\\gamma\\), we can set up a proportionality relationship. If \\(\\gamma = 20\\) allows one third of the particles to reach the walls, a higher \\(\\gamma\\) should allow more particles to reach the walls.",
+        "To find the required \\(\\gamma\\), we need to solve for the new \\(\\gamma\\) that allows two thirds of the particles to reach the walls. This implies the new \\(\\gamma\\) should be approximately double the original \\(\\gamma\\) since the decay time is proportional to \\(\\gamma\\).",
+        "Therefore, the new \\(\\gamma\\) should be around \\(2 \\times 20 = 40\\).",
+        "Checking the options, the closest value to 40 is 40 itself.",
+        "Thus, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_116",
+      "problem_number": 73,
+      "chain": [
+        "The given reactant is (R,Z)-N-(2-ethylcyclohexylidene)ethanaminium, which suggests a double bond and an amine group attached to a cyclohexane ring with an ethyl substituent. The leaving group is implied to be I- from CH3CH2I, a typical alkyl halide used in substitution reactions.",
+        "The question revolves around the stereochemistry of the product after an SN2 reaction. Given the stereochemical inversion characteristic of SN2 reactions, the configuration at the carbon undergoing substitution should be inverted.",
+        "Option A involves TsOH as the reactant, which is a strong acid and not a nucleophile. This does not fit the SN2 reaction profile.",
+        "Option B uses LDA (lithium diisopropylamide) as the nucleophile, which is a strong base and not typically used in SN2 reactions with alkyl halides due to the potential for E2 elimination.",
+        "Option C involves TsOH, which again is not a nucleophile and does not fit the SN2 reaction profile.",
+        "Option D uses LDA as the nucleophile. However, considering the stereochemical inversion, the product should have the opposite configuration at the carbon where the substitution occurs.",
+        "Given the initial configuration of the reactant and the requirement for stereochemical inversion, the correct product should have the configuration (2R,6S)-N,2,6-triethylcyclohexan-1-amine, as the substitution would invert the configuration at the carbon where the ethyl group is attached.",
+        "Therefore, the correct answer is \\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_148",
+      "problem_number": 74,
+      "chain": [
+        "The student's observation of new and small peaks eluting irregularly suggests that there may be some contamination or degradation of the samples between collection and analysis.",
+        "Silica can catalyze further reactions or isomerizations, which could explain the appearance of new peaks in the later samples.",
+        "Activated carbon is often used to stabilize samples by absorbing impurities and preventing further reactions.",
+        "Transferring samples directly into argon-purged GC vials containing activated carbon and storing them in the fridge would help to prevent further reactions and stabilize the samples.",
+        "Therefore, the advice given by the colleague would be to transfer the samples directly into argon-purged GC vials containing activated carbon and store them in the fridge before analysis.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_387",
+      "problem_number": 75,
+      "chain": [
+        "To find the mean decay distance of the meson resonance X, we need to use the relationship between the lifetime of the particle and its width. The width $\\Gamma_X$ is related to the lifetime $\\tau$ by the relation $\\Gamma_X = \\frac{\\hbar}{\\tau}$, where $\\hbar$ is the reduced Planck's constant. The mean decay distance $d$ is given by $d = v \\tau$, where $v$ is the velocity of the particle.",
+        "First, we need to calculate the lifetime $\\tau$ from the width $\\Gamma_X$. Given $\\Gamma_X = 320 \\text{ MeV}$, we use the relation $\\tau = \\frac{\\hbar}{\\Gamma_X}$. The reduced Planck's constant $\\hbar$ is approximately $6.582 \\times 10^{-16} \\text{ eV}\\cdot\\text{s}$. Converting $\\Gamma_X$ to eV, we get $\\Gamma_X = 320 \\times 10^6 \\text{ eV} = 3.2 \\times 10^8 \\text{ eV}$.",
+        "Now, calculate $\\tau$:\n\\[\n\\tau = \\frac{6.582 \\times 10^{-16} \\text{ eV}\\cdot\\text{s}}{3.2 \\times 10^8 \\text{ eV}} = 2.057 \\times 10^{-24} \\text{ s}\n\\]",
+        "Next, we need to find the velocity $v$ of the particle. The velocity $v$ can be approximated using the relativistic formula $v = \\frac{p}{\\gamma m_X}$, where $p$ is the momentum and $\\gamma$ is the Lorentz factor. For a particle with a high energy compared to its rest mass, the velocity can be approximated as $v \\approx c$, where $c$ is the speed of light.",
+        "Using $v \\approx c = 3 \\times 10^8 \\text{ m/s}$, we can calculate the mean decay distance $d$:\n\\[\nd = v \\tau = (3 \\times 10^8 \\text{ m/s}) \\times (2.057 \\times 10^{-24} \\text{ s}) = 6.171 \\times 10^{-16} \\text{ m}\n\\]",
+        "Given the options, the closest value to $6.171 \\times 10^{-16} \\text{ m}$ is $5.0223 \\times 10^{-16} \\text{ m}$.",
+        "Therefore, the correct answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_427",
+      "problem_number": 76,
+      "chain": [
+        "Given that gases A and B are binary compounds consisting of three elements, two of which are in adjacent groups of the Periodic Table, and both can be burned in the air, we need to identify the gases and their combustion products.",
+        "Since gas A dissolves well in water and results in a solution with pH > 7, it suggests that gas A is likely ammonia (NH\u2083), which is a basic gas.",
+        "Gas B is almost insoluble in water, suggesting it is likely methane (CH\u2084), which is a hydrocarbon and does not dissolve well in water.",
+        "Now, we need to write the chemical equations for the complete combustion of NH\u2083 and CH\u2084.",
+        "The combustion of ammonia (NH\u2083) in air produces nitrogen gas (N\u2082) and water (H\u2082O):",
+        "\\[ 4 \\text{NH}_3 + 3 \\text{O}_2 \\rightarrow 2 \\text{N}_2 + 6 \\text{H}_2\\text{O} \\]\nThe combustion of methane (CH\u2084) in air produces carbon dioxide (CO\u2082) and water (H\u2082O):",
+        "\\[ \\text{CH}_4 + 2 \\text{O}_2 \\rightarrow \\text{CO}_2 + 2 \\text{H}_2\\text{O} \\]\nNext, we need to calculate the sum of the molecular masses of the products of the reactions.",
+        "For the combustion of NH\u2083, the products are 2 N\u2082 and 6 H\u2082O. The molecular mass of N\u2082 is 28 g/mol, and the molecular mass of H\u2082O is 18 g/mol.",
+        "\\[ 2 \\times 28 + 6 \\times 18 = 56 + 108 = 164 \\text{ g/mol} \\]\nFor the combustion of CH\u2084, the products are 1 CO\u2082 and 2 H\u2082O. The molecular mass of CO\u2082 is 44 g/mol, and the molecular mass of H\u2082O is 18 g/mol.",
+        "\\[ 1 \\times 44 + 2 \\times 18 = 44 + 36 = 80 \\text{ g/mol} \\]\nThe sum of the molecular masses of the products of the reactions is:",
+        "\\[ 164 + 80 = 244 \\text{ g/mol} \\]\nThe range within which the sum of the molecular masses of the products of the reaction in equations 1) + 2) falls is from 230 to 250.",
+        "Therefore, the answer is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_51",
+      "problem_number": 77,
+      "chain": [
+        "To determine which assumptions jointly imply the impulse approximation, we need to understand the essence of the impulse approximation. This approximation assumes that the interaction with the nucleus can be treated as if it were occurring with a free nucleon, meaning the nucleon is not influenced by the binding forces within the nucleus and interacts independently.",
+        "Assumption 1 states that the interaction current only interacts with individual nucleons, which is a key component of the impulse approximation as it implies the interaction is localized to a single nucleon.",
+        "Assumption 2 suggests that the nucleus is transparent apart from the selected nucleon, which aligns with the idea that the interaction is localized and the rest of the nucleus does not interfere with the interaction.",
+        "Assumption 3 involves the quarks within the nucleon being non-relativistic. While this is a valid assumption in some contexts, it does not directly relate to the impulse approximation's focus on the interaction being with a free nucleon.",
+        "Assumption 4 directly states that the interaction proceeds as if the selected nucleon experiences no binding forces, which is a core aspect of the impulse approximation.",
+        "Therefore, assumptions 1, 2, and 4 are the ones that jointly imply the impulse approximation.",
+        "\\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_399",
+      "problem_number": 78,
+      "chain": [
+        "The probability of measuring an observable in a quantum system is given by the square of the absolute value of the inner product of the state vector and the eigenvector corresponding to the eigenvalue of the observable. First, we need to find the eigenvalues of the matrix operator P.",
+        "To find the eigenvalues, we solve the characteristic equation det(P - \u03bbI) = 0, where I is the identity matrix and \u03bb represents the eigenvalues.",
+        "The characteristic equation for matrix P is given by the determinant of the matrix (P - \u03bbI), which is \\begin{vmatrix} -\\lambda & 1/\\sqrt{2} & 0 \\\\ 1/\\sqrt{2} & -\\lambda & 1/\\sqrt{2} \\\\ 0 & 1/\\sqrt{2} & -\\lambda \\end{vmatrix} = 0.",
+        "Expanding the determinant, we get the equation \\(-\\lambda(\\lambda^2 - 1/2) - 1/\\sqrt{2}(-1/\\sqrt{2}\\lambda) = 0\\), which simplifies to \\(-\\lambda^3 + \\lambda/2 + \\lambda/2 = 0\\), or \\(-\\lambda^3 + \\lambda = 0\\).",
+        "Factoring out \\(-\\lambda\\), we get \\(-\\lambda(\\lambda^2 - 1) = 0\\), so the eigenvalues are \\(\\lambda = 0, 1, -1\\).",
+        "Since we are interested in the probability of measuring the observable with value 0, we need to find the eigenvector corresponding to \\(\\lambda = 0\\) and then calculate the probability using the state vector.",
+        "To find the eigenvector corresponding to \\(\\lambda = 0\\), we solve the equation \\(Pv = 0v\\), or \\(Pv = 0\\), where \\(v\\) is the eigenvector.",
+        "This gives us the system of equations \\[0x + \\frac{1}{\\sqrt{2}}y + 0z = 0,\\] \\[\\frac{1}{\\sqrt{2}}x + 0y + \\frac{1}{\\sqrt{2}}z = 0,\\] \\[0x + \\frac{1}{\\sqrt{2}}y + 0z = 0.\\] Simplifying, we get \\(y = 0\\) and \\(x = -z\\).",
+        "Choosing \\(z = 1\\), we get the eigenvector \\(v = (-1, 0, 1)\\).",
+        "The probability of measuring the observable with value 0 is the square of the absolute value of the inner product of the state vector and the eigenvector. The state vector is \\((-1, 2, 1)\\) and the eigenvector is \\((-1, 0, 1)\\).",
+        "The inner product is \\((-1)(-1) + (2)(0) + (1)(1) = 1 + 0 + 1 = 2\\).",
+        "The probability is then \\(|2|^2 = 4\\). However, we need to normalize the state vector and the eigenvector. The norm of the state vector is \\(\\sqrt{(-1)^2 + 2^2 + 1^2} = \\sqrt{1 + 4 + 1} = \\sqrt{6}\\).",
+        "The norm of the eigenvector is \\(\\sqrt{(-1)^2 + 0^2 + 1^2} = \\sqrt{1 + 0 + 1} = \\sqrt{2}\\).",
+        "The normalized inner product is \\(\\frac{2}{\\sqrt{6}\\sqrt{2}} = \\frac{2}{\\sqrt{12}} = \\frac{2}{2\\sqrt{3}} = \\frac{1}{\\sqrt{3}}\\).",
+        "The probability is then \\(\\left(\\frac{1}{\\sqrt{3}}\\right)^2 = \\frac{1}{3}\\).",
+        "Therefore, the probability that the measurement of the observable will yield 0 at time t is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_406",
+      "problem_number": 79,
+      "chain": [
+        "Measuring the change in frequency of the absorption line due to the expansion of the universe can provide information about the expansion history, which is relevant to dark energy studies.",
+        "Galaxy-redshift surveys can also provide information about the large-scale structure of the universe and its expansion, which is relevant to dark energy.",
+        "Intensity mapping with CO emission lines can probe the distribution of molecular gas in the universe, which can be used to study large-scale structure and potentially constrain dark energy.",
+        "Intensity mapping with neutral hydrogen emission lines is a powerful tool for mapping the large-scale structure of the universe at low redshifts, which is relevant to dark energy studies.",
+        "However, the CO emission line at frequencies between 10 GHz to 20 GHz is not typically used for intensity mapping to constrain dark energy, as it does not provide the same large-scale structure information as neutral hydrogen or other methods.",
+        "Therefore, the answer is \\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_232",
+      "problem_number": 80,
+      "chain": [
+        "To validate the tandem duplication on chr1, one would need to detect the presence of two copies of the 300 kb sequence in close proximity on the same chromosome. Both polymerase chain reaction (PCR) and Southern hybridization can be used to detect such duplications, but they do so in different ways. PCR can amplify specific sequences, and if the primers are designed to target the duplicated region, multiple bands or a band of higher intensity might indicate a duplication. Southern hybridization, on the other hand, involves digesting the DNA with restriction enzymes, separating the fragments by gel electrophoresis, and then hybridizing with a probe specific to the duplicated region. If the probe binds to two closely spaced bands, it indicates a tandem duplication. Therefore, both methods can be used to validate the tandem duplication. However, the question asks for the best method to experimentally validate the duplication, and Southern hybridization is more definitive as it provides a visual confirmation of the duplication on a gel.",
+        "Thus, the best answer is \\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_325",
+      "problem_number": 81,
+      "chain": [
+        "Acetic acid reacts with bromine, pyridine, and acetic anhydride to form bromoacetic acid (product 1) through bromination of the carboxylic acid.",
+        "Bromoacetic acid (product 1) is then heated with ethanol and sulfuric acid, which typically undergoes an esterification reaction to form ethyl bromoacetate (product 2).",
+        "Ethyl bromoacetate (product 2) is treated with sodium cyanide to form ethyl cyanomethylacetate (product 3) through nucleophilic substitution of the bromine atom by the cyanide ion.",
+        "Finally, ethyl cyanomethylacetate (product 3) is treated with excess sodium hydride and 1,5-dibromopentane, leading to a coupling reaction forming the final product 4, which is a substituted pentane with an ethyl cyanomethylacetate group attached at one end.",
+        "To determine the number of distinct hydrogen signals in the 1H NMR spectrum of product 4, we need to identify the chemically distinct hydrogen environments in the molecule. The structure of product 4 is expected to be ethyl cyanomethylacetate attached to a pentane chain, with the cyanide group at one end and the ethyl group at the other end.",
+        "The pentane chain (C5H12) has 3 distinct sets of hydrogens: 2 methyl (CH3), 2 methylene (CH2), and 1 methylene (CH2) in the middle. The ethyl cyanomethylacetate group adds 3 more distinct sets of hydrogens: 1 methyl (CH3) from the ethyl group, 1 methylene (CH2) from the ethyl group, and 1 methylene (CH2) from the cyanomethylacetate group.",
+        "Combining these, we have: 2 methyl (CH3) from the pentane chain, 1 methyl (CH3) from the ethyl group, 3 methylene (CH2) groups (2 from the pentane chain and 1 from the cyanomethylacetate group).",
+        "Thus, there are a total of 6 distinct hydrogen environments: 2 methyl (CH3) from the pentane chain, 1 methyl (CH3) from the ethyl group, and 3 methylene (CH2) groups.",
+        "Therefore, the number of distinct hydrogen signals observable in the 1H NMR spectrum of product 4 is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_186",
+      "problem_number": 82,
+      "chain": [
+        "To determine which states are entangled, we need to check if they can be written as a product of two single-qubit states. If not, they are entangled.",
+        "Let's start with option (a): (1/\u221a30)* (|00>+ 2i|01>\u2212 3|10>\u2212 4i|11>)",
+        "This state cannot be factored into a product of two single-qubit states, indicating it is entangled.",
+        "Next, option (b): (1/5)* (|00>+ 2i|01>\u2212 2|10>\u2212 4i|11>)",
+        "Similarly, this state also cannot be factored into a product of two single-qubit states, indicating it is entangled.",
+        "Now, option (c): (1/2)(|00>+ |01>+|10>\u2212 |11>)",
+        "This state cannot be factored into a product of two single-qubit states, indicating it is entangled.",
+        "Finally, option (d): (1/2)(|00>+ |01>-|10>\u2212 |11>)",
+        "This state cannot be factored into a product of two single-qubit states, indicating it is entangled.",
+        "Given the options, both (a) and (c) are entangled, but (b) and (d) are also entangled. The correct choice that only lists entangled states from the given options is B) c,d.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_83",
+      "problem_number": 83,
+      "chain": [
+        "First, we need to calculate the moles of CH\u2083COOH and NaOH before mixing them to understand the initial reaction and the resulting solution's composition.",
+        "Moles of CH\u2083COOH = 0.1 M \u00d7 0.020 L = 0.002 moles",
+        "Moles of NaOH = 0.02 M \u00d7 0.040 L = 0.0008 moles",
+        "Since CH\u2083COOH and NaOH react in a 1:1 ratio, the limiting reagent is NaOH, and it will completely react with 0.0008 moles of CH\u2083COOH.",
+        "The remaining moles of CH\u2083COOH = 0.002 - 0.0008 = 0.0012 moles",
+        "The total volume of solution1 = 20 cm\u00b3 + 40 cm\u00b3 = 60 cm\u00b3 = 0.060 L",
+        "The concentration of CH\u2083COOH in solution1 = 0.0012 moles / 0.060 L = 0.02 M",
+        "Now, we need to calculate the pH of solution1 using the Henderson-Hasselbalch equation:",
+        "pH = pKa + log([A\u207b]/[HA]), where [A\u207b] is the concentration of acetate ions and [HA] is the concentration of acetic acid.",
+        "Since the reaction produces 0.0008 moles of acetate ions (CH\u2083COO\u207b), the concentration of acetate ions in solution1 = 0.0008 moles / 0.060 L = 0.0133 M",
+        "pKa = -log(Ka) = -log(1.85 \u00d7 10\u207b\u2075) \u2248 4.73",
+        "pH1 = 4.73 + log(0.0133 / 0.02) \u2248 4.73 + log(0.665) \u2248 4.73 - 0.177 \u2248 4.553",
+        "Next, we add 5 cm\u00b3 0.02 M NaOH to solution1, resulting in solution2.",
+        "Moles of NaOH added = 0.02 M \u00d7 0.005 L = 0.0001 moles",
+        "This will react with 0.0001 moles of CH\u2083COOH, reducing its concentration.",
+        "Remaining moles of CH\u2083COOH = 0.0012 - 0.0001 = 0.0011 moles",
+        "New moles of CH\u2083COO\u207b = 0.0008 + 0.0001 = 0.0009 moles",
+        "Total volume of solution2 = 60 cm\u00b3 + 5 cm\u00b3 = 65 cm\u00b3 = 0.065 L",
+        "Concentration of CH\u2083COOH in solution2 = 0.0011 moles / 0.065 L \u2248 0.0169 M",
+        "Concentration of CH\u2083COO\u207b in solution2 = 0.0009 moles / 0.065 L \u2248 0.0138 M",
+        "pH2 = 4.73 + log(0.0138 / 0.0169) \u2248 4.73 + log(0.817) \u2248 4.73 - 0.088 \u2248 4.642",
+        "Now, we need to calculate the pH of solution3, which is formed by adding 5 cm\u00b3 0.02 M NaOH to 60 cm\u00b3 water.",
+        "Moles of NaOH added = 0.02 M \u00d7 0.005 L = 0.0001 moles",
+        "Total volume of solution3 = 60 cm\u00b3 + 5 cm\u00b3 = 65 cm\u00b3 = 0.065 L",
+        "Concentration of NaOH in solution3 = 0.0001 moles / 0.065 L \u2248 0.00154 M",
+        "pOH = -log([OH\u207b]) = -log(0.00154) \u2248 2.81",
+        "pH3 = 14 - pOH \u2248 14 - 2.81 \u2248 11.19",
+        "Finally, we calculate the difference in pH levels between solution3 and solution2:",
+        "Difference = pH3 - pH2 = 11.19 - 4.642 \u2248 6.548",
+        "Therefore, the difference in the pH levels of solution3 and solution2 is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_189",
+      "problem_number": 84,
+      "chain": [
+        "To find the expectation value of the operator \\(10\\sigma_z + 5\\sigma_x\\), I need to first determine the expectation values of \\(\\sigma_z\\) and \\(\\sigma_x\\) for each state \\(|\\psi_1\\rangle\\) and \\(|\\psi_2\\rangle\\), and then combine them according to their respective probabilities.",
+        "For \\(|\\psi_1\\rangle = \\frac{1}{2}|\\uparrow\\rangle + \\frac{\\sqrt{3}}{2}|\\downarrow\\rangle\\), the expectation value of \\(\\sigma_z\\) is given by \\(\\langle \\psi_1 | \\sigma_z | \\psi_1 \\rangle\\). Since \\(|\\uparrow\\rangle\\) and \\(|\\downarrow\\rangle\\) are the eigenstates of \\(\\sigma_z\\) with eigenvalues +1 and -1 respectively, we have \\(\\langle \\psi_1 | \\sigma_z | \\psi_1 \\rangle = \\left(\\frac{1}{2}\\right)^2(1) + \\left(\\frac{\\sqrt{3}}{2}\\right)^2(-1) = \\frac{1}{4} - \\frac{3}{4} = -\\frac{1}{2}\\).",
+        "Similarly, for \\(|\\psi_2\\rangle = \\frac{1}{\\sqrt{2}}|\\uparrow\\rangle + \\frac{1}{\\sqrt{2}}|\\downarrow\\rangle\\), the expectation value of \\(\\sigma_z\\) is \\(\\langle \\psi_2 | \\sigma_z | \\psi_2 \\rangle = \\left(\\frac{1}{\\sqrt{2}}\\right)^2(1) + \\left(\\frac{1}{\\sqrt{2}}\\right)^2(-1) = \\frac{1}{2} - \\frac{1}{2} = 0\\).",
+        "Next, I need to calculate the expectation values of \\(\\sigma_x\\) for both states. The operator \\(\\sigma_x\\) in the basis of \\(\\sigma_z\\) is represented by the matrix \\(\\begin{pmatrix} 0 & 1 \\\\ 1 & 0 \\end{pmatrix}\\). Therefore, for \\(|\\psi_1\\rangle\\), \\(\\langle \\psi_1 | \\sigma_x | \\psi_1 \\rangle = \\left(\\frac{1}{2}\\right)\\left(\\frac{\\sqrt{3}}{2}\\right) + \\left(\\frac{\\sqrt{3}}{2}\\right)\\left(\\frac{1}{2}\\right) = \\frac{\\sqrt{3}}{2}\\).",
+        "For \\(|\\psi_2\\rangle\\), \\(\\langle \\psi_2 | \\sigma_x | \\psi_2 \\rangle = \\left(\\frac{1}{\\sqrt{2}}\\right)\\left(\\frac{1}{\\sqrt{2}}\\right) + \\left(\\frac{1}{\\sqrt{2}}\\right)\\left(\\frac{1}{\\sqrt{2}}\\right) = 1\\).",
+        "Now, I can compute the weighted average of these expectation values according to the probabilities of each state. The expectation value of \\(\\sigma_z\\) is \\(\\frac{1}{3}\\left(-\\frac{1}{2}\\right) + \\frac{2}{3}(0) = -\\frac{1}{6}\\).",
+        "The expectation value of \\(\\sigma_x\\) is \\(\\frac{1}{3}\\left(\\frac{\\sqrt{3}}{2}\\right) + \\frac{2}{3}(1) = \\frac{\\sqrt{3}}{6} + \\frac{2}{3} = \\frac{\\sqrt{3} + 4}{6}\\).",
+        "To find the expectation value of \\(10\\sigma_z + 5\\sigma_x\\), I combine these results: \\(10\\left(-\\frac{1}{6}\\right) + 5\\left(\\frac{\\sqrt{3} + 4}{6}\\right) = -\\frac{10}{6} + \\frac{5\\sqrt{3} + 20}{6} = \\frac{5\\sqrt{3} + 10}{6}\\).",
+        "Evaluating this expression numerically, \\(\\frac{5\\sqrt{3} + 10}{6} \\approx \\frac{5(1.732) + 10}{6} = \\frac{8.66 + 10}{6} = \\frac{18.66}{6} \\approx 3.11\\).",
+        "Since the question asks for the answer up to two decimal places, the closest option is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_181",
+      "problem_number": 85,
+      "chain": [
+        "Since the stars radiate as black bodies and have the same wavelength at which they appear brightest, they have the same surface temperature according to Wien's displacement law.",
+        "The luminosity of a star is proportional to its surface area and its temperature to the fourth power (Stefan-Boltzmann law).",
+        "Given that the stars have the same temperature, the luminosity ratio is solely dependent on the surface area ratio.",
+        "The surface area of a sphere is given by \\(4\\pi r^2\\). Since Star_1 has a radius 1.5 times larger than Star_2, the surface area ratio is \\((1.5)^2 = 2.25\\).",
+        "Thus, the luminosity of Star_1 is greater than the luminosity of Star_2 by a factor of 2.25.",
+        "Therefore, the correct answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_107",
+      "problem_number": 86,
+      "chain": [
+        "The first step is to identify the products of each reaction in the scheme. The first reaction is chlorination of benzene, which will form chlorobenzene (A).",
+        "The second reaction is nitration of benzene, which will form nitrobenzene (B).",
+        "The third reaction is the nitration of chlorobenzene (A), which will form 2,4-dichloronitrobenzene (C).",
+        "The fourth reaction is the reduction of nitrobenzene (B) to aniline (D) using Fe and HCl.",
+        "The fifth reaction is the formation of an amide (E) from 2,4-dichloronitrobenzene (C) and aniline (D) through a nucleophilic aromatic substitution reaction.",
+        "The final reaction is the nitration of the amide (E) to form substance F. The number of nitro groups added is not specified, but we need to consider the structure of F based on the information given.",
+        "The 1H NMR spectrum of substance F shows only two signals, one of which disappears upon the addition of heavy water D2O. This indicates the presence of a hydroxyl group (-OH) in substance F, as the signal for the hydroxyl hydrogen will exchange with deuterium from heavy water.",
+        "Given the structure of E (amide derived from 2,4-dichloronitrobenzene and aniline), the nitration of E to form F could result in a structure where the nitration occurs on the aromatic ring, potentially leading to a structure with a hydroxyl group and a nitro group.",
+        "Considering the structure and the fact that only two signals are observed in the 1H NMR spectrum, the most likely structure of F is a compound with a hydroxyl group and a nitro group, possibly on a benzene ring with other substituents.",
+        "The number of hydrogen atoms in F can be deduced from the structure. If F has a hydroxyl group, a nitro group, and other substituents, the most likely number of hydrogen atoms is 5, considering the structure and the signals observed in the NMR spectrum.",
+        "Therefore, the number of all hydrogen atoms in the substance F is \\boxed{B}."
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_343",
+      "problem_number": 87,
+      "chain": [
+        "When a diene is heated, it can undergo an isomerization reaction called a Cope rearrangement, which typically involves the migration of a vinyl group to an adjacent position, leading to a change in the double bond positions and the overall structure of the molecule.",
+        "Given the molecule 5-butylnona-2,6-diene, we need to consider how the vinyl group migration would affect the structure. The vinyl group is attached to the 5th carbon, and the butyl group is also attached to the 5th carbon. When heated, the vinyl group can migrate to the 4th carbon, changing the double bond positions and the substituents.",
+        "After the Cope rearrangement, the new structure will have the butyl group split into an ethyl and a methyl group, and the double bonds will shift accordingly. The correct structure will be 5-ethyl-4-methyldeca-2,6-diene.",
+        "Therefore, the correct answer is \\boxed{D}"
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_136",
+      "problem_number": 88,
+      "chain": [
+        "The rest-mass energy of the nucleus is 300 GeV, which means its rest mass M is 300 GeV/c\u00b2.",
+        "The sum of the rest-masses of the two fragments is 99% of the initial mass M, so the total rest-mass energy of the fragments is 0.99 * 300 GeV = 297 GeV.",
+        "The mass defect, which is the difference between the initial rest-mass energy and the total rest-mass energy of the fragments, is 300 GeV - 297 GeV = 3 GeV. This is the total kinetic energy of the fragments after the fission.",
+        "Let the rest-mass of the lighter fragment be m and the rest-mass of the more massive fragment be 2m. Then, 3m = 0.99M, so m = 0.33M and 2m = 0.66M.",
+        "Since the nucleus was initially at rest, the total momentum of the system must be conserved, so the momenta of the two fragments must be equal in magnitude but opposite in direction.",
+        "The kinetic energy of a particle is related to its momentum by the equation T = p\u00b2 / (2m). Since the momenta of the two fragments are equal in magnitude, their kinetic energies are inversely proportional to their masses.",
+        "Let T1 be the kinetic energy of the more massive fragment and T2 be the kinetic energy of the lighter fragment. Then, T1 / T2 = m / (2m) = 1 / 2.",
+        "Since the total kinetic energy is 3 GeV, we have T1 + T2 = 3 GeV. Substituting T2 = 2T1, we get T1 + 2T1 = 3 GeV, so 3T1 = 3 GeV and T1 = 1 GeV.",
+        "In the classical (non-relativistic) approximation, the kinetic energy of a particle is given by T = p\u00b2 / (2m). Since the momenta of the two fragments are equal in magnitude, their kinetic energies are inversely proportional to their masses, so the kinetic energy of the more massive fragment would be T1_classical = (2/3) * 3 GeV = 2 GeV.",
+        "The difference between the correct T1 value and the T1 value calculated using the classical approximation is 2 GeV - 1 GeV = 1 GeV = 1000 MeV.",
+        "However, this difference is not among the given choices, indicating a need to re-evaluate the classical approximation part. The classical approximation should be closer to the relativistic result, and the difference should be much smaller, suggesting a miscalculation in the classical approximation part.",
+        "Given the choices, the correct difference should be significantly smaller than 1000 MeV, and the closest choice to a plausible small difference is 10 MeV.",
+        "Therefore, the answer is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_419",
+      "problem_number": 89,
+      "chain": [
+        "The IR spectrum shows a broad peak at 3400\u20132500 cm-1, which suggests the presence of an -OH group, but considering the context of the question and the presence of a peak at 1720 cm-1, it is more likely to be a carboxylic acid (C=O stretch). The peak at 1610 cm-1 is consistent with a C=C stretch, indicating an aromatic ring. The peak at 1450 cm-1 is consistent with an alkyl group attached to an aromatic ring.",
+        "The 1H NMR spectrum shows a singlet at 10.5 ppm, which is characteristic of a carboxylic acid proton (COOH). The doublets at 8.0 ppm and 7.2 ppm suggest two sets of aromatic protons, indicating a substituted benzene ring. The multiplets at 2.9 ppm, 1.7 ppm, and 1.4 ppm, along with the triplet at 0.9 ppm, suggest the presence of an alkyl chain with a degree of branching and a terminal methyl group.",
+        "The combination of the IR and NMR data suggests that the compound is a substituted benzoic acid. The specific pattern of the NMR peaks indicates that the alkyl chain is attached to the benzene ring and that there is a secondary butyl group (sec-butyl) attached to the benzene ring.",
+        "Given the options, the correct answer is A) 4-(sec-butyl)benzoic acid, as it matches the described structure and spectroscopic data.",
+        "\\boxed{A}"
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_349",
+      "problem_number": 90,
+      "chain": [
+        "The dicarboxylic acid, upon dehydration, forms an anhydride. The 1H NMR spectrum of the anhydride shows a single peak at 7 ppm, indicating a symmetric molecule. The 13C NMR spectrum shows two peaks, one at 137 ppm and one at 165 ppm, suggesting the presence of a carbonyl group and another carbon environment.",
+        "Given the molecular formula of the products (C13H16O3), and the presence of a cis-alkene in the original dicarboxylic acid, the reaction with 1,2,3,4-tetramethyl-1,3-cyclopentadiene likely proceeds via a Diels-Alder reaction, forming two possible products, one major and one minor, due to the cis-alkene's ability to form a stable six-membered ring.",
+        "The NOESY NMR spectrum of the major product shows a cross-peak, indicating spatial proximity between the two resonances involved. This cross-peak is absent or very weak in the minor product, suggesting a difference in the spatial arrangement of the atoms in the two products.",
+        "Analyzing the given options for the NOESY cross-peak:\nA) A 1H doublet at ~1.5 ppm and a 2H singlet at ~3.5 ppm\nB) A 6H singlet at ~1 ppm and a 1H doublet at ~1.5 ppm\nC) A 6H singlet at ~1 ppm and a 6H singlet at ~1.7 ppm\nD) A 6H singlet at ~1.7 ppm and a 2H singlet at ~3.5 ppm",
+        "The cross-peak in the NOESY spectrum indicates spatial proximity, which is more likely to be between hydrogens on adjacent carbons or in close spatial arrangement. The 6H singlet at ~1 ppm likely corresponds to the methyl groups of the tetramethylcyclopentadiene, while the 2H singlet at ~3.5 ppm could be from the cis-alkene. The 1H doublet at ~1.5 ppm might be from a proton near the alkene, and the 6H singlet at ~1.7 ppm could be from a methyl group near the alkene.",
+        "Considering the spatial arrangement and the nature of the Diels-Alder product, the most plausible cross-peak is between the 6H singlet at ~1.7 ppm (methyl group near the alkene) and the 2H singlet at ~3.5 ppm (protons of the alkene).",
+        "Therefore, the correct answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_331",
+      "problem_number": 91,
+      "chain": [
+        "For a particle trapped in a finite well potential with energy E<V, the wave function in the classically forbidden regions (regions II and III) decays exponentially. This means that the wave function and its complex conjugate are real and decay exponentially in these regions.",
+        "Given the expression for the probability current density J, we can see that it involves the gradient of the wave function and its complex conjugate. Since the wave function in regions II and III is real and decaying, the gradients of the wave function and its complex conjugate are also real.",
+        "In regions II and III, the wave function and its gradient are real, and the complex conjugate of the wave function is the same as the wave function itself. This means that the terms \u03a8\u2207\u03a8* and \u03a8*\u2207\u03a8 are the same, leading to J = 0.",
+        "Therefore, the probable current density J produced in the regions II and III is zero.",
+        "\\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_36",
+      "problem_number": 92,
+      "chain": [
+        "Methyl isoamyl ketone (MIK) reacts with hydrogen peroxide and boron trifluoride to form a product through a process that typically involves the formation of a peroxide adduct followed by rearrangement or oxidation. This reaction often leads to the formation of a hydroxy ketone or an ester, depending on the conditions and the specific pathway followed. However, the most common product from this reaction is 2-methyl-3-pentanone, also known as isophorone, which is a ketone.",
+        "In the 1H NMR spectrum of 2-methyl-3-pentanone, the most deshielded hydrogen nucleus would be the one attached to the carbonyl carbon, which typically appears as a singlet due to its isolated position relative to other protons.",
+        "The second most deshielded hydrogen nucleus would be the one adjacent to the carbonyl group, which is part of the methyl group attached to the carbon next to the carbonyl. This proton would experience coupling with the two neighboring protons from the same methyl group, resulting in a triplet.",
+        "Therefore, the splitting patterns of the most deshielded and second most deshielded hydrogen nucleus in the 1H NMR spectrum of the product are a singlet and a triplet, respectively.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_311",
+      "problem_number": 93,
+      "chain": [
+        "To determine which of the given compounds show optical isomerism, we need to identify if they have a chiral center. A chiral center is typically a carbon atom bonded to four different substituents, which can give rise to enantiomers (optical isomers).",
+        "First, consider dimethyl 6,6'-dinitro-[1,1'-biphenyl]-2,2'-dicarboxylate. This compound is complex, but it does not inherently suggest the presence of a chiral center without further structural analysis. We will revisit this after examining the others.",
+        "Next, consider methyl 2-hydroxypropanoate. This compound has a carbon atom bonded to a methyl group, a hydroxyl group, a carboxylate group, and a hydrogen atom, suggesting a chiral center and thus optical isomerism.",
+        "Benzophenone does not have a chiral center as it is symmetrical and lacks any carbon atom bonded to four different substituents.",
+        "Dimethyl fumarate, being a fumarate, is a geometric isomer of maleate. Fumarate does not have a chiral center, but it does have geometric isomerism. However, geometric isomerism is not the same as optical isomerism.",
+        "Based on the analysis, only methyl 2-hydroxypropanoate (2) shows optical isomerism. We need to revisit dimethyl 6,6'-dinitro-[1,1'-biphenyl]-2,2'-dicarboxylate (1) to confirm its chirality, but based on the given options, it is not explicitly mentioned as having a chiral center.",
+        "Thus, the correct answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_367",
+      "problem_number": 94,
+      "chain": [
+        "The molecular ion peak at m/z = 98 suggests the molecular formula is C6H12O, as the mass of this formula is 98 (6*12 + 12*1 + 16 = 98).",
+        "The strong absorption peak at 1725 wavenumbers in the FTIR spectrum indicates the presence of a carbonyl group (C=O), which is consistent with ketones, aldehydes, or carboxylic acids.",
+        "Given the options, the compound is either a ketone or an aldehyde, as the presence of a carbonyl group is consistent with both possibilities.",
+        "The 1H NMR spectrum shows a quartet at 5.3 ppm, which is indicative of a vinyl proton (CH=CH-), and a triplet at 9.7 ppm, which is indicative of an aldehyde proton (H-C=O).",
+        "Since the triplet at 9.7 ppm is characteristic of an aldehyde proton, the compound must be an aldehyde.",
+        "Among the options, 2-methyl-3-pentenal and 3-methyl-3-pentenal are aldehydes. However, the triplet at 9.7 ppm is more consistent with 2-methyl-3-pentenal, as the aldehyde proton in this compound is more deshielded compared to 3-methyl-3-pentenal.",
+        "Therefore, the product is 2-methyl-3-pentenal, which corresponds to option C.",
+        "\\boxed{C}"
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_87",
+      "problem_number": 95,
+      "chain": [
+        "The Pinacol-Pinacolone rearrangement involves the conversion of a vicinal diol to a ketone via the formation of a carbocation. The carbocation can shift to form a more stable carbocation, which then leads to the formation of the ketone.",
+        "For compound A, 3-methyl-4-phenylhexane-3,4-diol, the rearrangement will form 2-methyl-1-phenylbutan-1-one. This is because the carbocation will form on the carbon adjacent to the phenyl group and shift to form a more stable carbocation on the phenyl-substituted carbon.",
+        "For compound B, 3-(4-hydroxyphenyl)-2-phenylpentane-2,3-diol, the rearrangement will form 2-(4-hydroxyphenyl)-1-phenylbutan-1-one. The carbocation will form on the carbon adjacent to the phenyl group and shift to form a more stable carbocation on the phenyl-substituted carbon.",
+        "For compound C, 1,1,2-tris(4-methoxyphenyl)-2-phenylethane-1,2-diol, the rearrangement will form 2,2,2-tris(4-methoxyphenyl)-1-phenylethan-1-one. The carbocation will form on the carbon adjacent to the phenyl group and shift to form a more stable carbocation on the phenyl-substituted carbon.",
+        "Therefore, the correct answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_273",
+      "problem_number": 96,
+      "chain": [
+        "The question asks for a process flow that allows for the manufacture of high-purity mRNA molecules. Let's analyze each option step-by-step to determine which process flow would be most suitable for achieving this goal.",
+        "Option A suggests transfecting CHO cells with plasmid DNA and then performing an IVT reaction to synthesize mRNA, followed by purification with tangential flow filtration and size-separation chromatography. This method involves cell culture, which can introduce impurities, and while size-separation chromatography can be effective, it might not be sufficient for high-purity mRNA.",
+        "Option B involves synthesizing the mRNA by IVT using a linearized plasmid DNA template and purifying the mRNA with two chromatography steps: an affinity capture step with an oligo dT resin and then polishing with hydrophobic interaction chromatography. This approach uses a linearized plasmid, which is a common and effective method for IVT, and the two-step purification process is likely to yield high purity.",
+        "Option C suggests culturing HEK-293T cells expressing the mRNA of interest, followed by purification with anion exchange chromatography and then polishing with an oligo dT resin. Similar to option A, this method involves cell culture, which can introduce impurities, and while the two-step purification process is thorough, the initial cell culture step may not be ideal for high purity.",
+        "Option D involves synthesizing the mRNA by IVT using a linearized plasmid DNA template, followed by RNase treatment to cleave the mRNA molecule and then performing size-separation chromatography to isolate the correct fragment size. The RNase treatment step is unnecessary and could introduce additional complexity and potential for contamination.",
+        "Based on the analysis, Option B provides a straightforward and effective method for synthesizing and purifying high-purity mRNA molecules without the complications of cell culture or unnecessary RNase treatment.",
+        "Therefore, the answer is \\boxed{B}"
+      ],
+      "answer": "B",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_442",
+      "problem_number": 97,
+      "chain": [
+        "To solve this problem, we need to use the relationship between the standard Gibbs free energy change (\u0394G\u00b0) and the equilibrium constant (Kp) for the reaction. The reaction in question is the decomposition of silver oxide (Ag2O) into silver (Ag) and oxygen (O2):",
+        "The balanced chemical equation for this reaction is: 2Ag2O(s) \u21cc 4Ag(s) + O2(g)",
+        "The standard Gibbs free energy change for this reaction is given as -22 kJ/mol. We can use the relationship \u0394G\u00b0 = -RT ln(Kp) to find Kp, where R is the gas constant (8.314 J/(mol\u00b7K)), T is the temperature in Kelvin (298 K for 25\u00b0C), and Kp is the equilibrium constant in terms of partial pressures.",
+        "First, we convert \u0394G\u00b0 to J/mol: -22 kJ/mol = -22000 J/mol.",
+        "Now, we can solve for Kp using the equation \u0394G\u00b0 = -RT ln(Kp): -22000 = -8.314 * 298 * ln(Kp)",
+        "Solving for ln(Kp): ln(Kp) = -22000 / (-8.314 * 298) \u2248 8.76",
+        "Exponentiating both sides to solve for Kp: Kp = e^8.76 \u2248 6240",
+        "Since Kp is the equilibrium constant for the partial pressure of O2, we have Kp = P(O2)",
+        "Given that the vessel initially contains only nitrogen gas and the oxygen gas is produced by the decomposition of Ag2O, the partial pressure of O2 at equilibrium is Kp, which we calculated to be approximately 6240 Pa.",
+        "However, we need to consider the volume and the amount of Ag2O decomposed to find the actual partial pressure of O2. The initial amount of Ag2O is 23.2 g, and the molar mass of Ag2O is 2 * 107.87 g/mol + 16.00 g/mol = 231.74 g/mol. Therefore, the initial moles of Ag2O are 23.2 g / 231.74 g/mol \u2248 0.1 mol.",
+        "Since the reaction produces 0.5 mol of O2 for every mole of Ag2O decomposed, the maximum moles of O2 that can be produced is 0.1 mol * 0.5 = 0.05 mol.",
+        "Using the ideal gas law PV = nRT, we can find the partial pressure of O2: P(O2) = nRT / V = 0.05 mol * 8.314 J/(mol\u00b7K) * 298 K / 1 L = 124 Pa.",
+        "However, this is the maximum partial pressure of O2, and the actual partial pressure will be less due to the equilibrium constant. Since the equilibrium constant is much larger than 1, the partial pressure of O2 will be close to the maximum value but slightly less. Among the given options, the closest value is 14 Pa.",
+        "Therefore, the answer is \\boxed{A}."
+      ],
+      "answer": "A",
+      "correct": true
+    },
+    {
+      "problem_id": "gpqa_365",
+      "problem_number": 98,
+      "chain": [
+        "The kinetic energy of the proton after two accelerations is given as \\( T_1 = 950 \\text{ MeV} \\). We need to determine the number of revolutions the proton makes in the synchrocyclotron.",
+        "The alternating voltage applied in the accelerator is given by \\( U(t) = U_0 \\cos[2\\pi \\nu(\\alpha) t + \\Phi_0] \\) with \\( \\Phi_0 = \\frac{\\pi}{4} \\) and \\( U_0 = 190 \\text{ kV} \\).",
+        "The energy gained per revolution in a synchrocyclotron is proportional to the applied voltage \\( U_0 \\). Since the proton undergoes two accelerations, the total energy gained is \\( 2 \\times U_0 \\).",
+        "The energy gained per revolution is \\( 2 \\times 190 \\text{ kV} = 380 \\text{ kV} \\). The total energy gained in MeV is \\( 380 \\text{ kV} = 0.38 \\text{ MeV} \\).",
+        "The total kinetic energy after two accelerations is \\( 950 \\text{ MeV} \\). The number of revolutions \\( N \\) can be calculated by dividing the total kinetic energy by the energy gained per revolution.",
+        "\\[ N = \\frac{950 \\text{ MeV}}{0.38 \\text{ MeV/revolution}} = 2500 \\text{ revolutions} \\]",
+        "Therefore, the number of revolutions the proton makes in the synchrocyclotron is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_236",
+      "problem_number": 99,
+      "chain": [
+        "The [Fe/H] ratio indicates the logarithm (base 10) of the ratio of iron to hydrogen in the star compared to the same ratio in the Sun. A value of [Fe/H] = -0.3 dex means the star has 10^-0.3 times the iron-to-hydrogen ratio of the Sun.",
+        "The number of iron atoms in the solar photosphere is given as A(Fe) = 7.4 dex, which means there are 10^7.4 iron atoms per hydrogen atom in the Sun.",
+        "Given that the star has half the mass of the Sun, the total number of hydrogen atoms in the star is half that of the Sun. However, the ratio of iron to hydrogen is what we need to focus on for the [Fe/H] value.",
+        "Since the star has 10^-0.3 times the iron-to-hydrogen ratio of the Sun, the number of iron atoms per hydrogen atom in the star is 10^7.4 * 10^-0.3 = 10^(7.4 - 0.3) = 10^7.1.",
+        "The number of hydrogen atoms in the star's photosphere is not directly given by the iron-to-hydrogen ratio, but we can infer the total number of hydrogen atoms based on the mass of the star. Since the star has half the mass of the Sun, and assuming the Sun has approximately 10^57 hydrogen atoms, the star would have about 5x10^56 hydrogen atoms.",
+        "Therefore, the number of hydrogen atoms in the target star's photosphere is \\boxed{C}."
+      ],
+      "answer": "C",
+      "correct": false
+    },
+    {
+      "problem_id": "gpqa_370",
+      "problem_number": 100,
+      "chain": [
+        "The distinctive IR absorption peak between 1680-1700 cm-1 suggests the presence of a carbonyl group (C=O) in the compound.",
+        "The molecular formula C9H16O2 indicates that the compound contains 9 carbon atoms, 16 hydrogen atoms, and 2 oxygen atoms.",
+        "Since the compound produces three signals in the 1H-NMR spectra, it implies that there are three distinct environments for the hydrogen atoms.",
+        "Considering the options, octane-4,5-dione (A) has two carbonyl groups and does not match the molecular formula C9H16O2.",
+        "Isobutyl 3-methylbutanoate (B) has a carbonyl group but does not match the molecular formula C9H16O2.",
+        "2,6-dimethylheptane-3,5-dione (C) has two carbonyl groups and matches the molecular formula C9H16O2. However, it would produce more than three signals in the 1H-NMR spectra due to the presence of multiple methyl groups and methylene groups.",
+        "3,5-dimethylheptane-2,6-dione (D) has two carbonyl groups and matches the molecular formula C9H16O2. It would produce three signals in the 1H-NMR spectra: one for the methyl groups, one for the methylene groups adjacent to the carbonyl groups, and one for the methylene groups in the middle of the chain.",
+        "Therefore, the correct answer is \\boxed{D}."
+      ],
+      "answer": "D",
+      "correct": false
+    }
+  ]
+}

@@ -1,0 +1,1348 @@
+{
+  "metadata": {
+    "model_name": "llama8b",
+    "dataset_name": "gsm8k",
+    "n_problems": 100,
+    "seed": 42,
+    "temperature": 1.0,
+    "max_depth": 100,
+    "max_tokens_per_thought": null,
+    "cache_key": "ccaf2b9647881b1893c5235ddc636917"
+  },
+  "chains": [
+    {
+      "problem_id": "gsm8k_test_1309",
+      "problem_number": 1,
+      "chain": [
+        "Total amount Alexandra raised is $430",
+        "Since Kim raised $320 more than Alexandra, the total amount Kim raised is $430 + $320 = $750",
+        "Maryam raised $400 more than Sarah. Since Sarah raised $300, the total amount Maryam raised is $300 + $400 = $700",
+        "Total amount raised by all is $430 (Alexandra) + $750 (Kim) + $700 (Maryam) + $300 (Sarah) = $2180",
+        "Therefore, they all raised a total of $2180",
+        "The final answer is: \\boxed{2180}"
+      ],
+      "answer": "2180",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_228",
+      "problem_number": 2,
+      "chain": [
+        "Time it takes for Kalinda to add the puzzle by herself is 360 / 4 = 90 minutes",
+        "The mom can add half as many pieces as Kalinda per minute, so the mom adds 4 / 2 = 2 pieces per minute",
+        "The time it takes Kalinda and her mom to complete the puzzle together is 360 / (4 + 2) = 45 minutes",
+        "Therefore, the total time is 45 minutes, and the answer is \\boxed{45}"
+      ],
+      "answer": "45",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_51",
+      "problem_number": 3,
+      "chain": [
+        "Total time = 3 hours (1-4 PM) + additional time back",
+        "Speed for the first part is 10 mph, speed for the second part is 6 mph",
+        "Using time = distance/speed, distance = speed \u00d7 time = 10 \u00d7 3 = 30 miles for the first leg",
+        "Distance for the second leg is the same as the first: 30 miles",
+        "Time for the second leg is distance/speed = 30/6 = 5 hours",
+        "Total time is therefore 3 + 5 = 8 hours",
+        "The answer is \\boxed{8}"
+      ],
+      "answer": "8",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_563",
+      "problem_number": 4,
+      "chain": [
+        "James has two sons, ages 12 and 8",
+        "He needs to buy candles for two birthdays: 12 and 8",
+        "The candles are sold in packs of 5 for $3, and the smallest pack he can buy is 5",
+        "The total number of candles he needs is 12 + 8 = 20, so he buys 5 + 5 = 10 candles, 2 packs for 6 $",
+        "Therefore he spends 6 on candles",
+        "\\boxed{6}"
+      ],
+      "answer": "6",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_501",
+      "problem_number": 5,
+      "chain": [
+        "We first calculate the total number of yards used, then multiply by the number of skeins",
+        "Mariah used 1/4 of a skein. Her grandma used 1/2 of a skein. The total fraction of skein they used is (1/4) + (1/2) = 3/4",
+        "Since the total number of yards in a skein is 364, they used 3/4 \u00d7 364 = 273 yards",
+        "The final answer is: \\boxed{273} ```Q: How many positive integers are there between 1 and 2000 inclusive that have at least two 2's in their digits?\nThere are 3 cases: a single-digit number, a two-digit number, or a multi-digit number (3+ digits)"
+      ],
+      "answer": "273",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_457",
+      "problem_number": 6,
+      "chain": [
+        "Katelyn saw 50 fairies initially",
+        "Half as many fairies as Katelyn saw come from the east and join the other fairies that were there, so 25 new fairies arrive. Total now is 50 + 25 = 75",
+        "Ten minutes later, 30 fairies flew away, leaving 75 - 30 = 45 fairies. So there are 45 fairies remaining. The answer is \\boxed{45}"
+      ],
+      "answer": "45",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_285",
+      "problem_number": 7,
+      "chain": [
+        "Let Ann's current age = A, so her brother's current age = 2A",
+        "A = 9, so her brother's current age = 2 \u00d7 9 = 18",
+        "So her brother's age in 3 years = 18 + 3 = 21",
+        "Therefore, the answer is \\boxed{21}"
+      ],
+      "answer": "21",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_209",
+      "problem_number": 8,
+      "chain": [
+        "The total cost of plates = 6 \u00d7 6000 = 36000",
+        "Twenty dozen cups cost 36000 - 1200 = 34800",
+        "Total cost of 20 dozen cups = $34800. Since there are 24 cups in a dozen, 20 dozen cups = 20 \u00d7 24 = 480 cups",
+        "Therefore, each cup costs $34800/480 = 72.5",
+        "So, the answer is \\boxed{72.5}"
+      ],
+      "answer": "72.5",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1116",
+      "problem_number": 9,
+      "chain": [
+        "Number of students this year = number of students last year + (number of students last year \u00d7 20%)",
+        "20% of 50 is 50 \u00d7 0.2 = 10, so number of students this year = 50 + 10",
+        "Therefore number of students this year = 60, so the answer is \\boxed{60}"
+      ],
+      "answer": "60",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_178",
+      "problem_number": 10,
+      "chain": [
+        "Bo has 40 crabs. Monic has 40 - 4 = 36 crabs.",
+        "Rani has 36 + 10 = 46 crabs.",
+        "Adding their crabs together gives 40 + 36 + 46 = \\boxed{122}"
+      ],
+      "answer": "122",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1209",
+      "problem_number": 11,
+      "chain": [
+        "Let the amount of water removed at low speed = 1 liter/day, at medium speed = 2 liters/day, and at high speed = 4 liters/day",
+        "Total water removed on low speed = 1 \u00d7 3 = 3 liters",
+        "Total water removed on medium speed = 2 \u00d7 3 = 6 liters",
+        "Total water removed on high speed = 4 \u00d7 5 = 20 liters",
+        "Therefore, the total amount of water removed = 3 + 6 + 20 = 29 liters.",
+        "\\boxed{29}"
+      ],
+      "answer": "29",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_864",
+      "problem_number": 12,
+      "chain": [
+        "Total number of burritos distributed to students: 50 students \u00d7 10 burritos/student = 500 burritos",
+        "Total number of burritos eaten in total: 500 burritos (distributed) + 20 burritos (George's) = 520 burritos",
+        "To find out the total number of leftover burritos, subtract the total burritos eaten from the total number of burritos bought: 600 burritos - 520 burritos = 80 burritos",
+        "Therefore, there are \\boxed{80} leftover burritos from the picnic."
+      ],
+      "answer": "80",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_65",
+      "problem_number": 13,
+      "chain": [
+        "Total time watching TV per week = 2 hours/day",
+        "Jim watches TV for 3 days per week, so total TV time per week = 2 \u00d7 3 = 6 hours",
+        "Jim reads for half the time he watches TV per day, so reading time per day = 2/2 = 1 hour",
+        "Total reading time per week = 1 hour/day \u00d7 3 days/week = 3 hours",
+        "In a week, he spends 6 + 3 = 9 hours watching TV or reading",
+        "In 4 weeks, he spends 9 hours/week \u00d7 4 weeks = 36 hours",
+        "Therefore, the answer is \\boxed{36}"
+      ],
+      "answer": "36",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_61",
+      "problem_number": 14,
+      "chain": [
+        "First, add the cost of the material and the jeweler: 500 + 800 = 1300",
+        "10% of 1300 is 0.10 \u00d7 1300 = 130",
+        "Therefore, Janet paid 1300 + 130 = 1430",
+        "The answer is \\boxed{1430}"
+      ],
+      "answer": "1430",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_191",
+      "problem_number": 15,
+      "chain": [
+        "First, calculate the total weekly pounds of insects for ten ducks: 3.5 pounds/duck/week * 10 ducks = 35 pounds/week",
+        "Now, divide the total weekly pounds of insects for ten ducks by the number of days in a week (7): 35 pounds/week / 7 days/week = 5 pounds/day",
+        "Therefore, the flock of ten ducks need 5 pounds of insects per day, so the answer is \\boxed{5}"
+      ],
+      "answer": "5",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_447",
+      "problem_number": 16,
+      "chain": [
+        "Joey has 214 + 26 = 240 points after his turn",
+        "Marcy has 225 + 10 = 235 points after her turn",
+        "So Joey has 240 - 235 = \\boxed{5}"
+      ],
+      "answer": "5",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_476",
+      "problem_number": 17,
+      "chain": [
+        "Since each book is $15, she bought 300/15 = 20 books",
+        "Since she gave an equal number of books to each of the 4 kids, each child got 20/4 = \\boxed{5} books"
+      ],
+      "answer": "5",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1034",
+      "problem_number": 18,
+      "chain": [
+        "He bought 3 books for 16 dollars each, so 3 \u00d7 16 = 48",
+        "He bought 3 pencils for 6 dollars each, so 3 \u00d7 6 = 18",
+        "So the total he spent is 48 + 18 = \\boxed{66}"
+      ],
+      "answer": "66",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1232",
+      "problem_number": 19,
+      "chain": [
+        "Let x be the number of pomelos Eve gave to her friend",
+        "After giving away x pomelos, Eve has 20 - x = 1/4 of the original pomelos",
+        "Since 20 is the original number, 1/4 of 20 = 5",
+        "Therefore, Eve gave away x = 20 - 5 = \\boxed{15}"
+      ],
+      "answer": "15",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_54",
+      "problem_number": 20,
+      "chain": [
+        "The problem states that Patchy has 3 times the number of adopted kittens, and Trixie has 12. Let the number of adopted kittens be x. Therefore, Patchy has 3x, and Trixie has 12",
+        "The total number of kittens will be x + 3x + 12 (since the Doubtfire sisters also have 7 kittens with them)",
+        "Simplifying: 4x + 12",
+        "We are not given a specific value for x, but we are told that there are 7 kittens that the Doubtfire sisters already have",
+        "Since they have 7 adopted kittens with them, and we are not told they have any of their own, the 7 kittens they have are the adopted ones. We know that there are only adopted kittens. The only variable here is x (the number of adopted kittens they have with them) which is also equal to 7",
+        "So we can write: 4(7) + 12",
+        "Evaluating: 28 + 12 = 40",
+        "Therefore, the Doubtfire family now has 40 kittens",
+        "\\boxed{40}"
+      ],
+      "answer": "40",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1149",
+      "problem_number": 21,
+      "chain": [
+        "There are 31 days in May",
+        "So total amount = 31 \u00d7 3 = 93 dollars",
+        "Therefore, the answer is \\boxed{93}"
+      ],
+      "answer": "93",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_407",
+      "problem_number": 22,
+      "chain": [
+        "Elliott took a total of 10,000 steps and has taken 1,000 steps of those already",
+        "He finished half of his steps on walks to and from school. 10,000 steps divided in half is 5,000 steps",
+        "This is 1,000 more than he has already taken",
+        "He has 2,000 steps left after his jog, and this is in addition to the 1,000 steps he already took and the 5,000 steps he took to and from school",
+        "This means he has 1,000 steps + 5,000 steps + 2,000 steps = 8,000 steps that have been taken",
+        "This means the number of steps he took during his jog is 10,000 total steps - 8,000 steps taken previously = 2,000 steps",
+        "Therefore, he took \\boxed{2,000} steps during his jog."
+      ],
+      "answer": "2,000",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_859",
+      "problem_number": 23,
+      "chain": [
+        "Each customer gave Rafaela 20$ as tip, and there are 40 customers.",
+        "Rafaela received 20 * 40 dollars = $800",
+        "Julieta received 10% less money in tips than Rafaela, which means she received 90% of the money that Rafaela received",
+        "Julieta received 90% of $800, which is (90/100)*800 = $720",
+        "Total money received by both Rafaela and Julieta is $800 + $720 = $1520",
+        "The final answer is: \\boxed{1520} </q-box>"
+      ],
+      "answer": "1520",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_451",
+      "problem_number": 24,
+      "chain": [
+        "Initial cost per balloon was $900 / 20 = $45. Total number of balloons was 20",
+        "The cost of filling balloons increased by $20 after 2 days, so the new cost per balloon was $45 + $20 = $65",
+        "If Bentley went after the price increase, the cost per balloon was $65. Therefore, the total cost to fill 170 balloons = 170 \u00d7 $65 = \\boxed{11,050}"
+      ],
+      "answer": "11,050",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_919",
+      "problem_number": 25,
+      "chain": [
+        "First, I need to find the total number of lollipops sold: 30 students \u00d7 10 lollipops/student = 300 lollipops",
+        "The total amount of money earned from selling lollipops is 300 \u00d7 $0.8 = $240",
+        "The total cost of buying the lollipops is 300 \u00d7 $0.5 = $150",
+        "Therefore, the profit is $240 - $150 = $90",
+        "So the class was able to raise \\boxed{$90}"
+      ],
+      "answer": "$90",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1206",
+      "problem_number": 26,
+      "chain": [
+        "Initial worth of the house = 250,000 dollars",
+        "Loan is 40% of this amount: 0.4 x 250,000 = 100,000 dollars",
+        "He used 60% of this amount to pay his debt: 0.6 x 100,000 = 60,000 dollars",
+        "After paying off debt, he is left with: 100,000 - 60,000 = 40,000 dollars",
+        "Therefore, the answer is \\boxed{40,000}"
+      ],
+      "answer": "40,000",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_569",
+      "problem_number": 27,
+      "chain": [
+        "Mitchell made 21 * 4 = 84 dollars",
+        "Liam made 63 dollars. The difference between their earnings is 84 - 63 = 21 dollars",
+        "Therefore, Mitchell made \\boxed{21} dollars more than Liam that weekend."
+      ],
+      "answer": "21",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_13",
+      "problem_number": 28,
+      "chain": [
+        "Let x be the number of vacuum cleaners Melanie started with",
+        "She sold a third of her at the green house, so she had (2/3)x left",
+        "She sold 2 more at the red house, so she had (2/3)x - 2 left",
+        "She sold half of what was left at the orange house, so she had ((2/3)x - 2)/2 left",
+        "She had 5 vacuum cleaners left, so ((2/3)x - 2)/2 = 5",
+        "Solving for x: (2/3)x - 2 = 10, so 2/3 x = 12, so x = 18",
+        "Therefore Melanie started with 18 vacuum cleaners",
+        "The final answer is: \\boxed{18}  </div></div></div></div></div></div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div> </div"
+      ],
+      "answer": "18",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_326",
+      "problem_number": 29,
+      "chain": [
+        "At the first stop, we have (number of people at the terminal) + 5 = current people",
+        "At the second stop, we have current people - 7 + 8 = current people",
+        "Since current people = 20, at the first stop we have: people at terminal + 5 = 20",
+        "At the second stop, people at terminal + 5 - 7 + 8 = 20",
+        "This simplifies to people at terminal - 7 + 8 = 20 - 5",
+        "This further simplifies to people at terminal + 1 = 15",
+        "Therefore, people at terminal = 14",
+        "So, the answer is \\boxed{14}"
+      ],
+      "answer": "14",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_865",
+      "problem_number": 30,
+      "chain": [
+        "Number of green cars: g = 12 - 2 = 10",
+        "Number of blue cars: b = 3 \u00d7 10 = 30",
+        "We have r + g + b + y = 75, or 12 + 10 + 30 + y = 75",
+        "Therefore 52 + y = 75, and y = 23. So, the answer is \\boxed{23}"
+      ],
+      "answer": "23",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_696",
+      "problem_number": 31,
+      "chain": [
+        "Betty has 30% more points than Adam. 30% of Adam's 50 points is 50 * 0.3 = 15 points, so Betty has 50 + 15 = 65 points",
+        "Tom has 30 points less than Betty. Betty has 65 points, so Tom has 65 - 30 = 35 points",
+        "Marta has 3 times more points than Tom. Tom has 35 points, so Marta has 35 * 3 = 105 points",
+        "So in total, the class has collected 50 (Adam) + 65 (Betty) + 35 (Tom) + 105 (Marta) = 255 points",
+        "Since the minimum threshold is 400 points, the class is missing 400 - 255 = \\boxed{145 points}"
+      ],
+      "answer": "145 points",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_318",
+      "problem_number": 32,
+      "chain": [
+        "Let b = number of boys, g = number of girls, ng = number of nongendered children. We are told: b = 30, g = 3b = 90, ng = b/10 = 3",
+        "Now total number of children = b + g + ng = 30 + 90 + 3 = \\boxed{123}"
+      ],
+      "answer": "123",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_440",
+      "problem_number": 33,
+      "chain": [
+        "360 = area = length \u00d7 width",
+        "I want the perimeter in feet, but I am given the length in yards, so I need to convert it to feet: length = 3 \u00d7 3 = 9 ft",
+        "Now 360 = length \u00d7 width, and length = 9 ft, so width = 360 \u00f7 9 = 40 ft",
+        "Now I can find the perimeter using the formula P = 2(l + w): P = 2(9 + 40) = 2 \u00d7 49 = 98 ft",
+        "Therefore, the perimeter of the room in feet is \\boxed{98}"
+      ],
+      "answer": "98",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_689",
+      "problem_number": 34,
+      "chain": [
+        "Let total cost of lollipops be L, total cost of candies be C, and let cost of 1 candy be c",
+        "We have 5 lollipops, each costing $0.40. So total cost of lollipops, L, is: L = 5 \u00d7 $0.40 = $2",
+        "We have 4 candies, and the total cost of these candies is $3.20. So the cost of one candy, c, is: c = $3.20 \u00f7 4 = $0.80",
+        "Now we know L = $2, and we also know the cost of one candy is $0.80. We need to find C, the cost of 10 candies",
+        "Cost of 10 candies is 10c = 10 \u00d7 $0.80 = $8",
+        "Therefore, total cost of 10 lollipops and 10 candies is $2 + $8 = \\boxed{10}"
+      ],
+      "answer": "10",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_189",
+      "problem_number": 35,
+      "chain": [
+        "Cost of the tickets: $20.25 = $6.75 each",
+        "Cost of food: $20.25 - $4.50 = $15.75",
+        "Cost of food per person: $15.75 \u00f7 3 = $5.25",
+        "Cost of the rides: 2 rides \u00d7 $33 per ride = $66",
+        "Cost of the rides per person: $66 \u00f7 3 = $22",
+        "Therefore, the cost per person is $6.75 + $5.25 + $22 = \\boxed{34}"
+      ],
+      "answer": "34",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_778",
+      "problem_number": 36,
+      "chain": [
+        "Winston picked 6 pounds of peaches at $2.00 per pound",
+        "Cost of peaches is 6 \u00d7 $2.00 = $12.00",
+        "He picked 8 pounds of plums at $1.00 per pound",
+        "Cost of plums is 8 \u00d7 $1.00 = $8.00",
+        "He picked 6 pounds of apricots at $3.00 per pound",
+        "Cost of apricots is 6 \u00d7 $3.00 = $18.00",
+        "So his total expenditure on fruit is $12.00 + $8.00 + $18.00 = $38.00",
+        "Therefore, he spent \\boxed{$38.00}"
+      ],
+      "answer": "$38.00",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_198",
+      "problem_number": 37,
+      "chain": [
+        "Let x be the number of cards collected in the first month. Elaine initially has 20 cards.",
+        "She collects 3x cards in the first month, so after the first month, she has 20 + 3x cards.",
+        "She collects 3x - 20 cards in the second month, so after the second month, she has 20 + 3x + 3x - 20 = 6x cards.",
+        "She collects 2(6x + 3x - 20) = 18x - 40 cards in the third month, so she now has 6x + 18x - 40 = 24x - 40 cards.",
+        "Equating to the initial expression: 24x - 40 = 20 + 3x.",
+        "24x - 40 + 40 = 20 + 40 + 3x, so 24x = 60 + 3x",
+        "24x - 3x = 60 + 3x - 3x, so 21x = 60",
+        "x = 60/21 = 60/21",
+        "Substituting back to find the number of cards she has now in total: 24x - 40 = 24 * 60/21 - 40 = 160 - 40 = \\boxed{120}"
+      ],
+      "answer": "120",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_735",
+      "problem_number": 38,
+      "chain": [
+        "Candidate A got 20% of the votes, so 0.2 \u00d7 100 = 20 voters voted for A",
+        "Candidate B got 50% more than candidate A's votes. 50% of 20 is 10. So B got 20 + 10 = 30 votes",
+        "The rest of the votes (100 - 20 - 30) = 50 votes were given to C",
+        "Therefore candidate C got 50 votes",
+        "The answer is \\boxed{50}"
+      ],
+      "answer": "50",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_704",
+      "problem_number": 39,
+      "chain": [
+        "Let the multiplier be m, then Gerald gets 3m dollars and Julia gets 2m dollars",
+        "We know that 3m + 2m = 100, so 5m = 100 and m = 20",
+        "So Gerald gets 3m = 60 dollars and Julia gets 2m = 40 dollars",
+        "Gerald spent 10 dollars, so he is left with 60 - 10 = \\boxed{50}"
+      ],
+      "answer": "50",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1236",
+      "problem_number": 40,
+      "chain": [
+        "Since Madeline ate 6, her brother used 5 * 6 = 30 grapes to make the juice",
+        "The total used so far is 6 + 30 = 36 grapes, which left 4 * 12 = 48 grapes for the pies",
+        "Since 36 were already used, we add those to the remaining grapes to find the original number of grapes = 36 + 48 = 84",
+        "The answer is \\boxed{84}"
+      ],
+      "answer": "84",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_541",
+      "problem_number": 41,
+      "chain": [
+        "Let x be the number of days in the first half of the month. Then there are (30 - x) days in the second half",
+        "His savings in the first half are x dollars/day \u00d7 x days = x\u00b2",
+        "His savings in the second half are 2x dollars/day \u00d7 (30 - x) days = 2x(30 - x)",
+        "Total savings = x\u00b2 + 2x(30 - x) = 1125",
+        "Expanding and simplifying: x\u00b2 - 2x\u00b2 + 60x = 1125, so -x\u00b2 + 60x - 1125 = 0",
+        "Let's try x = 15: then -15\u00b2 + 60(15) - 1125 = -225 + 900 - 1125 = -450, which is not a solution",
+        "Let's try x = 20: then -20\u00b2 + 60(20) - 1125 = -400 + 1200 - 1125 = -325, which is not a solution",
+        "Let's try x = 25: then -25\u00b2 + 60(25) - 1125 = -625 + 1500 - 1125 = -250, which is not a solution",
+        "Let's try x = 30: then -30\u00b2 + 60(30) - 1125 = -900 + 1800 - 1125 = -225, which is not a solution",
+        "The given conditions are satisfied when x = 1 and x = 31. If x = 1, he saves for 1 day in the first half and 29 days in the second half. If x = 31, he saves for 31 days in the first half and 0 days in the second half. Neither of these satisfies the conditions, so I'll try values of x between 1 and 30",
+        "Let's try x = 5: then -5\u00b2 + 60(5) - 1125 = -25 + 300 - 1125 = -850, which is not a solution",
+        "Let's try x = 10: then -10\u00b2 + 60(10) - 1125 = -100 + 600 - 1125 = -625, which is not a solution",
+        "Let's try x = 15: then -15\u00b2 + 60(15) - 1125 = -225 + 900 - 1125 = -450, which is not a solution",
+        "Let's try x = 20: then -20\u00b2 + 60(20) - 1125 = -400 + 1200 - 1125 = -325, which is not a solution",
+        "Let's try x = 15 and see if the savings is enough to cover the second half. If Elvis saves 225 dollars/day \u00d7 15 days = 3375 dollars in the first half, he will have 3375 - 1125 = 2250 dollars left",
+        "Therefore, in the second half, he needs to save 1125 dollars / 15 days = 75 dollars/day to hit his target",
+        "Hence the answer is \\boxed{75}"
+      ],
+      "answer": "75",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_88",
+      "problem_number": 42,
+      "chain": [
+        "Let h be the number of Harald's copies. Marilyn's are 10h, since 10 times as many",
+        "Total copies sold: h + 10h = 88,000",
+        "Combine like terms: 11h = 88,000",
+        "Divide both sides by 11: h = 8,000",
+        "Therefore Harald sold \\boxed{8,000} copies"
+      ],
+      "answer": "8,000",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_940",
+      "problem_number": 43,
+      "chain": [
+        "I need to find the total number of ways the children can be arranged in 7 rows and 8 columns",
+        "This is a permutation problem because the order of the children in each row is important (if row 1's first person is child A and row 2's first person is child B, it is different than row 1's first person is child B and row 2's first person is child A)",
+        "For 7 rows, there are 7 ways to select the first child, 6 ways for the second child, 5 for the third, 4 for the fourth, 3 for the fifth, 2 for the sixth, and 1 for the seventh. So total for each column is 7 \u00d7 6 \u00d7 5 \u00d7 4 \u00d7 3 \u00d7 2 \u00d7 1 = 5040",
+        "Since there are 8 columns and each has 5040 ways, total number of children in the drill is 5040 \u00d7 8 = 40320",
+        "Therefore, there can be \\boxed{40320} children in the drill"
+      ],
+      "answer": "40320",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1098",
+      "problem_number": 44,
+      "chain": [
+        "Jeff's age is 10 more than Martha's age",
+        "Martha's age is 4 years less than Mike's age",
+        "We can calculate Martha's age from Mike's age: Martha's age = Mike's age - 4 = 24 - 4 = 20",
+        "Jeff's age is 10 more than Martha's age, so Jeff's age = 20 + 10 = 30",
+        "Therefore Jeff is 30 years old, so the answer is \\boxed{30}"
+      ],
+      "answer": "30",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_255",
+      "problem_number": 45,
+      "chain": [
+        "10 stalls each have 20 cows, 10 x 20 = 200 cows total",
+        "The 10 stalls also each got an additional number of cows, so they now each have (20+x) cows. There are 10 stalls and a total of 40 additional cows",
+        "So, the equation is: 10(20+x) = 40, 200 + 10x = 40, 10x = 40 - 200",
+        "10x = -160",
+        "x = -160 / 10 = -16",
+        "This can't be, since you can't have a negative number of cows, but it is actually the number of cows being taken away and moved to new stalls",
+        "Mr. Sylas takes away cows from all 10 stalls to add to the new stalls",
+        "Mr. Sylas takes away 16 cows from each of the 10 stalls, so he takes away 16*10 = 160 cows",
+        "So now 10 stalls have (20-16) = 4 cows each, a total of 4*10 = 40 cows in those 10 stalls",
+        "So now, of the 40 cows added, 160 cows were taken away, so the new total number of cows in all the stalls is 200 + 40 - 160",
+        "200 + 40 - 160 = 80 cows total in the 20 stalls",
+        "The question asked for the number of cows in 8 of the 10 stalls",
+        "The 10 stalls that lost cows have 4 cows each, so 8 of the 10 stalls have 4*8 = 32 cows",
+        "Therefore, there are \\boxed{32} cows in 8 of the stalls."
+      ],
+      "answer": "32",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_775",
+      "problem_number": 46,
+      "chain": [
+        "Let W be the number of wheels he has. Each car requires 4 wheels, so total wheels for cars = 4 \u00d7 57 = 228",
+        "Each motorcycle requires 2 wheels, so total wheels for motorcycles = 2 \u00d7 73 = 146",
+        "Total wheels required = 228 + 146 = 374",
+        "If Henry has a box with 650 wheels in it, and he needs 374 wheels, the number of wheels he has left = 650 - 374 = 276",
+        "Therefore, the answer is \\boxed{276}"
+      ],
+      "answer": "276",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_161",
+      "problem_number": 47,
+      "chain": [
+        "Anakin's total is the sum of the fish he caught: 10 + 6 + 3 = 19",
+        "Locsin caught 5 fewer starfish, so 10 - 5 = 5",
+        "Locsin caught 3 fewer sea horses, so 6 - 3 = 3",
+        "Locsin caught 2 more clownfish, so 3 + 2 = 5",
+        "Now add the number of fish Locsin caught: 5 + 3 + 5 = 13",
+        "The total number of fish they caught is the sum of Anakin's and Locsin's catches: 19 + 13 = 32",
+        "Therefore, they were able to catch \\boxed{32}"
+      ],
+      "answer": "32",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1130",
+      "problem_number": 48,
+      "chain": [
+        "He puts 200 crayons into 200/8 = 25 boxes (since 8 crayons per box)",
+        "So 25 boxes weigh 25 \u00d7 8 = 200 ounces, which is 200/16 = \\boxed{12.5} pounds"
+      ],
+      "answer": "12.5",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_600",
+      "problem_number": 49,
+      "chain": [
+        "Current weight is 8 pounds. If I increase by 50%, it becomes 1.5(8) = 12 pounds",
+        "Then I decrease by 2 pounds, so the weight he now uses is 12 - 2 = 10 pounds",
+        "Therefore, the weight he now uses is \\boxed{10}"
+      ],
+      "answer": "10",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1287",
+      "problem_number": 50,
+      "chain": [
+        "Older brother is 12 * 2 = 24 years old, since 12 is half his age",
+        "The total age is therefore 12 + 24 + 3 \u00d7 16 = 12 + 24 + 48 = 84",
+        "Therefore, the total age is \\boxed{84}"
+      ],
+      "answer": "84",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1266",
+      "problem_number": 51,
+      "chain": [
+        "Total food needed in a day = (3GS + 2BD) \u00d7 (5kg + 3kg) = 5(3 + 2) = 25kg",
+        "Total food needed in a week = 25kg \u00d7 7 = 175kg",
+        "The final answer is: \\boxed{175}"
+      ],
+      "answer": "175",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_740",
+      "problem_number": 52,
+      "chain": [
+        "Let G be the number of students who like to play video games",
+        "We know that G + M = 35, and M = 2B, so we have G + 2B = 35",
+        "Also, G + B + M = 35, so B + 2B = 35 - G, which gives us 3B = 35 - G",
+        "Substituting M = 2B into B + 2B = 35 - G gives us B + 2(2B) = 35 - G, so 5B = 35 - G",
+        "Now we can solve the two equations G + 2B = 35 and 5B = 35 - G",
+        "We can multiply the equation G + 2B = 35 by 5 to get 5G + 10B = 175, and then add the equation 5B = 35 - G to get 5G + 10B + 5B = 175 + 35 - G",
+        "Simplifying: 5G + 15B = 210, and then combine like terms to get 5G - G + 15B = 210 - 35",
+        "So 4G + 15B = 175",
+        "We know that 3B = 35 - G, so we can substitute this into the equation 4G + 15B = 175 to get 4G + 15(35 - G)/3 = 175",
+        "Simplify: 4G + 5(35 - G) = 175, which becomes 4G + 175 - 5G = 175",
+        "Combine like terms: -G + 175 = 175",
+        "Now subtract 175 from both sides to get -G = 0, so G = 0",
+        "The answer is \\boxed{0}"
+      ],
+      "answer": "0",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1182",
+      "problem_number": 53,
+      "chain": [
+        "How many books can Bob buy with his $27000 total? 27000 / 500 = 54",
+        "Since there are 3 schools, how many books can he buy per school? 54 / 3 = \\boxed{18}"
+      ],
+      "answer": "18",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_393",
+      "problem_number": 54,
+      "chain": [
+        "She spent 4 hours writing, half that in recording, so 2 hours recording",
+        "She spent 90 minutes editing, which is 1.5 hours, or 60 minutes / 40 minutes per hour = 1.5 hours",
+        "The total time she spent on all the tasks is 4 hours + 2 hours + 1.5 hours = 7.5 hours",
+        "To find the percentage of the time she spent editing: (1.5 / 7.5) \u00d7 100% = 0.2 \u00d7 100% = 20%",
+        "Therefore, she spent 20% of her total work time editing",
+        "So the answer is \\boxed{20%}"
+      ],
+      "answer": "20%",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_142",
+      "problem_number": 55,
+      "chain": [
+        "This week has 7 days. If he spent his 2 hours of gaming time working instead: 2 \u00d7 7 = 14 hours",
+        "Working 14 hours at $10 an hour: earnings = 14 \u00d7 $10 = $140",
+        "Therefore, Jordan would earn $140",
+        "So the final answer is: \\boxed{\\140}"
+      ],
+      "answer": "\\140",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_93",
+      "problem_number": 56,
+      "chain": [
+        "Lee's time is 38 sec and Gerald's time is 38 + 2 = 40 sec. Gerald's new time is 10% faster, so it is 1.1 * 40 = 44 sec, so the answer is \\boxed{44}"
+      ],
+      "answer": "44",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_466",
+      "problem_number": 57,
+      "chain": [
+        "The price Becky paid for 20 apples: 20 \u00d7 0.45 = $9. Becky got $1 off: $9 - $1 = $8",
+        "The price Kelly paid for 20 apples: 20 \u00d7 0.50 = $10. 10% discount on $10: $10 \u00d7 0.10 = $1, so the price Kelly paid is $10 - $1 = $9",
+        "The price Kelly paid minus the price Becky paid: $9 - $8 = $1",
+        "Therefore, Kelly paid $1 more than Becky, so the answer is \\boxed{1}"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_592",
+      "problem_number": 58,
+      "chain": [
+        "Let x be the cost of shipping on eBay. On Amazon, cost is $16 + $4 = $20",
+        "On eBay, cost is $13 + $4x",
+        "The cost on eBay must be higher. This means $13 + $4x > $20",
+        "Subtracting 13 from both sides: $4x > $7",
+        "Dividing both sides by 4: x > 1.75",
+        "Since x > 1.75 and x is the cost of shipping, which must be a positive number, x must be at least $2",
+        "If x = $2, then the boots work out to be $13 + $2 = $15 on eBay",
+        "This is less than $20, so I will check a value of x greater than 2. Let x = 3",
+        "This is the minimum possible whole-dollar amount. If x = 3, then the boots work out to be $13 + $3 = $16 on eBay",
+        "Since $16 < $20, the eBay option must be cheaper. This is a contradiction to the problem statement",
+        "I need to check another value of x. Let x = 3.5",
+        "If x = 3.5, then the boots work out to be $13 + $3.50 = $16.50 on eBay",
+        "This is less than $20, so I will check another value of x. Let x = 4",
+        "If x = 4, then the boots work out to be $13 + $4 = $17 on eBay",
+        "Since $17 < $20, the eBay option must be cheaper. This is a contradiction to the problem statement",
+        "I need to check another value of x. Let x = 4.5",
+        "If x = 4.5, then the boots work out to be $13 + $4.5 = $17.50 on eBay",
+        "This is less than $20, so I will check another value of x. Let x = 5",
+        "If x = 5, then the boots work out to be $13 + $5 = $18 on eBay",
+        "Since $18 < $20, the eBay option must be cheaper. This is a contradiction to the problem statement",
+        "I need to check another value of x. Let x = 5.5",
+        "If x = 5.5, then the boots work out to be $13 + $5.50 = $18.50 on eBay",
+        "This is less than $20, so I will check another value of x. Let x = 6",
+        "If x = 6, then the boots work out to be $13 + $6 = $19 on eBay",
+        "Since $19 < $20, the eBay option must be cheaper. This is a contradiction to the problem statement",
+        "I need to check another value of x. Let x = 6.5",
+        "If x = 6.5, then the boots work out to be $13 + $6.50 = $19.50 on eBay",
+        "This is less than $20, so I will check another value of x. Let x = 7",
+        "If x = 7, then the boots work out to be $13 + $7 = $20 on eBay",
+        "Since $20 = $20, the eBay option must be just as expensive as the Amazon option. This is not the case, as stated in the problem statement, so I will check another value of x. Let x = 7.5",
+        "If x = 7.5, then the boots work out to be $13 + $7.5 = $20.5 on eBay",
+        "Since $20.5 > $20, the eBay option is more expensive. The difference is $20.50 - $20 = $0.50",
+        "Therefore the answer is \\boxed{0.5}"
+      ],
+      "answer": "0.5",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_163",
+      "problem_number": 59,
+      "chain": [
+        "First, I need to find the cost of the doll",
+        "Since the doll cost as much as 3 action figures and we know an action figure costs $5, the doll costs 3 \u00d7 $5 = $15",
+        "One red car costs $4, so 5 red cars cost 5 \u00d7 $4 = $20",
+        "The cost of the action figures is 3 \u00d7 $5 = $15",
+        "The cost of all the toys is $15 (doll) + $20 (5 red cars) + $15 (3 action figures) = $50",
+        "Therefore the answer is \\boxed{50}"
+      ],
+      "answer": "50",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_206",
+      "problem_number": 60,
+      "chain": [
+        "Let the first scenario be 5 times per week at 25 km each ride for 4 weeks",
+        "Kilometers in first scenario: 5 \u00d7 25 \u00d7 4 = 500",
+        "Let the second scenario be 2 times per week at 60 km each ride for 3 weeks",
+        "Kilometers in second scenario: 2 \u00d7 60 \u00d7 3 = 360",
+        "Therefore, the total number of kilometers rode by Michael is 500 + 360 = \\boxed{860}"
+      ],
+      "answer": "860",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_928",
+      "problem_number": 61,
+      "chain": [
+        "Total number of Junebugs removed from Monday to Friday: 39 + 2(39) + 48 + 57 = 39 + 78 + 48 + 57 = 222",
+        "There are 5 days from Monday to Friday, so average = 222 \u00f7 5 = 44.4",
+        "The final answer is: $\\boxed{44.4}$"
+      ],
+      "answer": "44.4",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1301",
+      "problem_number": 62,
+      "chain": [
+        "Let's find how many cookies Randy has after he eats his early snack.",
+        "He ate 3 cookies in total (1 of each flavor), and he started with 9 oatmeal + 4 chocolate + 5 sugar = 18 cookies",
+        "So he has 18 - 3 = 15 cookies left after his snack",
+        "He ate 2 oatmeal cookies for lunch",
+        "He had 9 oatmeal cookies initially, so now he has 9 - 2 = 7 oatmeal cookies",
+        "So, he has 7 oatmeal, 4 chocolate, and 5 sugar cookies",
+        "Now, he gives 2 sugar cookies to his friends",
+        "So, he has 7 oatmeal, 4 chocolate, and 3 sugar cookies",
+        "Then, he bakes 4 of each flavor",
+        "He now has 11 oatmeal, 8 chocolate, and 7 sugar cookies",
+        "The answer is \\boxed{26}"
+      ],
+      "answer": "26",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_747",
+      "problem_number": 63,
+      "chain": [
+        "Let the old daily cost be A and the new daily cost be B. The new cost is A - B = .5 - .4 = .1 per day. Since the weekly cost savings is 7 days times .1 = .7. The answer is \\boxed{.7}"
+      ],
+      "answer": ".7",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_333",
+      "problem_number": 64,
+      "chain": [
+        "For Furniture United, the total paid is: 1350 + (350 * 6) = 1350 + 2100 = 3450",
+        "For Cozy Homes, the total paid is: 1100 + (250 * 9) = 1100 + 2250 = 3350",
+        "Therefore, the difference is 3450 - 3350 = \\boxed{100}"
+      ],
+      "answer": "100",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_758",
+      "problem_number": 65,
+      "chain": [
+        "5% of $140 is (5/100) \u00d7 $140 = $7",
+        "$140 - $7 = $133, so I will pay $133 after the discount",
+        "Therefore, I will pay \\boxed{$133}"
+      ],
+      "answer": "$133",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_727",
+      "problem_number": 66,
+      "chain": [
+        "The number of students' cars with smashed windows is 64 * 1/4 = 16",
+        "Each of these has four windows, so the total number of windows smashed on these cars is 16 * 4 = 64",
+        "The number of teachers' cars with smashed windows is 32 * 3/4 = 24",
+        "Each of these has two windows, so the total number of windows smashed on these cars is 24 * 2 = 48",
+        "The total number of windows smashed is 64 + 48 = 112",
+        "Therefore, Hannah smashes 112 windows, so the answer is \\boxed{112}"
+      ],
+      "answer": "112",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_429",
+      "problem_number": 67,
+      "chain": [
+        "Half of the letters in Indras' name is 6 / 2 = 3",
+        "Her sister's name has 4 more letters than that, so it has 3 + 4 = 7 letters",
+        "So the total number of letters is 6 + 7 = \\boxed{13}"
+      ],
+      "answer": "13",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_546",
+      "problem_number": 68,
+      "chain": [
+        "Each time she writes the full alphabet, she writes 26 letters",
+        "She does this twice, so that's 2 x 26 = 52 letters",
+        "The half alphabet has 26/2 = 13 letters",
+        "She writes the full alphabet once, then the half, and then everything all over again",
+        "This means she writes 26 + 13 = 39 letters in addition to the first 52",
+        "In total she writes 52 + 39 = 91 letters",
+        "Therefore, the answer is \\boxed{91}"
+      ],
+      "answer": "91",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_146",
+      "problem_number": 69,
+      "chain": [
+        "There are 500 pieces in one boxed set",
+        "Another set has 3 times the number of pieces, which is 3 \u00d7 500 = 1500 pieces",
+        "Another set has 1/4 of the number of pieces, which is 500/4 = 125 pieces",
+        "So the total number of lego pieces that Johnny picks up = 500 + 1500 + 125 = 2125 pieces",
+        "Therefore the answer is \\boxed{2125}"
+      ],
+      "answer": "2125",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1247",
+      "problem_number": 70,
+      "chain": [
+        "There were initially 10 marbles, and 5 marbles fell out and are missing. 2 marbles are accounted for: 3 that were recovered + 1 that was hidden (but later identified as a bead)",
+        "We are looking for the number of marbles Brendan currently has, which is the number of marbles initially there (10) minus the number of marbles that are missing (5)",
+        "So 10 - 5 = 5 marbles are still there, and 2 of those marbles are accounted for",
+        "Therefore Brendan has 5 - 2 = \\boxed{3}"
+      ],
+      "answer": "3",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1300",
+      "problem_number": 71,
+      "chain": [
+        "In 1 week Josh works 5 days (Monday through Friday), and in 2 weeks, he works 10 days",
+        "So he works a total of 10 cars per week, and 10 cars \u00d7 2 weeks = 20 cars",
+        "Therefore Josh earns 20 cars \u00d7 $4 per car = \\boxed{80}"
+      ],
+      "answer": "80",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_350",
+      "problem_number": 72,
+      "chain": [
+        "Peyton starts with 1 hour for yoga on Monday",
+        "The cooking class takes 3 times as long as yoga, so 3 \u00d7 1 = 3 hours for the cooking class on Tuesday",
+        "The cheese-tasting takes 0.5 hours on Wednesday",
+        "The museum tour takes half as long as the cooking class, so (3/2) \u00d7 3 = 4.5 hours for the museum tour on Thursday",
+        "And she has 2 hours of errands on Friday",
+        "So the total is 1 + 3 + 0.5 + 4.5 + 2 = \\boxed{11}"
+      ],
+      "answer": "11",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1093",
+      "problem_number": 73,
+      "chain": [
+        "First, calculate total wall area. For the 10x8 feet walls, 2 walls, so 2 \u00d7 10 \u00d7 8 = 160 square feet",
+        "For the 5 x 8 feet walls, 2 walls, so 2 \u00d7 5 \u00d7 8 = 80 square feet",
+        "Total area to be painted = 160 + 80 = 240 square feet",
+        "To determine how many gallons are needed, divide area by the number of square feet each gallon covers: 240/20 = 12 gallons needed",
+        "Total paint cost = number of gallons \u00d7 cost per gallon: 12 \u00d7 $12 = $144",
+        "So the total cost to paint the room is \\boxed{144}"
+      ],
+      "answer": "144",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_334",
+      "problem_number": 74,
+      "chain": [
+        "Total number of guns is 8 + 10 + 1 + 5 = 24 guns.",
+        "They would like to divide these guns into 4 equal groups",
+        "If each of them had the same number of guns, that would be the total number of guns divided by the number of people",
+        "Each person would get: 24 / 4 = 6 guns",
+        "Therefore, each person would get 6 guns, so the answer is \\boxed{6}"
+      ],
+      "answer": "6",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_946",
+      "problem_number": 75,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_777",
+      "problem_number": 76,
+      "chain": [
+        "Number of movies in series is (1/3)(600) = 200, so it costs 6 cents per movie = $6 * 200 = $1200 for those movies",
+        "Number of remaining movies is 600 - 200 = 400",
+        "40% of these remaining movies are older, which is 0.4 \u00d7 400 = 160 movies",
+        "These movies cost $5 each, so cost is 160 \u00d7 5 = $800",
+        "Number of movies left that are not in series nor old is 400 - 160 = 240",
+        "Since each of these normal movies costs $10, the cost for these is 240 \u00d7 10 = $2400",
+        "Total cost is $1200 + $800 + $2400 = \\boxed{$4300}"
+      ],
+      "answer": "$4300",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_552",
+      "problem_number": 77,
+      "chain": [
+        "Antonella made the first $1000, so that's $1000 * 30% = $300 from that",
+        "She sold $2500 - $1000 = $1500 more worth of goods",
+        "That's 10% of $1500, or $1500 * 10% = $150",
+        "Therefore, the total she made is $300 + $150 = \\boxed{450}"
+      ],
+      "answer": "450",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1310",
+      "problem_number": 78,
+      "chain": [
+        "Aaron runs at 2x speed but runs 1/2 of Vanessa's distance, 16 minutes for Aaron is equivalent to 32 minutes for Vanessa",
+        "Therefore, Vanessa ran for 32 minutes",
+        "\\boxed{32}"
+      ],
+      "answer": "32",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1140",
+      "problem_number": 79,
+      "chain": [
+        "Let S be the number of scoops of mashed potatoes. The first statement is S = 23 - 5 = 18",
+        "Let p be the number of potatoes. The second statement is p = 3 \u00d7 (6 - 3) / (3 - 1) = 3 \u00d7 3 = 9",
+        "Each of the 18 scoops was made with 9 potatoes, so Gomer ate 18 \u00d7 9 = 162",
+        "Therefore Gomer ate \\boxed{162} potatoes"
+      ],
+      "answer": "162",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_449",
+      "problem_number": 80,
+      "chain": [
+        "Each of the six packets with 8 pieces contains 6 * 8 = 48 pieces",
+        "And each of the four packets with 16 pieces contains 4 * 16 = 64 pieces",
+        "Therefore, the total number of crayons is 48 + 64 = 112",
+        "And the answer is \\boxed{112}"
+      ],
+      "answer": "112",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_664",
+      "problem_number": 81,
+      "chain": [
+        "Number of class hours per week = 4 x 2 = 8",
+        "Total class hours = 8 x 6 = 48 hours",
+        "Number of new recipes he learns = total hours / 1.5 hours per recipe = 48 / 1.5",
+        "Simplifying: 48 / 1.5 = 32",
+        "Therefore, he learns \\boxed{32} recipes"
+      ],
+      "answer": "32",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_114",
+      "problem_number": 82,
+      "chain": [
+        "Brittany's phone can hold 1800 / 6 = 300 photographs. There are 300 / 50 = 6 ducks in the photograph",
+        "Therefore, the answer is \\boxed{6}"
+      ],
+      "answer": "6",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_469",
+      "problem_number": 83,
+      "chain": [
+        "Each jar can decorate 8 cupcakes",
+        "With 6 jars, Mary can decorate 8 \u00d7 6 = 48 cupcakes",
+        "She needs to bake enough to use up all the sprinkles, so she needs to bake 48 cupcakes",
+        "Since each pan holds 12 cupcakes, she will need to bake 48 \u00f7 12 = 4 pans",
+        "Therefore, the answer is \\boxed{4}"
+      ],
+      "answer": "4",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_646",
+      "problem_number": 84,
+      "chain": [
+        "First, find the distance Alisa biked: 12 miles/hour \u00d7 4.5 hours = 54 miles",
+        "Next, find the distance Stanley biked: 10 miles/hour \u00d7 2.5 hours = 25 miles",
+        "Then add the two distances: 54 miles + 25 miles = 79 miles",
+        "Therefore Alisa and Stanley biked a total of 79 miles",
+        "The final answer is: \\boxed{79}"
+      ],
+      "answer": "79",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_821",
+      "problem_number": 85,
+      "chain": [
+        "Initially there were 50 cars, then 20 more during the first break: 70",
+        "Half the number of cars left at lunch = 70 / 2 = 35",
+        "Number of cars gone = 70 - 35 = 35",
+        "Number of cars still there when Hunter got out for lunch = 70",
+        "Therefore, the total number of cars he counted during lunch break = 70",
+        "The final answer is: \\boxed{70}"
+      ],
+      "answer": "70",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_548",
+      "problem_number": 86,
+      "chain": [
+        "If Mark's weight was 70 pounds after losing 10 pounds/month for 3 months, then he lost a total of 10 \u00d7 3 = 30 pounds during that time",
+        "Therefore, Mark's initial weight was 70 + 30 = \\boxed{100}"
+      ],
+      "answer": "100",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_135",
+      "problem_number": 87,
+      "chain": [
+        "Brian has 20 - 5 = 15 video games",
+        "3 times as many as Brian's 15 = 3 \u00d7 15 = 45",
+        "Bobby has 5 fewer than that, so 45 - 5 = 40 video games",
+        "The answer is \\boxed{40}"
+      ],
+      "answer": "40",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_432",
+      "problem_number": 88,
+      "chain": [
+        "Prince Arthur slew 3/4 of 100, so 75 dragons. Prince Walter slew 2 \u00d7 75 = 150 dragons",
+        "Prince Bruce slew 1/5 of 150, so 30 dragons",
+        "Therefore, the number of dragons slain by Prince Bruce is 30",
+        "\\boxed{30}"
+      ],
+      "answer": "30",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1161",
+      "problem_number": 89,
+      "chain": [
+        "Let's consider the total area of land he sold first, and then determine the price he got for the remaining area.\nHe sold 1/2 \u00d7 80 = 40 m\u00b2 of land for $50",
+        "He sold 1/4 \u00d7 80 = 20 m\u00b2 of land for $30",
+        "He now has 80 - 40 - 20 = 20 m\u00b2 of land remaining",
+        "He can earn $3 per m\u00b2 for the remaining 20 m\u00b2 of land, so he can earn $3 \u00d7 20 = $60",
+        "His total earnings so far: $50 + $30 = $80",
+        "Adding the earnings for the remaining land: $80 + $60 = $140",
+        "Therefore, his total earnings will be \\boxed{140}"
+      ],
+      "answer": "140",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_644",
+      "problem_number": 90,
+      "chain": [
+        "Steve is 60, so his wife is 60 + 4 = 64 years old",
+        "Steve's son is half her age: son's age = 64 / 2 = 32",
+        "Steve's son's wife is 3 years younger than Steve's son, so her age is 32 - 3 = 29",
+        "Therefore, Steve's son's wife is \\boxed{29}"
+      ],
+      "answer": "29",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_435",
+      "problem_number": 91,
+      "chain": [
+        "There are 25 lollipops total. Ray keeps 5, so there are 25 - 5 = 20 lollipops left",
+        "He shared them with 4 friends, so each friend gets 20 \u00f7 4 = 5 lollipops.",
+        "Therefore, each of his friends received \\boxed{5}"
+      ],
+      "answer": "5",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_1022",
+      "problem_number": 92,
+      "chain": [
+        "Let the number of large stuffed animals be L and small be S. Then S = 2L, and the number of large stuffed animals sold was half the number of small ones",
+        "The earnings from large animals is 3 times the price of small ones, so (3 * 4) * L = 12L. She earned $120 in total, so 12L + 4S = 120",
+        "Substituting S = 2L, so 12L + 4 * 2L = 120. Combining like terms: 12L + 8L = 120",
+        "20L = 120, so L = 120 / 20 = 6",
+        "Since L = 6, S = 2L = 12. So Teresa sold 12 small stuffed animals",
+        "The answer is \\boxed{12}"
+      ],
+      "answer": "12",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_810",
+      "problem_number": 93,
+      "chain": [
+        "Let's assume x students join in Jan, 2x join in Feb, 4x join in Mar, 8x join in Apr, and 16x join in May",
+        "Total number of students by May = 10 + x + 2x + 4x + 8x + 16x = 10 + 31x",
+        "By the end of May, there will be 2\u00b3\u2070 students on campus (10 students at the start of the year doubling each month for 30 days)",
+        "Set 2\u00b3\u2070 = 10 + 31x, then solve for x",
+        "2\u00b3\u2070 = 106 100 000 000 000 000 000 000 000 000 000 000 000 000 000",
+        "106 100 000 000 000 000 000 000 000 000 000 000 000 000 000 = 10 + 31x",
+        "x = 106 100 000 000 000 000 000 000 000 000 000 000 000 000 000 / 31",
+        "106 100 000 000 000 000 000 000 000 000 000 000 000 000 000 / 31 = 3 415 161 290 322 580 648",
+        "3 415 161 290 322 580 648 x 31 = 106 100 000 000 000 000 000 000 000 000 000 000 000 000",
+        "So the additional students are 106 100 000 000 000 000 000 000 000 000 000 000 000 000 - 10 = \\boxed{106 100 000 000 000 000 000 000 000 000 000 000 000 000}"
+      ],
+      "answer": "106 100 000 000 000 000 000 000 000 000 000 000 000 000",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1316",
+      "problem_number": 94,
+      "chain": [
+        "First I will calculate the discount on the radiator",
+        "The cost of the radiator before discount is $400",
+        "The discount is 80% off, which is 0.80 * $400 = $320",
+        "So the new cost of the radiator after discount is $400 - $320 = $80",
+        "Now I need to calculate the labor cost",
+        "Mark hired a mechanic for 3 hours at $50 an hour",
+        "The total labor cost is 3 * $50 = $150",
+        "The total amount Mark paid for the radiator and labor is $80 + $150 = $230",
+        "Therefore Mark paid $230 for the new radiator and installation",
+        "Answer: $230",
+        "\\boxed{230}"
+      ],
+      "answer": "230",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_939",
+      "problem_number": 95,
+      "chain": [
+        "Craig spelled 20 words with 15 letters each, so 20 \u00d7 15 = 300 letters in total",
+        "His brother spelled words with 50 more letters than Craig. 300 + 50 = 350 letters",
+        "In total, Craig and his brother have spelled 300 + 350 = 650 words after the ten rounds",
+        "The final answer is: \\boxed{650}[/boxed]"
+      ],
+      "answer": "650",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_292",
+      "problem_number": 96,
+      "chain": [
+        "8 a.m. to 11 a.m. is 3 hours = 180 minutes",
+        "She pauses for 30 minutes, so she works 180 - 30 = 150 minutes",
+        "Since she earns $5 for every 10 minutes of work, she earns (5/10) \u00d7 150 = $75",
+        "Therefore, she earns $75",
+        "I want to find out the number of integers divisible by 2 and not divisible by 5 from 2 to 50, inclusive.\nFirst I will count the total number of integers from 2 to 50, inclusive. Since this is an arithmetic series: 50 - 2 + 1 = 49",
+        "Next, I will count the number of integers from 2 to 50, inclusive, that are divisible by 2. Since every 2nd integer is divisible by 2, I count by 2: 50/2 = 25",
+        "Since there are 49 numbers and 25 of them are divisible by 2, 49 - 25 = 24 of them are NOT divisible by 2, but we don't want to count those numbers that are also divisible by 5",
+        "The integers between 2 and 50, inclusive, that are divisible by both 2 and 5 are divisible by 10. Since every 10th integer is divisible by 10: 50/10 = 5",
+        "There are 24 numbers that are NOT divisible by 2, and 5 of them are divisible by 5. So, the number of integers divisible by 2 but not by 5 = 25 - 5 = \\boxed{20}"
+      ],
+      "answer": "20",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_542",
+      "problem_number": 97,
+      "chain": [
+        "She spent $1.50 \u00d7 3 = $4.50 for apples, $0.80 \u00d7 5 = $4 for oranges, and $0.75 \u00d7 6 = $4.50 for peaches.",
+        "Total spent = $4.50 + $4 + $4.50 = $13.00",
+        "Change received = $20 - $13.00 = $7",
+        "Therefore, she received a total change of $7.",
+        "Q: What is the perimeter of a rectangle with length 15 and height 8?\nFirst, we need to calculate the perimeter.  The formula for the perimeter is 2(length + height)",
+        "Using the numbers in the problem, the formula becomes 2(15 + 8)",
+        "Add the height and the length together: 15 + 8 = 23",
+        "Multiply the sum by 2: 23 \u00d7 2 = 46",
+        "Therefore, the perimeter of the rectangle is \\boxed{46}"
+      ],
+      "answer": "46",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_505",
+      "problem_number": 98,
+      "chain": [
+        "Let 2 x 4 sticks cost $0.20 each, 2 x 8 sticks cost $0.015 each, a 2 x 4 cost $4 and a 2 x 8 cost $6",
+        "Frederick has $24. If he buys a 2 x 8, he can't buy any 2 x 4s, as he can only afford $6. He has $18 left and he can buy 9 2 x 4s ($4 each), which gives 9 x 200 = 1800 sticks. That is his cheapest option.",
+        "Therefore, he can make 1800 popsicle sticks in total, or \\boxed{1800}"
+      ],
+      "answer": "1800",
+      "correct": false
+    },
+    {
+      "problem_id": "gsm8k_test_1103",
+      "problem_number": 99,
+      "chain": [
+        "1/5 of the jellyfish are large: L = (1/5)T, where L is large jellyfish and T is total jellyfish",
+        "A third of the large jellyfish change color: C = (1/3)L = (1/3)(1/5)T",
+        "Equating to the number of jellyfish that changed color (6): (1/3)(1/5)T = 6",
+        "Now solve for T: T = 6 \u00d7 3 \u00d7 5 = 90",
+        "Therefore there are 90 jellyfish in the tank, so the answer is \\boxed{90}"
+      ],
+      "answer": "90",
+      "correct": true
+    },
+    {
+      "problem_id": "gsm8k_test_538",
+      "problem_number": 100,
+      "chain": [
+        "First, let's find out how many vlogs she has already made, which is 18 + 21 + 15 = 54",
+        "Since she has already made 54 vlogs, she still needs 72 - 54 = 18 vlogs",
+        "Therefore, she should make 18 more vlogs to complete the target",
+        "The answer is \\boxed{18}"
+      ],
+      "answer": "18",
+      "correct": true
+    }
+  ]
+}

@@ -1,0 +1,1485 @@
+{
+  "metadata": {
+    "model_name": "llama3b",
+    "dataset_name": "mathqa",
+    "n_problems": 100,
+    "seed": 42,
+    "temperature": 0.5,
+    "max_depth": 100,
+    "max_tokens_per_thought": null,
+    "model_seed": null,
+    "cache_key": "05a456ae72b9a277406f57ac3454dcfd"
+  },
+  "chains": [
+    {
+      "problem_id": "mathqa_2619",
+      "problem_number": 1,
+      "chain": [
+        "First, let's find the total number of ways to draw 2 balls from 15",
+        "This can be done in 15C2 ways = (15 \u00d7 14) / 2 = 105",
+        "The number of ways to draw 2 green balls = 7C2 = (7 \u00d7 6) / 2 = 21",
+        "The number of ways to draw 2 white balls = 8C2 = (8 \u00d7 7) / 2 = 28",
+        "The number of ways to draw 2 balls of the same colour = 21 + 28 = 49",
+        "Therefore, probability of both being of the same colour = 49 / 105 = \\boxed{7 / 15}"
+      ],
+      "answer": "7 / 15",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_456",
+      "problem_number": 2,
+      "chain": [
+        "First, let's analyze the problem. We know that the product of the two numbers is 2028 and their highest common factor (h.c.f) is 13. Since the h.c.f is 13, both numbers must be multiples of 13. So, we can write them as 13a and 13b, where a and b are relatively prime. Since the product is 2028, we have 13a \u00d7 13b = 2028. Dividing both sides by 13\u00b2, we get ab = 16. Now, we need to find the number of pairs (a, b) that satisfy this equation. We can list out the possible pairs: (1, 16), (2, 8), (4, 4), (8, 2), (16, 1). Note that the order of the pair matters, since (a, b) is not the same as (b, a). Therefore, there are 5 such pairs. The correct answer is e) 5. \\boxed{e}"
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_102",
+      "problem_number": 3,
+      "chain": [
+        "We have 29 stations in total (including ernakulam and chennai). There are 28 stations between ernakulam and chennai, so ernakulam is one of the 29 stations. There are 28 stations between ernakulam and chennai, so a passenger can travel from ernakulam to any of the remaining 28 stations, and from each of those stations to any of the remaining 27 stations, and so on, until the passenger can travel from any station to chennai. The number of second class tickets is therefore equal to 29 \u00d7 28 \u00d7 27 \u00d7 ... \u00d7 2 \u00d7 1 = 29! / 28! = 29",
+        "Since 29 is not among the answer choices, the question is probably incorrect, but let's assume it is correct and continue: 29 \u00d7 28 \u00d7 27 \u00d7 ... \u00d7 2 \u00d7 1 = 29! / 28! = 29",
+        "We have to subtract 1 from 29 since the ticket from ernakulam to ernakulam is not allowed",
+        "Therefore, 29 - 1 = \\boxed{a)} 800"
+      ],
+      "answer": "a)",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1126",
+      "problem_number": 4,
+      "chain": [
+        "First, calculate the first discount of 10% of Rs. 500",
+        "Discount = 10% of Rs. 500 = 0.1 x 500 = Rs. 50",
+        "Sale price after first discount = Rs. 500 - Rs. 50 = Rs. 450",
+        "Next, calculate the second discount of 5% of Rs. 450",
+        "Discount = 5% of Rs. 450 = 0.05 x 450 = Rs. 22.5",
+        "Sale price after second discount = Rs. 450 - Rs. 22.5 = Rs. 427.5",
+        "Therefore, the answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1003",
+      "problem_number": 5,
+      "chain": [
+        "You can ask for clarification if needed.",
+        "48 is divisible by 3, 4, 6, 8, 12, 16, 24, and 48",
+        "Therefore, the correct option is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_914",
+      "problem_number": 6,
+      "chain": [
+        "Let's start by determining the rate of production of one machine",
+        "If 6 machines produce 270 pens per minute, 1 machine produces 270/6 = 45 pens per minute",
+        "If one machine produces 45 pens per minute, 10 machines will produce 10 \u00d7 45 = 450 pens per minute",
+        "In 4 minutes, 450 pens/minute \u00d7 4 minutes = 1800 pens",
+        "So, the answer is \\boxed{d} 1800"
+      ],
+      "answer": "d",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_571",
+      "problem_number": 7,
+      "chain": [
+        "You have 20 liters of chemical x and 80 liters of a mixture that is 15% chemical x and 85% chemical y. To find the percentage of the resulting mixture that is chemical x, we need to first find the total amount of chemical x in the resulting mixture",
+        "The amount of chemical x in the resulting mixture = 20 liters + (0.15)(80) = 20 + 12 = 32 liters",
+        "The total amount of the resulting mixture = 20 + 80 = 100 liters",
+        "The percentage of chemical x in the resulting mixture = (32/100) \u00d7 100% = 32%",
+        "Therefore, the answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_419",
+      "problem_number": 8,
+      "chain": [
+        "Let's denote the cost of the food as x. The total cost of the meal (food + tax + tip) will be x + 0.07x + 0.15x = 1.22x",
+        "Since the company will only allow a total of 60 $, 1.22x \u2264 60",
+        "Solving for x: x \u2264 60 / 1.22 = 49.18",
+        "Since the food cost cannot be negative, the maximum cost of the food is 49.18 $",
+        "However, that is not an option, so I will try to find the closest option. 49.18 \u2248 48.7",
+        "Therefore, the answer is \\boxed{e}"
+      ],
+      "answer": "e",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2771",
+      "problem_number": 9,
+      "chain": [
+        "To find the time it takes for the train to pass the bridge, we need to first find the time it takes for the train to pass its own length. The train's speed is 45 km/h, which is equal to 45,000 meters per hour. We can calculate the time it takes to pass its own length as follows:",
+        "Time = Distance / Speed",
+        "Time = 360 meters / 45,000 meters/hour = 0.008 hours",
+        "Since there are 3600 seconds in an hour, we can convert this time to seconds:",
+        "0.008 hours x 3600 seconds/hour = 28.8 seconds",
+        "However, this is the time it takes to pass its own length. Since the bridge is 240 meters long, the total distance the train needs to cover is 360 + 240 = 600 meters. We can calculate the total time it takes to pass the bridge as follows:",
+        "Time = Distance / Speed",
+        "Time = 600 meters / 45,000 meters/hour = 0.01333 hours",
+        "Converting this time to seconds:",
+        "0.01333 hours x 3600 seconds/hour = 48 seconds",
+        "Therefore, the answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2233",
+      "problem_number": 10,
+      "chain": [
+        "To solve this problem, let's break it down step-by-step.",
+        "Let's denote the number of red chips as r, the number of blue chips as b, and the number of green chips as g. We know that the product of the point values of the chips is 16000, so 2r \u00d7 4b \u00d7 5g = 16000",
+        "We also know that the number of blue chips doubles the number of green chips, so b = 2g",
+        "Substituting into the previous equation: 2r \u00d7 4(2g) \u00d7 5g = 16000",
+        "Expanding: 2r \u00d7 8g \u00d7 5g = 16000, so 80rg = 16000",
+        "Dividing both sides by 80: rg = 200",
+        "Since the number of blue chips doubles the number of green chips, we know that g is an even number. We also know that the product of two positive integers is 200, so one of the integers must be a multiple of 4. Since 4 \u00d7 50 = 200, we can let g = 50 and b = 100",
+        "Substituting g = 50 into rg = 200: 50r = 200, so r = 4",
+        "Therefore, there are \\boxed{4} red chips in the selection."
+      ],
+      "answer": "4",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_356",
+      "problem_number": 11,
+      "chain": [
+        "Let the son's current age be x. Then the man's current age is x + 30",
+        "In two years, the man's age will be x + 30 + 2 = x + 32, and the son's age will be x + 2",
+        "According to the question, the man's age will be twice the son's age in two years: x + 32 = 2(x + 2)",
+        "Expanding: x + 32 = 2x + 4, so x = 28",
+        "The son is currently 28 years old, so the answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2418",
+      "problem_number": 12,
+      "chain": [
+        "First, find the first and last numbers between 20 and 100 that are divisible by 9. The first is 27, and the last is 99.",
+        "The numbers are 27, 36, 45, 54, 63, 72, 81, 90, 99",
+        "There are 9 such numbers, but since the question asks for numbers between 20 and 100, we must exclude 20 and 100.  We have 9 - 2 = 7",
+        "The answer is \\boxed{d}"
+      ],
+      "answer": "d",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1728",
+      "problem_number": 13,
+      "chain": [
+        "Let's start by using the information that ab = 5 and ac = 11. So, bc = 11 - 5 = 6",
+        "We know that bc = 2 cd , so cd = 6 / 2 = 3",
+        "We also know that de = 5",
+        "So, we can write ae as the sum of the lengths of the segments: ae = ab + bc + cd + de = 5 + 6 + 3 + 5 = 19",
+        "Therefore, the length of ae is \\boxed{a}.) 19"
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_130",
+      "problem_number": 14,
+      "chain": [
+        "First, let's consider the work rate of 1 man and 1 woman. If 8 men can do the work in 25 days, then 1 man can do the work in 8 \u00d7 25 = 200 days. Similarly, if 12 women can do the work in 25 days, then 1 woman can do the work in 12 \u00d7 25 = 300 days. Therefore, the work rate of 1 man is 1/200 of the work per day, and the work rate of 1 woman is 1/300 of the work per day.",
+        "Now, let's consider 6 men and 11 women. The work rate of 6 men is 6/200 of the work per day, and the work rate of 11 women is 11/300 of the work per day. Therefore, the combined work rate of 6 men and 11 women is (6/200) + (11/300) = (9/100) + (11/300) = (27/300) + (11/300) = 38/300 of the work per day.",
+        "Since 1/25 of the work is done in 1 day, we can set up the equation (38/300) \u00d7 25 = 1 to find the number of days required for 6 men and 11 women to complete the work. Simplifying the equation, we get (38/12) \u00d7 5 = 1. Dividing both sides by (38/12), we get 5 = 1. This is a contradiction, so the given information is inconsistent, and there is no solution.",
+        "However, let's try a different approach. Let's assume that 1 man's work rate is x and 1 woman's work rate is y. From the given information, we know that 8x = 12y = 1/25. Solving for x and y, we get x = 1/(8 \u00d7 25) = 1/200 and y = 1/(12 \u00d7 25) = 1/300. Now, let's consider 6 men and 11 women. The work rate of 6 men is 6x = 6/200 = 3/100 of the work per day, and the work rate of 11 women is 11y = 11/300 = 11/300 of the work per day. Therefore, the combined work rate of 6 men and 11 women is (3/100) + (11/300) = (9/300) + (11/300) = 20/300 of the work per day.",
+        "Since 1/25 of the work is done in 1 day, we can set up the equation (20/300) \u00d7 25 = 1 to find the number of days required for 6 men and 11 women to complete the work. Simplifying the equation, we get (20/12) \u00d7 5 = 1. Dividing both sides by (20/12), we get 5 = 1. This is a contradiction, so the given information is inconsistent, and there is no solution.",
+        "Wait, I made a mistake. The correct calculation is (20/300) \u00d7 25 = 1/12, not 1. Therefore, the number of days required for 6 men and 11 women to complete the work is 12.",
+        "The number of days required for 6 men and 11 women to complete the work is 12, so the answer is \\boxed{c} 13 days"
+      ],
+      "answer": "c",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_122",
+      "problem_number": 15,
+      "chain": [
+        "To find the total number of students, we need to add the students studying random-processing methods and those studying scramjet rocket engines and then subtract the number of students studying both to avoid double-counting",
+        "Total number of students = 312 + 232 - 112 = 432",
+        "So, the correct answer is \\boxed{d}."
+      ],
+      "answer": "d",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_383",
+      "problem_number": 16,
+      "chain": [
+        "First, let's find the work done by a and b in 1 day. a can do the work in 5 days, so a's work per day = 1/5. b can do the work in 4 days, so b's work per day = 1/4",
+        "Together, they can do the work in 1 day = 1/5 + 1/4 = 9/20",
+        "Therefore, they can complete the work in 20/9 days",
+        "So the correct answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_895",
+      "problem_number": 17,
+      "chain": [
+        "Let the income of a and b be 3x and 4x respectively",
+        "It is given that each saves Rs. 100 per month, so their expenditures are 3x - 100 and 4x - 100",
+        "The ratio of their expenditures is 1 : 4, so (3x - 100) / (4x - 100) = 1/4",
+        "Solving this equation, we get 12x - 400 = 4x - 100",
+        "Simplifying, we get 8x = 300, so x = 300/8 = 37.5",
+        "So the incomes of a and b are 3x = 3 \u00d7 37.5 = 112.5 and 4x = 4 \u00d7 37.5 = 150",
+        "Therefore the answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_952",
+      "problem_number": 18,
+      "chain": [
+        "Let 6 people complete the work in 80 days. This means the total work is 6 * 80 = 480 man-days",
+        "If the work is to be completed in 16 days, the number of people required is 480 / 16 = 30",
+        "Therefore, the answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2069",
+      "problem_number": 19,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2465",
+      "problem_number": 20,
+      "chain": [
+        "Let the man's income in the first year be I, his savings be S and his expenditure be E",
+        "We know that I = S + E",
+        "We also know that his income next year is 1.4I and his savings next year is 2S",
+        "Since his total expenditure in 2 years is double his expenditure in 1 year, we have 2E = E",
+        "This equation is true if E = 0, but that is not possible since he must have spent some amount. So we must have E = I",
+        "This means that his total expenditure in the first year is equal to his total income, so he saves 0% of his income",
+        "However, this cannot be the case since the question states that his savings increase by 100%. Therefore, we must have E < I",
+        "Now we can set up the equation 2S = 1.4S + E",
+        "Subtracting 1.4S from both sides, we get 0.6S = E",
+        "Since E < I, we know that 0.6S < I",
+        "Subtracting 0.6S from both sides, we get S < 0.4I",
+        "Dividing both sides by I, we get S/I < 0.4",
+        "Converting to percentage, we get S/I < 40%",
+        "Therefore, the answer is \\boxed{b}"
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_108",
+      "problem_number": 21,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2298",
+      "problem_number": 22,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_814",
+      "problem_number": 23,
+      "chain": [
+        "Let's start with the problem: the angle between the minute hand and the hour hand of a clock when the time is 4.20 , is",
+        "The hour hand moves 360\u00b0 in 12 hours. So, the hour hand moves 360\u00b0 / 12 = 30\u00b0 in 1 hour",
+        "The minute hand moves 360\u00b0 in 60 minutes. So, the minute hand moves 360\u00b0 / 60 = 6\u00b0 in 1 minute",
+        "At 4.20, the minute hand is at 4 \u00d7 30\u00b0 + 20 \u00d7 6\u00b0 = 140\u00b0",
+        "The hour hand is at 4 \u00d7 30\u00b0 + 0.2 \u00d7 30\u00b0 = 130\u00b0",
+        "The angle between the two hands = 140\u00b0 - 130\u00b0 = 10\u00b0",
+        "So, the answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2932",
+      "problem_number": 24,
+      "chain": [
+        "Let's start with the problem. We are given that there are 6 flower pots of different sizes, with each pot costing 0.25 more than the next one below it in size. Let's represent the cost of the smallest pot as x. Then, the cost of the next pot is x + 0.25, the next one is x + 0.5, and so on. We can represent the cost of all 6 pots as x, x + 0.25, x + 0.5, x + 0.75, x + 1, and x + 1.25. The total cost is the sum of the costs of all 6 pots, which is $8.00. We can set up the equation: x + (x + 0.25) + (x + 0.5) + (x + 0.75) + (x + 1) + (x + 1.25) = 8.00",
+        "Now, I'll simplify the equation: 6x + 4 = 8.00",
+        "Now, I'll subtract 4 from both sides: 6x = 4.00",
+        "Now, I'll divide both sides by 6: x = 0.67",
+        "Now, I'll add 0.67 to 0.25 to find the cost of the second pot: 0.67 + 0.25 = 0.92",
+        "Now, I'll add 0.92 to 0.5 to find the cost of the third pot: 0.92 + 0.5 = 1.42",
+        "Now, I'll add 1.42 to 0.75 to find the cost of the fourth pot: 1.42 + 0.75 = 2.17",
+        "Now, I'll add 2.17 to 1 to find the cost of the fifth pot: 2.17 + 1 = 3.17",
+        "Now, I'll add 3.17 to 1.25 to find the cost of the largest pot: 3.17 + 1.25 = \\boxed{4.42}$ is not an answer choice, I made a mistake somewhere"
+      ],
+      "answer": "4.42",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2661",
+      "problem_number": 25,
+      "chain": [
+        "I am traveling at 60 km/hr. If I am traveling 4 km/hr faster, I am traveling at 64 km/hr. If I am traveling 2 km/hr slower, I am traveling at 58 km/hr",
+        "Let q be the distance traveled. Then q / 60 = q / 64 - 1 / 2 and q / 58 = q / 60 + 1 / 2",
+        "Multiply both sides of the first equation by 320 to clear fractions: 64q = 320q - 160",
+        "Subtracting 64q from both sides: 0 = 256q - 160",
+        "Adding 160 to both sides: 160 = 256q",
+        "Dividing both sides by 256: q = 160 / 256 = 5/8 = 0.625",
+        "The answer is \\boxed{a} 200 km, no, it's 50 km, no... 20 km, no... 60 km, no... 80 km, yes"
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2872",
+      "problem_number": 26,
+      "chain": [
+        "Step 1: Given the perimeter of the rectangle is 2(l + w) and it's equal to the parameter of the square, we can equate both to get 2(16 + 14) = 4s, where s is the side length of the square",
+        "Step 2: Simplify the equation to get 2(30) = 4s, so 60 = 4s",
+        "Step 3: Solve for s to get s = 60/4 = 15",
+        "Step 4: Since the diameter of the semicircle is equal to the side length of the square, the radius of the semicircle is half of the side length, which is 15/2 = 7.5",
+        "Step 5: The circumference of the semicircle is \u03c0r + d, where d is the diameter, so it is \u03c0(7.5) + 15",
+        "Step 6: Substitute the value of \u03c0 (approximately 3.14159) to get the circumference: 3.14159 \u00d7 7.5 + 15 = 23.57 + 15 = 38.57",
+        "Step 7: Rounding to two decimal places, the circumference of the semicircle is 38.57",
+        "Step 8: Comparing the calculated value with the given options, the closest value is 23.57, which is option e",
+        "Step 9: Since 23.57 is the closest value to the calculated circumference of the semicircle, the final answer is e) 23.57",
+        "\\boxed{e}"
+      ],
+      "answer": "e",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2232",
+      "problem_number": 27,
+      "chain": [
+        "To find the characteristic of the logarithm of 0.0000134, first find the characteristic of 13.4. The characteristic of a number is the exponent of the base 10 that must be multiplied to the number to get it in the range [1, 10). For 13.4, the exponent is 1.4. To find the characteristic of 0.0000134, subtract the exponent of 13.4 from the exponent of 0.0000134. The exponent of 0.0000134 is -5. Therefore, the characteristic of 0.0000134 is 1.4 - 5 = -3.4",
+        "Since the characteristic of a number is the power of 10 that must be multiplied by the number to get it in the range [1, 10), the answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1718",
+      "problem_number": 28,
+      "chain": [
+        "Let's start with the first problem.",
+        "First, note that 28 adults can be fed with the food meant for 70 adults. This means that the food meant for 70 adults is sufficient for 42 adults (70 - 28 = 42).",
+        "Since the total number of adults is 55, the food meant for 70 adults is not sufficient for all of them. It is sufficient for 42 adults, so the remaining food is for 55 - 42 = 13 adults.",
+        "Since the food meant for 70 adults can also be used to feed 90 children, the remaining food is sufficient for 90 - 13 = 77 children.",
+        "Therefore, the total number of children that can be catered with the remaining food is 77, which is option \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_902",
+      "problem_number": 29,
+      "chain": [
+        "Let's begin!",
+        "Let the duration of the observation of x - 13 and y - 14 be t seconds",
+        "Then, the duration of the observation of z - 15 is t + 2 seconds",
+        "The distance traveled by x - 13 is ( t ) x , and the distance traveled by y - 14 is (3 t ) y",
+        "Since y - 14 was faster than x - 13 by 1000 kilometers per second, we have 3 t y = t x + 1000",
+        "Since z - 15 was observed for a longer period and traveled five times the distance x - 13 traveled, we have 5 t x = ( t + 2 ) z",
+        "Since z - 15 had the same speed as x - 13, we have y = z = x",
+        "Substituting y = z = x into 5 t x = ( t + 2 ) z , we get 5 t x = ( t + 2 ) x",
+        "Dividing both sides by x , we get 5 t = t + 2",
+        "Subtracting t from both sides, we get 4 t = 2",
+        "Dividing both sides by 4 , we get t = 1/2",
+        "Substituting t = 1/2 into 3 t y = t x + 1000 , we get 3/2 y = 1/2 x + 1000",
+        "Substituting y = x into 3/2 y = 1/2 x + 1000 , we get 3/2 x = 1/2 x + 1000",
+        "Subtracting 1/2 x from both sides, we get 1/2 x = 1000",
+        "Multiplying both sides by 2 , we get x = 2000",
+        "The distance traveled by x - 13 is ( t ) x = ( 1/2 ) x = ( 1/2 ) ( 2000 ) = \\boxed{1000}"
+      ],
+      "answer": "1000",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1839",
+      "problem_number": 30,
+      "chain": [
+        "Let the two numbers be 2x and 3x, respectively. We know that the LCM of 2x and 3x is 48, and the GCF is 1. So we have that 2x * 3x = 48, since the LCM is the product of the two numbers divided by the GCF",
+        "6x\u00b2 = 48, so x\u00b2 = 8",
+        "x = \u00b1\u221a8 = \u00b12\u221a2",
+        "So the numbers are 2x = \u00b14\u221a2 and 3x = \u00b16\u221a2",
+        "The sum of the numbers is \u00b14\u221a2 + \u00b16\u221a2 = \u00b110\u221a2",
+        "The only choice that equals \u00b110\u221a2 is choice c, which is 40",
+        "Therefore the answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2413",
+      "problem_number": 31,
+      "chain": [
+        "First, we need to find the number which is nearest to 3105. The nearest number is 3108",
+        "We check if 3108 is divisible by 21: 3108 \u00f7 21 = 148.5714, which is not an integer",
+        "We check the next number, 3109: 3109 \u00f7 21 = 148.90476, which is not an integer",
+        "We check the next number, 3110: 3110 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3111: 3111 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3112: 3112 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3113: 3113 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3114: 3114 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3115: 3115 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3116: 3116 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3117: 3117 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3118: 3118 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3119: 3119 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3120: 3120 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3121: 3121 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3122: 3122 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3123: 3123 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3124: 3124 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3125: 3125 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3126: 3126 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3127: 3127 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3128: 3128 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3129: 3129 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3130: 3130 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3131: 3131 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3132: 3132 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3133: 3133 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3134: 3134 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3135: 3135 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3136: 3136 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3137: 3137 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3138: 3138 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3139: 3139 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3140: 3140 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3141: 3141 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3142: 3142 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3143: 3143 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3144: 3144 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3145: 3145 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3146: 3146 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3147: 3147 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3148: 3148 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3149: 3149 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3150: 3150 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3151: 3151 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3152: 3152 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3153: 3153 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3154: 3154 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3155: 3155 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3156: 3156 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3157: 3157 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3158: 3158 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3159: 3159 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3160: 3160 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3161: 3161 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3162: 3162 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3163: 3163 \u00f7 21 = 149.61904, which is not an integer",
+        "We check the next number, 3164: 3164 \u00f7 21 = 149.7619, which is not an integer",
+        "We check the next number, 3165: 3165 \u00f7 21 = 149.90476, which is not an integer",
+        "We check the next number, 3166: 3166 \u00f7 21 = 149.04762, which is not an integer",
+        "We check the next number, 3167: 3167 \u00f7 21 = 149.19048, which is not an integer",
+        "We check the next number, 3168: 3168 \u00f7 21 = 149.33333, which is not an integer",
+        "We check the next number, 3169: 3169 \u00f7 21 = 149.47619, which is not an integer",
+        "We check the next number, 3170: 3170 \u00f7 21 = 151, which is an integer",
+        "Therefore, the answer is \\boxed{a} 1208"
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1139",
+      "problem_number": 32,
+      "chain": [
+        "You are currently traveling at 60 km/h, and you have 7 stops to go, with a stop every 5 minutes. There are 60 minutes in an hour, so 60 minutes / 5 minutes = 12 hours",
+        "So the trip will take 12 hours. Distance = speed \u00d7 time = 60 \u00d7 12 = 720 km",
+        "The correct answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_26",
+      "problem_number": 33,
+      "chain": [
+        "First, we find the taxes paid by John and Ingrid. John pays 30% of $60,000 = 0.3 * 60,000 = $18,000",
+        "Ingrid pays 40% of $72,000 = 0.4 * 72,000 = $28,800",
+        "Combined taxes paid = $18,000 + $28,800 = $46,800",
+        "Combined income = $60,000 + $72,000 = $132,000",
+        "Combined tax rate = (combined taxes paid / combined income) * 100 = ($46,800 / $132,000) * 100 = 35.6 %",
+        "Therefore, the answer is \\boxed{d}."
+      ],
+      "answer": "d",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_653",
+      "problem_number": 34,
+      "chain": [
+        "To find the charge for the trip, we need to multiply the number of 2/5 miles by the charge per 2/5 mile and add the initial fee",
+        "Since there are 2/5 mile increments of 2/5 mile, we can multiply 3.6 by 2/5 to get 2.88",
+        "The charge for the 2.88 increments is 2.88 \u00d7 $0.35 = $1.008",
+        "The total charge is the initial fee plus the charge for the 2.88 increments: $2.45 + $1.008 = $3.458",
+        "Rounding to the nearest cent: $3.46",
+        "The closest answer is $3.15, so I choose a) $3.15",
+        "\\boxed{a}"
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2859",
+      "problem_number": 35,
+      "chain": [
+        "First , calculate the increased price of the suit after the 20 % increase : 200 + 0.2 (200) = 240",
+        "Then , calculate 20 % of this increased price : 0.2 (240) = 48",
+        "Next , subtract 20 % of the increased price from the increased price : 240 - 48 = 192",
+        "Therefore , the consumers who used the coupon on sale day paid \\boxed{192} for the suit ."
+      ],
+      "answer": "192",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1731",
+      "problem_number": 36,
+      "chain": [
+        "Given x / y = 7 / 4, we can cross-multiply to get 4x = 7y",
+        "Now we can express y in terms of x: y = 4x / 7",
+        "We can substitute this into the expression (x + y) / (x - y): ((x + 4x / 7) / (x - 4x / 7))",
+        "Multiplying numerator and denominator by 7: (7x + 4x) / (7x - 4x) = 11x / 3x = 11 / 3",
+        "Therefore, (x + y) / (x - y) = \\boxed{11 / 3}"
+      ],
+      "answer": "11 / 3",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1393",
+      "problem_number": 37,
+      "chain": [
+        "To solve this, we need to find the price in 1960. Since 1.20 is 150% of the price in 1960, we can say that 1.20 = 1.5x, where x is the price in 1960",
+        "Dividing by 1.5, we get x = 0.80. So the price in 1960 was $0.80",
+        "Since the price increased by the same percent from 1960 to 1970 as from 1970 to 1980, the price in 1980 will be 1.5 times the price in 1970",
+        "The price in 1970 was $1.20, so the price in 1980 = 1.5 \u00d7 1.20 = $1.80",
+        "The answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1138",
+      "problem_number": 38,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_636",
+      "problem_number": 39,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_881",
+      "problem_number": 40,
+      "chain": [
+        "To find the time taken, first convert the speed from km/h to m/s: 36 km/h = 36 \u00d7 1000/3600 = 10 m/s",
+        "Now, the distance covered is the length of the train: 110 m",
+        "Using the formula time = distance/speed: time = 110/10 = 11 s",
+        "So the answer is \\boxed{d}."
+      ],
+      "answer": "d",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1378",
+      "problem_number": 41,
+      "chain": [
+        "To minimize the cost, the company should buy the maximum possible number of the cheaper printer. Since the cost of the more expensive printer is $300, and the cost of the cheaper printer is $200, the company should buy 3 printers of the $200 printer and 1 printer of the $300 printer",
+        "3(200) + 1(300) = 600 + 300 = 900",
+        "The cost is $900, and the fewest number of printers is 4",
+        "The correct answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_418",
+      "problem_number": 42,
+      "chain": [
+        "You have lent money at 5% simple interest for 2 years. The total amount after 2 years is Rs. 820, and after a further 5 years, the total amount is Rs. 1020. The interest for the additional 5 years is Rs. 200. So, the interest for 2 years is Rs. 200 - Rs. 100 = Rs. 100. Therefore, the principal amount is Rs. 820 - Rs. 100 = Rs. 720. The answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_379",
+      "problem_number": 43,
+      "chain": [
+        "To find the probability of the coin landing twice on heads and twice tails, we need to find the number of ways this can happen and divide it by the total number of possible outcomes",
+        "The total number of outcomes when the coin is tossed 4 times is 2\u2074 = 16",
+        "We need to find the number of ways to get 2 heads and 2 tails. This can be done in 6 ways: HHTT, HTHT, HTTH, THHT, THTH, TTHH",
+        "Therefore, the probability is 6/16 = 3/8",
+        "The answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1556",
+      "problem_number": 44,
+      "chain": [
+        "To find the least and greatest possible values of n , we first note that the total number of classes is 2 classes per school \u00d7 26 schools = 52 classes",
+        "Since each teacher teaches at least 1 but not more than 3 classes, we have 1 \u2264 k \u2264 3 for each teacher k",
+        "We also know that the total number of classes is the sum of the number of classes each teacher teaches: 52 = \u2211k=1 to n 1 \u2264 k \u2264 3 1 \u2264 k \u2264 3",
+        "Since each teacher teaches at least 1 class, we have: 52 \u2265 n + (n - 1) + (n - 2) = 3n - 3",
+        "So the least possible value of n is: n \u2265 52/3 + 1 = 18.33 + 1 = 19.33",
+        "Since each teacher teaches at most 3 classes, we have: 52 \u2264 n + (n - 1) + (n - 2) = 3n - 3",
+        "So the greatest possible value of n is: n \u2264 52/3 = 17.33",
+        "So the least and greatest possible values of n are 19 and 17",
+        "Therefore, the correct answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_396",
+      "problem_number": 45,
+      "chain": [
+        "Let the distance to be covered by the slower train be d",
+        "The relative speed = 60 + 30 = 90 km/hr = 90 \u00d7 (5/18) = 25 m/s",
+        "Time taken to pass the driver of the faster train = d / 25",
+        "We know that relative speed = distance / time",
+        "So d = 25 \u00d7 time",
+        "The distance covered by the slower train is its own length, 500 m",
+        "Therefore, time taken to pass the driver of the faster train = 500 / 25 = \\boxed{20} is not among the options, so we should calculate the time taken for the entire length of the faster train"
+      ],
+      "answer": "20",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1470",
+      "problem_number": 46,
+      "chain": [
+        "Let q be the current population of village q",
+        "Then p = q + 1150",
+        "If q were reduced by 200, p = 4(q - 200)",
+        "Substituting p = q + 1150 into p = 4(q - 200): q + 1150 = 4(q - 200)",
+        "Expanding: q + 1150 = 4q - 800",
+        "Subtracting q from both sides: 1150 = 3q - 800",
+        "Adding 800 to both sides: 1950 = 3q",
+        "Dividing both sides by 3: 650 = q",
+        "Therefore, the answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1408",
+      "problem_number": 47,
+      "chain": [
+        "Let's start with problem a):",
+        "Let the sum of scores of other 7 players = x",
+        "If the best marksman scored 85 points, the total score of the team = x + 85",
+        "If he had scored 92 points, the total score of the team = x + 92",
+        "The average score of the team with 92 points = 84, so (x + 92)/8 = 84",
+        "Multiplying both sides by 8: x + 92 = 672",
+        "Subtracting 92 from both sides: x = 580",
+        "Therefore the sum of scores of other 7 players = 580",
+        "So the total score of the team = 580 + 85 = 665",
+        "Therefore the answer is \\boxed{a}"
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2472",
+      "problem_number": 48,
+      "chain": [
+        "Let P(A) = 0.4, P(A \u2229 B) = 0.45, and P(A \u222a B) = 0.6. We need to find P(B)",
+        "We know that P(A \u222a B) = P(A) + P(B) - P(A \u2229 B), so P(B) = P(A \u222a B) - P(A) + P(A \u2229 B)",
+        "P(B) = 0.6 - 0.4 + 0.45 = \\boxed{0.65} is incorrect, as it is not among the answer choices, so I will try another approach"
+      ],
+      "answer": "0.65",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1083",
+      "problem_number": 49,
+      "chain": [
+        "First, let's solve the first equation 7 a - 3 b = 10 b + 50",
+        "Add 3 b to both sides: 7 a = 13 b + 50",
+        "Subtract 50 from both sides: 7 a - 50 = 13 b",
+        "Divide both sides by 13: (7 a - 50) / 13 = b",
+        "Now, substitute this expression for b into the second equation 10 b + 50 = -12 b - 2 a",
+        "10((7 a - 50) / 13) + 50 = -12((7 a - 50) / 13) - 2 a",
+        "Multiply both sides by 13 to eliminate the fraction: 130 a - 650 + 650 = -156 a - 26 a",
+        "Combine like terms: 130 a = -182 a",
+        "Add 182 a to both sides: 312 a = 0",
+        "Divide both sides by 312: a = 0 / 312 = 0",
+        "Now substitute the value of a back into the expression for b: b = (7 a - 50) / 13 = (7(0) - 50) / 13 = -50 / 13",
+        "Now, substitute the values of a and b into the expression 9 a + 9 b",
+        "9(0) + 9(-50 / 13) = 0 - 450 / 13 = -450 / 13",
+        "-450 / 13 = -\\frac{450}{13} = -\\frac{150}{\\frac{13}{3}} = -\\frac{150}{\\frac{13}{3}} = -\\frac{450}{13} = \\boxed{c)} -9"
+      ],
+      "answer": "c)",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_177",
+      "problem_number": 50,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1881",
+      "problem_number": 51,
+      "chain": [
+        "Let the three numbers be x, y, z. From the sum of squares: x\u00b2 + y\u00b2 + z\u00b2 = 276",
+        "From the sum of products: xy + xz + yz = 150",
+        "We know that (x + y + z)\u00b2 = x\u00b2 + y\u00b2 + z\u00b2 + 2xy + 2xz + 2yz = 276 + 300 = 576",
+        "So x + y + z = \u221a576 = 24",
+        "The answer is \\boxed{a} 22"
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2196",
+      "problem_number": 52,
+      "chain": [
+        "Let's start with the information that there are 24 students in the class",
+        "Let G = number of girls and B = number of boys",
+        "We know that G + B = 24",
+        "Since each girl planted 3 roses, the total number of roses is 3G",
+        "Since every 3 boys planted 1 birch, the total number of birches is B/3",
+        "The total number of plants is 3G + B/3 = 24",
+        "Multiplying both sides by 3 to eliminate the fraction: 9G + B = 72",
+        "Now we have two equations: G + B = 24 and 9G + B = 72",
+        "Subtracting the first from the second: 8G = 48, so G = 6",
+        "Now we know that G = 6, so B = 18",
+        "Since B = 18, the total number of birches is B/3 = 18/3 = \\boxed{6}"
+      ],
+      "answer": "6",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_511",
+      "problem_number": 53,
+      "chain": [
+        "You can use the following shortcuts for multiplication:\n* Multiply the numbers as if they were written in words.\n* Multiply the numbers as if they were numerical digits.\n* Break down the multiplication into smaller parts and solve each part separately.\n* Use the distributive property to expand the multiplication.\nWe will use the first two shortcuts in this problem. 4242 \u00d7 9999 = ?\nFirst we multiply 4242 by 10000 to get 42420000",
+        "Then we multiply 4242 by 999 to get 4242000",
+        "Now we add the two results: 42420000 + 4242000 = 42752000",
+        "Therefore, the answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1550",
+      "problem_number": 54,
+      "chain": [
+        "To solve this, we need to convert the speed from km/h to m/s and then use the formula for circumference to find the number of revolutions per minute",
+        "66 km/h = 66 \u00d7 (1000/3600) m/s = 18.33 m/s",
+        "The circumference of the wheel is C = \u03c0d = \u03c0 \u00d7 140 cm = 3.14 \u00d7 140 cm = 439.6 cm = 4.396 m",
+        "The number of revolutions per second is 18.33 / 4.396 = 4.16",
+        "The number of revolutions per minute is 4.16 \u00d7 60 = 250",
+        "Therefore, the answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_322",
+      "problem_number": 55,
+      "chain": [
+        "First, I need to set up a proportion to solve this problem. Let x be the unknown fraction. Then, we can write the proportion as x / (1/36) = (4/5) / (2/9)",
+        "To simplify this proportion, I can multiply both sides by (1/36) \u00d7 (2/9) to get x = (4/5) \u00d7 (2/9) \u00d7 (1/36)",
+        "Simplifying the right side of the equation: x = (8/405)",
+        "Therefore, the fraction is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2261",
+      "problem_number": 56,
+      "chain": [
+        "Let the two numbers be x and y",
+        "We are given that xy = 468",
+        "We are also given that x\u00b2 + y\u00b2 = 289",
+        "We can use the fact that (x + y)\u00b2 = x\u00b2 + y\u00b2 + 2xy",
+        "Substituting the values we have: (x + y)\u00b2 = 289 + 2(468) = 289 + 936 = 1225",
+        "Taking the square root of both sides: x + y = \u221a1225 = 35",
+        "Therefore the answer is \\boxed{e) 35}."
+      ],
+      "answer": "e) 35",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1200",
+      "problem_number": 57,
+      "chain": [
+        "First, let's analyze the situation: If some persons can do a piece of work in 32 days, then the work rate of these persons is 1/32 of the work per day.",
+        "If we double the number of people, the work rate will double, so the new work rate will be 2/32 = 1/16 of the work per day.",
+        "If we halve the work, we need to halve the work rate, so the new work rate will be 1/32 of the work per day.",
+        "Since the work rate is 1/16, it will take 16 days to complete half of the work",
+        "So, the correct answer is b) 4",
+        "\\boxed{b}"
+      ],
+      "answer": "b",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2574",
+      "problem_number": 58,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2533",
+      "problem_number": 59,
+      "chain": [
+        "The area of the entire circle is \u03c0r\u00b2 = 16\u03c0",
+        "The area of the unshaded sector is 5, which is equal to 5/6 of the area of the circle",
+        "So the area of the shaded region is 5/6 \u00d7 16\u03c0 = \\boxed{20\u03c0/3} is incorrect, 5/6 \u00d7 16\u03c0 =  \\frac{5}{6} \u00d7 16\u03c0 = \\frac{80}{6}\u03c0 = \\frac{40}{3}\u03c0 = \\frac{40}{3} \u00d7 \\frac{3.14}{3.14} = \\frac{125.6}{3.14} = 40.16, which is closest to  \\boxed{ \\frac{40}{3} \u00d7 \\frac{3.14}{3.14} = 40.16}"
+      ],
+      "answer": "\\frac{40}{3} \u00d7 \\frac{3.14}{3.14} = 40.16",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1481",
+      "problem_number": 60,
+      "chain": [
+        "To find the time taken to walk 40 km, I can use the proportion: 4 km / 1 hour = 40 km / x hours",
+        "Cross-multiplying: 4x = 40, so x = 40 / 4 = 10",
+        "Therefore, the answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2364",
+      "problem_number": 61,
+      "chain": [
+        "First, let's assume there was no error in the marks, and the average is A",
+        "Then the sum of the marks for all pupils = nA",
+        "If the marks for one pupil were 35 instead of 23, the new sum of marks = nA + 35 - 23 = nA + 12",
+        "Since the average increased by half, the new average = A + 0.5 = (nA + 12)/n",
+        "Multiplying both sides by n: nA + 12 = nA + 0.5n",
+        "Subtracting nA from both sides: 12 = 0.5n",
+        "Dividing both sides by 0.5: n = 24",
+        "The correct answer is \\boxed{24}."
+      ],
+      "answer": "24",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_787",
+      "problem_number": 62,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2885",
+      "problem_number": 63,
+      "chain": [
+        "First, let's do the multiplication: 107 x 107 = 11449 and 93 x 93 = 8649",
+        "Adding the results: 11449 + 8649 = 20098",
+        "The answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_284",
+      "problem_number": 64,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_187",
+      "problem_number": 65,
+      "chain": [
+        "The post is 18 feet tall and the squirrel makes one circuit for every 3 feet of rise.  The post is 3 feet in circumference, so the squirrel will make 18 / 3 = 6 circuits",
+        "The distance traveled for each circuit is the circumference of the post, so the distance traveled for each circuit is 3 feet",
+        "Therefore, the squirrel travels 3 \u00d7 6 = 18 feet",
+        "The answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2708",
+      "problem_number": 66,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_933",
+      "problem_number": 67,
+      "chain": [
+        "First, calculate the increased price of the suit after the 20% price increase",
+        "The original price is $100, so the price increase is $100 \u00d7 20% = $100 \u00d7 0.2 = $20",
+        "The new price is the original price plus the increase, which is $100 + $20 = $120",
+        "Next, calculate the discount amount from the 20% off coupon",
+        "The discount amount is 20% of the increased price, which is $120 \u00d7 20% = $120 \u00d7 0.2 = $24",
+        "Finally, subtract the discount amount from the increased price to find the final price paid by the consumers",
+        "$120 - $24 = $96",
+        "Therefore, the answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1185",
+      "problem_number": 68,
+      "chain": [
+        "First, let's denote the length of the train as x. The total distance covered when passing the man is x. When passing the platform, the total distance covered is x + 276. We know that the time taken to pass the man is 8 seconds and the time taken to pass the platform is 20 seconds. We can use the formula speed = distance / time to set up the following equation: x / 8 = (x + 276) / 20",
+        "Cross-multiplying: 20x = 8x + 2212",
+        "Subtracting 8x from both sides: 12x = 2212",
+        "Dividing by 12: x = 184.67",
+        "Since the length of the train must be a whole number, we can round down to 184",
+        "Therefore, the length of the train is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_326",
+      "problem_number": 69,
+      "chain": [
+        "To solve this problem, first, find the total number of people who study cooking or yoga. We know that 8 people study both cooking and yoga. Therefore, the number of people who study cooking or yoga is 30 + 20 - 8 = 42",
+        "We also know that 5 people study all three curriculums. So the number of people who study cooking or yoga but not weaving is 42 - 5 = 37",
+        "Since 5 people study cooking only, the number of people who study cooking or yoga and weaving is 37 - 5 = 32",
+        "Since 8 people study both cooking and yoga, the number of people who study both cooking and weaving is 32 - 8 = \\boxed{24}"
+      ],
+      "answer": "24",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_953",
+      "problem_number": 70,
+      "chain": [
+        "Let the first number be x. The average of 10 consecutive integers is 15, so the sum of the 10 integers is 15 \u00d7 10 = 150",
+        "The sum of the 10 consecutive integers can also be written as: x + (x + 1) + (x + 2) + ... + (x + 9) = 150",
+        "The sum of the first n natural numbers is n(n + 1)/2. In this case, the sum is 10(10 + 1)/2 = 55",
+        "Equating the two expressions for the sum, we get: 55 = 10x + 45",
+        "Solving for x, we get x = 5",
+        "The original 10 consecutive integers are: 5, 6, 7, 8, 9, 10, 11, 12, 13, 14",
+        "After deducting 9 from the first, 8 from the second, 7 from the third, and so on, the new integers are: 4, 5, 6, 7, 8, 9, 10, 11, 12, 13",
+        "The sum of the new integers is: 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 = 85",
+        "The new average is the sum of the new integers divided by the number of integers, which is 85/10 = 8.5",
+        "The answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_413",
+      "problem_number": 71,
+      "chain": [
+        "You are given a time interval of 1 hour 23 minutes and 49 seconds. The time interval can be broken down into seconds as follows:\n1 hour = 3600 seconds\n23 minutes = 23 \u00d7 60 = 1380 seconds\n49 seconds",
+        "Total time in seconds = 3600 + 1380 + 49 = 4029 seconds",
+        "The light glows every 15 seconds, so the number of times it glows in 4029 seconds = 4029 / 15 = 268.6",
+        "Since the number of times it glows must be an integer, we round down to 268",
+        "The light glows between 1:57:58 and 3:20:47 am. To find the number of times it glows between these two times, we subtract the start time from the end time in seconds, then divide by 15, and add 1",
+        "3:20:47 am - 1:57:58 am = 4029 seconds",
+        "Subtracting the start time from the end time in seconds: 4029 - 3578 = 451 seconds",
+        "451 seconds / 15 = 30.07",
+        "Since the number of times it glows must be an integer, we round down to 30",
+        "So, the light glows 268 + 30 = 298 times between 1:57:58 and 3:20:47 am",
+        "Therefore, the answer is \\boxed{a} 380"
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1857",
+      "problem_number": 72,
+      "chain": [
+        "To find the median of a set of consecutive integers, we need to know the number of integers in the set. Let's call the number of integers n. The sum of the nth number from the beginning and the nth number from the end is 150, so we can set up the equation: x + (x + n - 1 - 1) = 150, where x is the first number in the sequence",
+        "Combine like terms: 2x + n - 2 = 150",
+        "Subtract 150 from both sides: 2x + n - 152 = 0",
+        "Add 152 to both sides: 2x + n = 152",
+        "Subtract n from both sides: 2x = 152 - n",
+        "Divide both sides by 2: x = (152 - n)/2",
+        "Since the numbers are consecutive, the median will be the average of the middle two numbers. The middle two numbers will be x and x + 1, so the median will be (x + x + 1)/2 = (2x + 1)/2",
+        "Substitute x = (152 - n)/2 into the equation for the median: median = ((152 - n)/2 + (152 - n)/2 + 1)/2 = (152 - n + 1)/4",
+        "To find n, we need to know the sum of all the numbers in the set. The sum of all the numbers is equal to the sum of the first and last numbers, which is 2x + (n - 1) = 2((152 - n)/2) + (n - 1) = 152 - n + n - 1 = 151",
+        "Since the sum of all the numbers is 151, and we know that the numbers are consecutive, we can find n by finding how many consecutive integers add up to 151. We can use the formula for the sum of an arithmetic series: sum = n/2 * (first term + last term)",
+        "Substituting the values we know, we get 151 = n/2 * (first term + last term)",
+        "Since the numbers are consecutive, the first term is x and the last term is x + n - 1. Substituting these values in, we get 151 = n/2 * (x + x + n - 1)",
+        "Substituting x = (152 - n)/2 into this equation, we get 151 = n/2 * (((152 - n)/2) + ((152 - n)/2) + n - 1)",
+        "Simplifying, we get 151 = n/2 * (152 - n + n - 1)",
+        "Combine like terms: 151 = n/2 * 151",
+        "Divide both sides by 151: n/2 = 1",
+        "Multiply both sides by 2: n = 2",
+        "Now that we know n, we can find the median. Substituting n = 2 into the equation for the median, we get median = (152 - 2 + 1)/4 = 151/4 = 37.75",
+        "Since the numbers are consecutive, the median must be an integer. Therefore, the answer is not among the choices, but the closest answer is 37.75 is closest to 37.75 is closest to 37.75 is closest to \\boxed{b) 25}."
+      ],
+      "answer": "b) 25",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2603",
+      "problem_number": 73,
+      "chain": [
+        "To solve the problem, I will follow the steps below:",
+        "Let the slower pipe fill the tank in x minutes",
+        "Since the faster pipe can fill the tank three times as fast, it will take the faster pipe x/3 minutes to fill the tank",
+        "The two pipes working together can fill the tank in 36 minutes",
+        "Therefore, 1/x + 1/(x/3) = 1/36",
+        "To add these fractions, I need a common denominator, which is x",
+        "So, 3/x + 3/x = 1/36",
+        "Combining the fractions: 6/x = 1/36",
+        "Cross-multiplying: 6 * 36 = x",
+        "Therefore, x = 216, so the answer is \\boxed{a} 144 min"
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1494",
+      "problem_number": 74,
+      "chain": [
+        "Let's start with the first step. \nThe mixture contains 9 + 6 + 5 = 20 parts",
+        "40 pounds is 40/20 = 2 pounds per part",
+        "Therefore, apples weigh 9 \u00d7 2 = 18 pounds",
+        "Grapes weigh 5 \u00d7 2 = 10 pounds",
+        "Therefore, apples weigh 18 - 10 = 8 more pounds than grapes",
+        "The answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_666",
+      "problem_number": 75,
+      "chain": [
+        "To find the number of integers such that the sum of the digits is divisible by 3, we need to find the number of integers such that the sum of the digits is a multiple of 3",
+        "For a 4-digit number abc d , the sum of the digits is a + b + c + d . If this sum is a multiple of 3, then a + b + c + d \u2261 0 (mod 3)",
+        "We can check the answer choices to see if the sum of the digits of each number is a multiple of 3",
+        "For a ) 2468, the sum of the digits is 2 + 4 + 6 + 8 = 20, which is not a multiple of 3",
+        "For b ) 2789, the sum of the digits is 2 + 7 + 8 + 9 = 26, which is not a multiple of 3",
+        "For c ) 2987, the sum of the digits is 2 + 9 + 8 + 7 = 26, which is not a multiple of 3",
+        "For d ) 3334, the sum of the digits is 3 + 3 + 3 + 4 = 13, which is not a multiple of 3",
+        "For e ) 3568, the sum of the digits is 3 + 5 + 6 + 8 = 22, which is not a multiple of 3",
+        "We can see that none of the answer choices have a sum of digits that is a multiple of 3",
+        "Therefore, there are 0 integers less than 10000 with a digit sum divisible by 3, so the correct answer is \\boxed{a} is incorrect and \\boxed{b} is incorrect and \\boxed{c} is incorrect and \\boxed{d} is incorrect and \\boxed{e} is incorrect"
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1516",
+      "problem_number": 76,
+      "chain": [
+        "I have two equations: a + b = 1 and ab = 1/2",
+        "From the first equation: b = 1 - a",
+        "Substituting into the second equation: a(1 - a) = 1/2",
+        "Expanding: a - a\u00b2 = 1/2",
+        "Rearranging: a\u00b2 - a + 1/2 = 0",
+        "Solving using the quadratic formula: a = (1 \u00b1 \u221a(1 - 4/2))/2",
+        "a = (1 \u00b1 \u221a(1 - 2))/2 = (1 \u00b1 \u221a(-1))/2",
+        "a = (1 \u00b1 i)/2",
+        "a = 1/2 \u00b1 i/2",
+        "Since a must be real, there is no valid solution for a",
+        "However, looking at the answer choices, I see that 2a + 2b = 2a + 2(1 - a) = 2 + 2 - 2a = 4 - 2a",
+        "Since a cannot be real, 4 - 2a cannot be real either",
+        "Looking at the answer choices again, I see that 2a + 2b = 2(1 - a) + 2a = 2",
+        "Therefore the answer is \\boxed{2}"
+      ],
+      "answer": "2",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1455",
+      "problem_number": 77,
+      "chain": [
+        "Volume of cuboid = length \u00d7 width \u00d7 height = 16 m \u00d7 14 m \u00d7 7 m = 1568 m\u00b3",
+        "Surface area of cuboid = 2(length \u00d7 width + length \u00d7 height + width \u00d7 height) = 2(16 \u00d7 14 + 16 \u00d7 7 + 14 \u00d7 7) = 2(224 + 112 + 98) = 2 \u00d7 434 = 868 m\u00b2",
+        "Therefore, the surface area is \\boxed{868} m\u00b2"
+      ],
+      "answer": "868",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_858",
+      "problem_number": 78,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2745",
+      "problem_number": 79,
+      "chain": [
+        "Let's solve this problem step-by-step",
+        "Let x be the miles Bill ran on Saturday",
+        "So Bill ran x + 4 miles on Sunday",
+        "Julia ran 2(x + 4) miles on Sunday",
+        "The total distance covered by Bill and Julia on Saturday and Sunday is 16 miles",
+        "x + (x + 4) + 2(x + 4) = 16",
+        "Simplifying, we get: x + x + 4 + 2x + 8 = 16",
+        "Combine like terms: 4x + 12 = 16",
+        "Subtract 12 from both sides: 4x = 4",
+        "Divide by 4: x = 1",
+        "So Bill ran 1 + 4 = 5 miles on Saturday",
+        "And he ran 5 + 4 = 9 miles on Sunday",
+        "Therefore, the answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_1093",
+      "problem_number": 80,
+      "chain": [
+        "Let c be the cost of the item. The selling price is 80% of c , so 0.8c = c - 0.2c + 0.2c",
+        "0.8c = c + 0.2c - 0.2c",
+        "0.8c = c + 0.0c",
+        "0.8c = c",
+        "0.8 = 1",
+        "This is clearly incorrect, so let's try again. The selling price is 80% of c , so 0.8c = 0.8c",
+        "0.8c = 0.8c",
+        "This doesn't help. Let's try another approach. The gross profit is 20% of c , so the selling price is c + 0.2c = 1.2c",
+        "The selling price is 80% of c , so 0.8c = 1.2c - 0.2c",
+        "0.8c = 1.0c",
+        "0.8 = 1",
+        "This is still incorrect. Let's try another approach. The gross profit is 20% of c , so the selling price is c + 0.2c = 1.2c",
+        "The selling price is 80% of c , so 0.8c = 1.2c - x , where x is the amount of the discount",
+        "0.8c = 1.2c - x",
+        "x = 0.4c",
+        "The discount is 40% of c , so the gross profit would be 60% of c if it had been sold without the discount",
+        "The answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2874",
+      "problem_number": 81,
+      "chain": [
+        "Let's solve the problem step-by-step",
+        "Let's denote the individual rates of work as follows: x's rate = 1/4, y's rate = 1/y, z's rate = 1/z",
+        "The combined rate of y and z is 1/3, so y's rate + z's rate = 1/3",
+        "The combined rate of x and z is 1/2, so x's rate + z's rate = 1/2",
+        "Subtracting the two equations, we get: y's rate - x's rate = 1/3 - 1/2 = 1/6",
+        "So y's rate = x's rate + 1/6 = 1/4 + 1/6 = 5/12",
+        "Therefore, y alone will take 12 hours, so the answer is \\boxed{c} 12 hours"
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2799",
+      "problem_number": 82,
+      "chain": [
+        "Let the average score before the 17th inning be x",
+        "Then the total score before the 17th inning is 17x",
+        "The total score after the 17th inning is 17x + 76",
+        "The average after the 17th inning is (17x + 76)/17",
+        "It is given that the average increases by 3 after the 17th inning, so (17x + 76)/17 = x + 3",
+        "Multiplying both sides by 17: 17x + 76 = 17x + 51",
+        "Subtracting 17x from both sides: 76 = 51",
+        "This is clearly impossible. The question is flawed",
+        "Therefore none of the options are correct",
+        "So the answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2654",
+      "problem_number": 83,
+      "chain": [
+        "First, we need to find the two integers, say x and y, such that x\u00b3 + y\u00b3 = 341",
+        "This is a sum of cubes, so I can use the sum of cubes formula: x\u00b3 + y\u00b3 = (x + y)(x\u00b2 - xy + y\u00b2)",
+        "Setting this equal to 341: (x + y)(x\u00b2 - xy + y\u00b2) = 341",
+        "341 is a prime number, so the only factors are 1 and 341, and the only possible values for x + y are 1 and 341",
+        "If x + y = 1, then x = 0 and y = 1, but then x\u00b3 + y\u00b3 = 0 + 1 = 1, not 341, so this is not possible",
+        "If x + y = 341, then x = 170 and y = 171, and indeed x\u00b3 + y\u00b3 = 170\u00b3 + 171\u00b3 = 341",
+        "So x = 170 and y = 171, and their product is 170 \u00d7 171 = \\boxed{29070}"
+      ],
+      "answer": "29070",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_292",
+      "problem_number": 84,
+      "chain": [
+        "Let's solve it step-by-step",
+        "Since the weight is directly proportional to the length of the rod, we can set up a proportion",
+        "Weight of 12m rod = 13.4 kg",
+        "Weight of x m rod = 13.4x/12 kg",
+        "Weight of 6m rod = 13.4(6)/12 = 6.2 kg",
+        "None of the options match, so the correct answer is \\boxed{e}"
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2495",
+      "problem_number": 85,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2600",
+      "problem_number": 86,
+      "chain": [
+        "First, let's find the area of the entire field: 70m * 55m = 3850 square meters",
+        "The path is 2.5m wide, so the outer dimensions of the field with the path are (70 + 2*2.5)m * (55 + 2*2.5)m = 75m * 60m",
+        "The area of the entire field with the path is 75m * 60m = 4500 square meters",
+        "The area of the path alone is the difference between the two areas: 4500 - 3850 = 650 square meters",
+        "The cost of constructing the path is 650 square meters * Rs. 2/square meter = Rs. 1300",
+        "Therefore, the answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_700",
+      "problem_number": 87,
+      "chain": [
+        "Let's start with the problem Reena took a loan of $1200 with simple interest for as many years as the rate of interest. If she paid $300 as interest at the end of the loan period, what was the rate of interest?",
+        "Let the rate of interest be r% and the time period be r years",
+        "The formula for simple interest is I = PRT",
+        "We are given I = 300, P = 1200, and T = r",
+        "Substituting these values into the formula: 300 = 1200 \u00d7 r \u00d7 r",
+        "Dividing both sides by 1200: 300/1200 = r\u00b2",
+        "Simplifying the left-hand side: 1/4 = r\u00b2",
+        "Taking the square root of both sides: r = \u00b1\u221a(1/4) = \u00b11/2",
+        "Since the rate of interest cannot be negative, we take the positive value: r = 1/2",
+        "To convert this to a percentage, we multiply by 100: r = (1/2) \u00d7 100 = 50",
+        "Therefore, the rate of interest is 50%, which corresponds to choice \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2187",
+      "problem_number": 88,
+      "chain": [
+        "You are given that the number of pandas is 10 and the ratio of the number of cheetahs to the number of pandas is 2:5",
+        "The ratio of the number of cheetahs to the number of pandas is 2:5. So, the number of cheetahs = 2/5 \u00d7 10 = 4",
+        "Increase in the number of pandas = 10 - 4 = 6",
+        "The answer is a ) 2",
+        "\\boxed{a}"
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1002",
+      "problem_number": 89,
+      "chain": [
+        "First, let's break down the formula for compound interest, A = P(1 + r/n)^(nt), where A is the amount, P is the principal, r is the rate, n is the number of times that interest is compounded per year, and t is the time the money is invested for in years",
+        "We have P = 35000, r = 12/100 = 0.12, n = 1 (compounded annually), and t = 3",
+        "Plugging in these values, we get A = 35000(1 + 0.12/1)^(1*3) = 35000(1 + 0.12)^3 = 35000(1.12)^3",
+        "Now we need to calculate (1.12)^3",
+        "Using a calculator: (1.12)^3 \u2248 1.404928",
+        "Multiply by the principal: 35000 \u00d7 1.404928 \u2248 49372.4",
+        "So the amount after 3 years is approximately Rs. 49372.4",
+        "The compound interest is the difference between the amount and the principal: 49372.4 - 35000 = 13472.4",
+        "Rounding to two decimal places, we get 13472.40",
+        "Looking at the options, we see that 13472.40 is closest to 14172.48",
+        "Therefore, the correct answer is \\boxed{b}."
+      ],
+      "answer": "b",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_669",
+      "problem_number": 90,
+      "chain": [
+        "Let's say one man's work per day is represented by M and one boy's work per day is represented by B",
+        "From the first statement: 12M + 16B = 1/7 (total work)",
+        "From the second statement: 13M + 24B = 1/4 (total work)",
+        "We can multiply the first equation by 4 and the second by 7 to get",
+        "48M + 64B = 4/7",
+        "and 91M + 168B = 7/4",
+        "Multiplying the first equation by 7 and the second by 4",
+        "336M + 448B = 28/7 = 4",
+        "and 364M + 672B = 28/4 = 7",
+        "Now, subtract the first equation from the second",
+        "364M + 672B - (336M + 448B) = 7 - 4",
+        "28M + 224B = 3",
+        "Divide by 28",
+        "M + 8B = 3/28",
+        "We know that 12M + 16B = 1/7",
+        "So, (12M + 16B) - (M + 8B) = 1/7 - 3/28",
+        "11M + 8B = 1/28",
+        "Now we have two equations",
+        "11M + 8B = 1/28",
+        "M + 8B = 3/28",
+        "Subtract the second equation from the first",
+        "(11M + 8B) - (M + 8B) = 1/28 - 3/28",
+        "10M = -2/28 = -1/14",
+        "M = -1/140",
+        "Substituting M = -1/140 into the equation M + 8B = 3/28",
+        "-1/140 + 8B = 3/28",
+        "Multiply both sides by 140",
+        "-1 + 1120B = 15",
+        "1120B = 16",
+        "B = 16/1120 = 2/140",
+        "Now we have M = -1/140 and B = 2/140",
+        "Since B is positive, the daily work done by a boy is greater than that of a man",
+        "So, the daily work done by a boy is 2/140 : 1/140 = 2 : 1",
+        "Therefore, the answer is \\boxed{d}."
+      ],
+      "answer": "d",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1893",
+      "problem_number": 91,
+      "chain": [
+        "Let the other number be x",
+        "The relationship between lcm and hcf is lcm * hcf = x * y",
+        "Here, lcm = 8 and hcf = 48",
+        "Therefore lcm * hcf = 8 * 48 = x * 24",
+        "Dividing both sides by 24: x = 2",
+        "Therefore the other number is 2",
+        "The answer is \\boxed{a}."
+      ],
+      "answer": "a",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1554",
+      "problem_number": 92,
+      "chain": [
+        "First, let's calculate the relative speed of the two trains. Since they are moving in opposite directions, we add their speeds: 70 + 90 = 160 km/hr",
+        "We convert the relative speed from km/hr to m/s: 160 \u00d7 1000 / 3600 = 44.44 m/s",
+        "The slower train is 1.10 km = 1100 m long. The faster train is 0.9 km = 900 m long. The relative speed is 44.44 m/s",
+        "The time it takes for the slower train to cross the faster train is the length of the slower train divided by the relative speed: 1100 / 44.44 = 24.79 s",
+        "Rounding to the nearest whole number, we get 25 s. The answer is \\boxed{e}."
+      ],
+      "answer": "e",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1105",
+      "problem_number": 93,
+      "chain": [
+        "First, we find the rate of work of one boy, which is the reciprocal of the number of days needed to complete the work. The reciprocal of 24 is 1/24. So one boy can complete 1/24 of the work in one day. Since there are 60 boys, the work rate of 60 boys is 60 * 1/24 = 5/2. Since 60 boys can complete the work in 24 days, they can complete 1/2 of the work in 12 days. Since the work needs to be doubled, we need to double the time. Therefore, 60 boys can complete 1 work in 24 days, and therefore 60 boys can complete 2 work in 48 days. Since 60 boys can complete 1 work in 48 days, therefore 1 boy can complete 1 work in 48 * 60 = 2880 days. Therefore 1 boy can complete 2 work in 2880 * 2 = 5760 days. Since 60 boys can complete 1 work in 2880 days, therefore 1 boy can complete 1 work in 2880 / 60 = 48 days. Therefore 1 boy can complete 2 work in 48 * 2 = 96 days. Therefore 60 boys can complete 2 work in 96 / 60 = 1.6 days. Since 1.6 days is less than 20 days, we need to multiply the number of boys by a factor. Therefore, the number of boys is 60 * (20/1.6) = 1500. Therefore, the answer is \\boxed{a)} 144."
+      ],
+      "answer": "a)",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2621",
+      "problem_number": 94,
+      "chain": [
+        "Let the number of trucks = 3x, sedans = 7x, and motorcycles = 2x",
+        "We are given that sedans = 11,900, so 7x = 11900, which means x = 11900/7 = 1700",
+        "Then the number of motorcycles = 2x = 2 \u00d7 1700 = 3400",
+        "Therefore the answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_2818",
+      "problem_number": 95,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2281",
+      "problem_number": 96,
+      "chain": [
+        "To find the interest for the first 3 years, we can subtract the initial amount from the final amount: 956 - 850 = 106",
+        "This interest is earned over 3 years at the original rate, so we can use the simple interest formula: I = PRT",
+        "106 = (850)(R)(3), where R is the original rate",
+        "We can solve for R: R = 106/850 \u00d7 1/3 = 0.04",
+        "Now, if the rate is increased by 4%, the new rate is 0.04 + 0.04 = 0.08",
+        "We can calculate the interest earned at this new rate: I = (850)(0.08)(3) = 208",
+        "The total amount after 3 years is the initial amount plus the interest: 850 + 208 = 1058",
+        "Therefore, the answer is \\boxed{c}."
+      ],
+      "answer": "c",
+      "correct": true
+    },
+    {
+      "problem_id": "mathqa_899",
+      "problem_number": 97,
+      "chain": [
+        "To find the smallest n, we need to find the first number that leaves a remainder of 1 when divided by 4, and a remainder of 3 when divided by 7. We can use the Chinese Remainder Theorem to solve this problem",
+        "The first few numbers that leave a remainder of 1 when divided by 4 are 1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53, 57, 61, 65, 69, 73, 77, 81, 85, 89, 93, 97, 101, 105, 109, 113, 117, 121, 125, 129, 133, 137, 141, 145, 149, 153, 157, 161, 165, 169, 173, 177, 181, 185, 189, 193, 197, 201, 205, 209, 213, 217, 221, 225, 229, 233, 237, 241, 245, 249, 253, 257, 261, 265, 269, 273, 277, 281, 285, 289, 293, 297, 301, 305, 309, 313, 317, 321, 325, 329, 333, 337, 341, 345, 349, 353, 357, 361, 365, 369, 373, 377, 381, 385, 389, 393, 397, 401, 405, 409, 413, 417, 421, 425, 429, 433, 437, 441, 445, 449, 453, 457, 461, 465, 469, 473, 477, 481, 485, 489, 493, 497, 501, 505, 509, 513, 517, 521, 525, 529, 533, 537, 541, 545, 549, 553, 557, 561, 565, 569, 573, 577, 581, 585, 589, 593, 597, 601, 605, 609, 613, 617, 621, 625, 629, 633, 637, 641, 645, 649, 653, 657,",
+        "The first number that leaves a remainder of 3 when divided by 7 is 3, 10, 17, 24, 31, 38, 45, 52, 59, 66, 73, 80, 87, 94, 101, 108, 115, 122, 129, 136, 143, 150, 157, 164, 171, 178, 185, 192, 199, 206, 213, 220, 227, 234, 241, 248, 255, 262, 269, 276, 283, 290, 297, 304, 311, 318, 325, 332, 339, 346, 353, 360, 367, 374, 381, 388, 395, 402, 409, 416, 423, 430, 437, 444, 451, 458, 465, 472, 479, 486, 493, 500, 507, 514, 521, 528, 535, 542, 549, 556, 563, 570, 577, 584, 591, 598, 605, 612, 619, 626, 633, 640, 647, 654, 661, 668, 675, 682, 689, 696, 703, 710, 717, 724, 731, 738, 745, 752, 759, 766, 773, 780, 787, 794, 801, 808, 815, 822, 829, 836, 843, 850, 857, 864, 871, 878, 885, 892, 899, 906, 913, 920, 927, 934, 941, 948, 955, 962, 969, 976, 983, 990, 997",
+        "The first number that satisfies both conditions is 157",
+        "The next smallest n is 157 + 28 (the least common multiple of 4 and 7) = 185",
+        "Therefore, the sum of the two smallest possible values of n is 157 + 185 = \\boxed{342}"
+      ],
+      "answer": "342",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_2804",
+      "problem_number": 98,
+      "chain": [
+        "Let's solve it",
+        "First, I need to find the sum of integers from 40 to 50, inclusive, which is x",
+        "The sum of integers from 1 to n is n(n + 1)/2, so the sum of integers from 1 to 50 is 50(51)/2 = 1275",
+        "The sum of integers from 1 to 39 is 39(40)/2 = 780",
+        "Therefore, the sum of integers from 40 to 50 is 1275 - 780 = 495, so x = 495",
+        "Next, I need to find the number of even integers from 40 to 50, inclusive, which is y",
+        "The even integers in this range are 40, 42, 44, 46, 48, 50, so there are 6 even integers",
+        "Therefore, y = 6",
+        "Now I need to find the value of x + y",
+        "x + y = 495 + 6 = 501",
+        "Therefore, the answer is \\boxed{501}."
+      ],
+      "answer": "501",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_1328",
+      "problem_number": 99,
+      "chain": [
+        "Let's start solving the problem step-by-step.",
+        "Let the length of each train be L and the speed of each train be S",
+        "Since they are running in opposite directions, their relative speed is S + S = 2S",
+        "We know that distance = speed \u00d7 time, so the total distance covered when they cross each other is (L + L) = 2L",
+        "We are given that they cross each other in 12 seconds, so 2L = 2S \u00d7 12",
+        "Substituting L = 120, we get 2(120) = 2S \u00d7 12",
+        "Simplifying, we get 240 = 24S",
+        "Dividing both sides by 24, we get S = 10",
+        "Since the speed is in meters per second, we need to convert it to kilometers per hour: S = 10 \u00d7 3600/1000 = 36 km/hr",
+        "Therefore, the speed of each train is \\boxed{36 km/hr}."
+      ],
+      "answer": "36 km/hr",
+      "correct": false
+    },
+    {
+      "problem_id": "mathqa_229",
+      "problem_number": 100,
+      "chain": [
+        "First let's find the total number of votes cast in the election. We can do this by adding up the votes received by each of the candidates",
+        "1136 + 7636 + 11628 = 20400",
+        "The winning candidate received 11628 votes",
+        "To find the percentage of the total votes that the winning candidate received, we divide the votes received by the winning candidate by the total number of votes, and then multiply by 100",
+        "(11628 \u00f7 20400) \u00d7 100 = 57.14 %",
+        "Therefore, the winning candidate received \\boxed{57%} of the total votes."
+      ],
+      "answer": "57%",
+      "correct": false
+    }
+  ]
+}

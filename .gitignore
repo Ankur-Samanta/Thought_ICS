@@ -1,0 +1,11 @@
+api_key.json
+*.pyc
+__pycache__/
+.DS_Store
+
+# Local Claude Code config (machine-specific paths)
+.claude/
+# Build / runtime artifacts
+*.egg-info/
+.ipynb_checkpoints/
+experiments/

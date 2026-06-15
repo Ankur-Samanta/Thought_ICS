@@ -1,0 +1,863 @@
+[
+  {
+    "problem": "For a given positive integer $N$, Henry writes the quotient of $ab$ divided by $N+1$ on the board for each integer pair $(a,b)$ where $1\\le a,b\\le N$. Find all $N$ such that the sum of the $N^2$ numbers Henry wrote on the board is $\\frac{N^3-N^2+2}{4}$.\n",
+    "answer": "3",
+    "unique_id": "imo-bench-algebra-001",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Given a positive integer $a$, let $\\pi:\\{1,2,\\ldots , a\\}\\to\\{1,2,\\ldots , a\\}$ be a bijection. Find the minimum possible value of $\\sum_{i=1}^{a}{\\left\\lfloor \\frac{\\pi(i)}{i} \\right\\rfloor}$.\n",
+    "answer": "$\\left\\lfloor \\log_{2}a\\right\\rfloor +1$.",
+    "unique_id": "imo-bench-algebra-002",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find all functions $g:\\mathbb{R}\\rightarrow\\mathbb{R}$ which is not a linear function and satisfies\n\n\\[\n4g\\left(x^{2}y+y^{2}z+z^{2}x\\right)-(g(y)-g(x))(g(z)-g(y))(g(x)-g(z))=4g\\left(xy^{2}+yz^{2}+zx^{2}\\right)\n\\]\n\nfor all real numbers $x,y,z$.\n",
+    "answer": "$g(x)=2x^{3}+c, g(x)=-2x^{3}+c$ ",
+    "unique_id": "imo-bench-algebra-003",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $u \\ge 2$ be a given positive integer. Find the smallest real number $C$ such that for all real numbers $t$, $\\frac{t^{2^u}+1}{2} \\le (C(t-1)^2+t)^{2^{u-1}}$.\n",
+    "answer": "$2^{u-2}$",
+    "unique_id": "imo-bench-algebra-004",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "$p, q, r, s$ are positive real numbers satisfying $(p+s)(r+q) = ps + qr$. Find the smallest possible value of\n\n\\[\n\\frac{p}{q} + \\frac{r}{p} + \\frac{s}{r} + \\frac{q}{s}.\n\\]\n",
+    "answer": "8",
+    "unique_id": "imo-bench-algebra-005",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $P$ be a function from the set of integers to itself such that for all integers $h, m$,\n\\[P^{h^2 + m^2}(h+m-1) = mP(m-1) + hP(h-1) + (h+m-1).\\]\nFind all possible functions $P$.\n",
+    "answer": "$P(x)=-1, P(x)=x+1$",
+    "unique_id": "imo-bench-algebra-006",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $a_1, a_2, \\ldots, a_{2026}$ satisfy $3^i < a_i < 3^{i+1}$ for each $i$. For each $1\\le i\\le 2025$, define\n\\[\nA_i = \\sum_{1\\leqslant x\\leqslant i+1}\\prod_{y\\neq x}\\frac{a_{x}a_{y}-1}{a_{x}-a_{y}}.\n\\]\nFind all possible values of $\\sum_{i=1}^{2025} A_i^2$\n",
+    "answer": "1012",
+    "unique_id": "imo-bench-algebra-007",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $x_0, x_1, \\ldots$ be a sequence of real numbers such that $x_0 = 0$, $x_1 = 1$, and for each integer $k \\geq 2$, there exists an integer $1 \\leq t \\leq k$ such that\n\\[ x_k = \\frac{x_{k-1} + \\dots + x_{k-t}}{t}. \\]\nFind the minimum possible value of $x_{2024} - x_{2025}$.\n",
+    "answer": "$-\\frac{2023}{2024^2}$",
+    "unique_id": "imo-bench-algebra-008",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find the maximal value of\n\n\\[\nS=\\sqrt[3]{\\frac{x}{y+13}}+\\sqrt[3]{\\frac{y}{z+13}}+\\sqrt[3]{\\frac{z}{w+13}}+\\sqrt[3]{\\frac{w}{x+13}}\n\\]\n\nwhere $x,y,z,w$ are nonnegative real numbers which satisfy $x+y+z+w=340$.\n",
+    "answer": "$2\\sqrt[3]{\\frac{196}{13}}$",
+    "unique_id": "imo-bench-algebra-009",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "A real number $r$ is given, and there is a blackboard with $100$ distinct real numbers written on it. Sharon has three pieces of paper and writes numbers on the sheets of paper by the following rule:\n\nOn the first piece of paper, Sharon writes down every number of the form $f-g$, where $f$ and $g$ are (not necessarily distinct) numbers on the blackboard. Then she writes down every number of the form $3pqr$, where $p$ and $q$ are two (not necessarily distinct) numbers from the first paper. Finally Sharon writes down every number of the form $x^2+y^2-z^2-w^{2}$, where $x,y,z,w$ are four (not necessarily distinct) numbers written on the first piece of paper.\n\nFind all possible values of $r$ such that every number in the second paper also appears on the third piece of paper regardless of the numbers on the blackboard.\n",
+    "answer": "$-\\frac{2}{3},0,\\frac{2}{3}$",
+    "unique_id": "imo-bench-algebra-010",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $m\\ge 3$ be an integer. An $m$-tuple of real numbers $(a_1,a_2,\\ldots,a_m)$ is said to be Sparkling if for each permutation $b_1,b_2,\\ldots ,b_m$ of these numbers we have $$b_1 b_2 +b_2 b_3 +\\cdots+b_{m-1}b_{m}\\geqslant-4$$. Find the largest constant $T=T(m)$ such that the inequality $$\\sum \\limits_{1 \\le p< q \\le m} c_p c_q \\ge T$$ holds for all sparkling tuples $(c_1,c_2,\\ldots,c_m)$.\n",
+    "answer": "$2-2m$",
+    "unique_id": "imo-bench-algebra-011",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "For a real number $T$, it is said that no matter how five distinct positive real numbers $a, b, c, d, e$ are given, it is possible to choose four distinct numbers $e, f, g, h$ from them such that $$|ef-gh|\\le Tfh.$$ Find the minimum value of $T$ for which this is possible.\n",
+    "answer": "$\\frac{1}{2}$",
+    "unique_id": "imo-bench-algebra-012",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Determine all functions $Q$ from the real numbers to itself such that $Q(0)\\neq0$ and\n\n$$\\frac{1}{2}Q(m+n)^{2}-Q(m)Q(n)=\\max\\left\\{ Q\\left(m^{2}+n^{2}\\right)\\right, Q\\left(m^{2}\\right)+Q\\left(n^{2}\\right)\\}$$\n\nfor all real numbers $m$ and $n$.\n",
+    "answer": "$Q(x)=-2, Q(x)=2x-2$",
+    "unique_id": "imo-bench-algebra-013",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Given a positive integer $a$, find the maximum possible value of\n$$ \\sum_{1 \\le m < n \\le 2a} (n-m-a)p_mp_n $$\nfor real numbers $p_1, \\ldots, p_{2a}$ with absolute values not exceeding $2025$.\n",
+    "answer": "$2025^2 a(a-1)$ ",
+    "unique_id": "imo-bench-algebra-014",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Suppose that $g:\\mathbb{Z}\\to O$, where $O$ is the set of odd integers, satisfies\n$$g(a + g(a) + b)-g(a+b) =  g(a-b)-g(a-g(a)-b)$$\nfor all integers $a,b$. Furthermore, we have $g(0)=9, g(1)=27, g(2)=3$, and $g(10)=63$. Find all possible values of $g(2025)$.",
+    "answer": "8109",
+    "unique_id": "imo-bench-algebra-015",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "The 'price' of a finite sequence of real numbers $a_1, \\ldots, a_m$ is defined as $$\\max_{1\\le k\\le m}|a_1+\\cdots +a_k|.$$ Given $m$ real numbers, Sam and George try to minimize the price of the sequence formed by arranging these real numbers appropriately. Sam compares all possible $m!$ arrangements and chooses the sequence with the smallest price $S$. On the other hand, George chooses one of the numbers with the smallest absolute value as $a_1$, and then sequentially chooses $a_2, \\ldots, a_m$. When choosing $a_i$, he randomly selects one of the possible values among the numbers that have not been selected as $a_1, \\ldots, a_{i-1}$ such that $|a_1 + a_2 + \\ldots + a_{i-1} + a_i|$ is minimized. Let the price of the sequence created in this way be $G$. Regardless of the initial numbers and the sequence George chooses, find the maximum value of the real number $k$ that satisfies $S \\ge kG$.\n",
+    "answer": "$\\frac{1}{2}$",
+    "unique_id": "imo-bench-algebra-016",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "A real coefficient polynomial $f(x)$ satisfies the condition that for all real numbers $a$ and $b$, $|a^2 - 2f(b)| \\le 2|b|$ if and only if $|b^2 - 2f(a)| \\le 2|a|$. Find all possible values of $f(0)$.\n",
+    "answer": "$(-\\infty,0)\\cup\\{\\frac{1}{2}\\}$",
+    "unique_id": "imo-bench-algebra-017",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $a_0, a_1, \\ldots$ be a sequence of non-negative integers. Suppose that for all non-negative integers $p$,\n$$a_{a_{a_p}} = a_{p+1} + 1.$$\nFind all possible value of $a_{2025}$.\n",
+    "answer": "2026, 2030",
+    "unique_id": "imo-bench-algebra-018",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $a_1, a_2, \\ldots, a_{2025}$ be positive integers such that for each positive integer $m$,\n$$\\left(\\left (\\sum^{2025}_{j=1} j a^m_j \\right)-1\\right)^{\\frac{1}{m+1}}$$ is an integer. Find all possible value of $a_1+a_2+ \\cdots +a_{2025}$.\n",
+    "answer": "4151879777",
+    "unique_id": "imo-bench-algebra-019",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find all $P:\\mathbb{R}\\rightarrow \\mathbb{R}$ such that $P$ is not identically zero and there exists $Q:\\mathbb{R}\\rightarrow \\mathbb{R}$ satisfying\n\n\\[\nQ(P(a))-P(b)=(b+a)Q(2a-2b)\n\\]\n\nfor all real numbers $a,b$.\n",
+    "answer": "$P(x)=2x^{2}+c$",
+    "unique_id": "imo-bench-algebra-020",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "The sum of real numbers $x, y, z, w$ is $12$, and the sum of their squares is $48$. Find the minimum possible value of $$x^4+y^4+z^4+w^4-8(x^3+y^3+z^3+w^3).$$\n",
+    "answer": "-768",
+    "unique_id": "imo-bench-algebra-021",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $a_{1},\\ldots,a_{2024}$ be nonnegative real numbers such that $a_{x}+a_{x+1}+a_{x+2}\\leq2$ for all $x=1,\\ldots,2024$ (we put $a_{2025}=a_{1},a_{2026}=a_{2}$ ). Find the maximal possible value of the sum\n\n\\[\n\\sum_{x=1}^{2024}a_{x}a_{x+2}\n\\]\n",
+    "answer": "1012",
+    "unique_id": "imo-bench-algebra-022",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find the minimum value of an integer $N$ that satisfies the following condition:\n\nGiven 2025 non-degenerate triangles, each triangle has one side colored green, one side colored purple, and one side colored orange. Let the lengths of the green sides be $g_1 \\ge g_2 \\ge \\cdots \\ge g_{2025}$, the lengths of the purple sides be $p_1 \\ge p_2 \\ge \\cdots \\ge p_{2025}$, and the lengths of the orange sides be $o_1 \\ge o_2 \\ge \\cdots \\ge o_{2025}$. Then, the number of $1 \\le a \\le 2025$ such that $g_a, p_a, o_a$ do not form the sides of a triangle is always less than or equal to $N$.\n",
+    "answer": "2024",
+    "unique_id": "imo-bench-algebra-023",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "A function $C$ from the set of positive integers to itself is called \"nice\" if for all positive integers $a, b$, $C(a+b) - C(a) - C(C(b)) + 1 \\ge 0$. Find all possible values of $C(1234)$ for a nice function $C: \\mathbb{N} \\rightarrow \\mathbb{N}$.\n",
+    "answer": "$1,2,\\ldots, 1235$",
+    "unique_id": "imo-bench-algebra-024",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find all functions $A:\\mathbb{R}\\rightarrow\\mathbb{R}$ such that $A(p)A(q)+A(-pq)=A(p+q)+2pq+1$ holds for all real numbers $p$ and $q$.\n",
+    "answer": "$A(x)=1-x, A(x)=1+2x, A(x)=1-x^{2}$",
+    "unique_id": "imo-bench-algebra-025",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Suppose that a function $f:\\mathbb{Q}\\rightarrow\\mathbb{F}_2$ satisfies $f(r)+f(r')=1$ for all distinct rational numbers $r, r'$ satisfying either $r+r'=0$ or $r+r'=1$ or $rr'=1$. Suppose further that $f(11/3)=1$. Evaluate\n$f(7/3)+f(11/4)+f(2024/5)+f(109/11)+f(3/71)+f(5/204)$",
+    "answer": "1",
+    "unique_id": "imo-bench-algebra-026",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "A function $g:\\mathbb{R}\\to\\mathbb{R}$ is called a \\textit{good function} if $g$ satisfies\n\\[\n4g\\left(x^{2}+y^{2}+2g(xy)\\right)=(g(2x+2y))^{2}\n\\]\nfor all pairs of real numbers $x$ and $y$. For a real number $r$, we say that $t\\in \\mathbb{R}$ is a \\textit{$r$-represented number} if there exists a good function $g$ such that $t=g(r)$. Find the set of all $r$ such that there are four $r$-represented number.",
+    "answer": "$(-\\infty,-4)\\cup (-4,-\\frac{8}{3})$",
+    "unique_id": "imo-bench-algebra-027",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "A function $\\tau:\\mathbb{R}\\rightarrow\\mathbb{R}$\nsatisfies all three of the following conditions:\n\n(1) If $a\\le b$, then $\\tau(a)\\le \\tau(b)$.\n\n(2) $\\tau (0) = 0, \\tau (1) = 1$, and $\\tau(2)=\\pi$.\n\n(3) If $c>1>d$, then $ \\tau (c + d - cd)=\\tau (c) + \\tau (d) -\\tau (c) \\tau (d)$.\n\nFind all the possible values of $\\tau(-1)$.\n",
+    "answer": "$(-\\infty , 0]$",
+    "unique_id": "imo-bench-algebra-028",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find all functions $g:\\mathbb{R}^+\\rightarrow\\mathbb{R}^+$ such that for all positive real numbers $q, w, e$, $g(4qwe)+g(q)+g(w)+g(e)=9g(\\sqrt{qw})g(\\sqrt{eq})g(\\sqrt{we})$, and if $r>t\\ge \\frac{1}{2}$, then $g(r)>g(t)$.\n",
+    "answer": "$g(x)=\\frac{1}{3} ((2x)^a +(2x)^{-a})$ for some $a>0$",
+    "unique_id": "imo-bench-algebra-029",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find the maximum value of $D$ satisfying the following condition: There exists an infinite sequence $x_1, x_2, \\ldots$ where each term belongs to $[0, 777]$ such that for all positive integers $m < n$, we have $$(m+n)|x_n^2 - x_m^2| \\ge D.$$\n",
+    "answer": "603729",
+    "unique_id": "imo-bench-algebra-030",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Let $E$ be the set of nonnegative even integers. Find all functions $T:E^3\\rightarrow \\mathbb{R}$ such that for all even integers $k, m, n$,\n\n$$ T(k,m,n) = \\begin{cases} k+m+n & \\text{if} \\; kmn = 0, \\\\\n3 + \\frac{1}{6}(T(k + 2,m - 2,n) + T(k + 2,m,n - 2) & \\\\\n+ T(k,m + 2,n - 2) + T(k,m - 2,n + 2) & \\\\\n+ T(k - 2,m + 2,n) + T(k - 2,m,n + 2)  ) & \\text{otherwise} \\end{cases}\n$$\n",
+    "answer": "$T(p,q,r)=0 if (p,q,r)=(0,0,0), p+q+r+\\frac{9pqr}{4(p+q+r)} otherwise$",
+    "unique_id": "imo-bench-algebra-031",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "We call $g: \\mathbb{R} \\rightarrow \\mathbb{R}$ a good function if $g$ satisfies all the following conditions:\n\n(1) For any two distinct real numbers $a, b$, if $g(ab) = 0$, then $g(a) = 0$ or $g(b) = 0$.\n(2) For any two distinct real numbers $a, b$, if $g(ab) \\neq 0$, then $$\\frac{g(a)-g(b)}{a-b}=\\frac{g(a)g(b)}{g(ab)}.$$\n(3) $g(1)=1$\n\\\\\nLet $S=\\{2^a 3^b 5^c 7^d : a,b,c,d\\in \\mathbb{Z}\\}$ and we call $h:S\\rightarrow \\mathbb{R}$ an essential function if there exists a good function $g$ such that $h(x)=g(x)$ for all $x\\in S$. Find the number of essential functions. ",
+    "answer": "16",
+    "unique_id": "imo-bench-algebra-032",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find all pairs $(M, x_0, x_1, \\lodts , x_M)$ of positive integers $x_0, x_1, \\ldots, x_M$ that satisfy the following three conditions:\n\n(1) $x_0 = 1$.\n(2) For each $1 \\le i < M$, $x_{i+1} \\ge 1 + \\frac{x_i^3 - x_i^2}{x_{i-1}}$.\n(3) $\\sum_{i=1}^{M} \\frac{x_{i-1}}{x_i} = 0.9375$.\n",
+    "answer": "$(4, 1, 2, 5, 134, 718240)$",
+    "unique_id": "imo-bench-algebra-033",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "Find all functions $P, Q: \\mathbb{R} \\rightarrow \\mathbb{R}$ such that for all real numbers $m, n$,\n$$P(m+Q(n))=nP(m) - m P(n) + Q(m).$$\n",
+    "answer": "$P(x)=(cx+c^{2})/(1+c), Q(x)=cx+c^{2}$, where $c\\ne -1$",
+    "unique_id": "imo-bench-algebra-034",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "A sequence $b_1, b_2, \\ldots, b_k$ is said to 'increase steeply' if each term is positive, and for each $2 \\le i \\le k$, $b_i \\ge b_{i-1} + \\cdots + b_2 + b_1$. Find the maximum value of the constant $S$ such that for all $k$ and steeply increasing sequences $b_1, b_2, \\ldots, b_k$,\n$$S\\sum_{i=1}^k{\\sqrt{x_i}}\\le \\sqrt{\\sum_{i=1}^k{x_i}}$$\nholds.\n",
+    "answer": "$\\sqrt{2}-1$",
+    "unique_id": "imo-bench-algebra-043",
+    "subject": "Algebra",
+    "level": 5
+  },
+  {
+    "problem": "L\u00ea B\u00e1 Kh\u00e1nh Tr\u00ecnh is a famous Vietnamese IMO contestant who won Vietnam's only Special Prize. He enjoys solving mathematics problems and dancing. As the IMO is coming soon, he is studying the following mathematical problem:\n\nA subset $S$ of $\\{0, 1, 2, \\ldots \\}$ is called Bachata if $0 \\in S$ and for each element $n \\in S,$ the integers $n + 11$ and $n + 20$ belong to $S.$\n\nPlease determine the number of Bachata subsets of $\\{0, 1, 2, \\ldots \\}.$\n",
+    "answer": "2731365",
+    "unique_id": "imo-bench-combinatorics-037",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Let $A = (a_1, a_2, \\ldots, a_{2025})$ be a sequence of positive integers. Let $m$ be the number of 3-element subsequences $(a_i,a_j,a_k)$ with $1 \\leq i < j < k \\leq 2025$, such that $a_j = a_i + 1$ and $a_k = a_j + 1$. Let $n$ be the number of 4-element subsequences $(a_i,a_j,a_k, a_l)$ with $1 \\leq i < j < k < l \\leq 2025$, such that $a_j = a_i + 1$, $a_k = a_j + 1$ and $a_l = a_k+1$. Considering all such sequences $A$, find the greatest value of $m$.",
+    "answer": "307546875",
+    "unique_id": "imo-bench-combinatorics-038",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "The unit squares of an $2025 \\times 2025$ chessboard are coloured alternately black and white, with the four corners coloured black. An L-tromino is a shape consisting of three unit squares connected in the shape of the letter L. A mysterious alien spaceship has landed on Earth and the aliens have brought with them a variety of L-trominos of various sizes and orientations. Is it possible to cover all the black squares with non-overlapping L-trominos? If it is possible, what is the minimum number of L-trominos needed?",
+    "answer": "1026169",
+    "unique_id": "imo-bench-combinatorics-039",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A sequence of $15$ positive integers (not necessarily distinct) is called kawaii if it satisfies the following condition: for each positive integer $k\\geq2$, if the number $k$ appears in the sequence then so does the number $k-1$, and moreover the first occurrence of $k-1$ comes before the last occurrence of $k$.  Suppose there is a set $S$ of distinct integers, with $|S| = 16$.  How many kawaii sequences are there?",
+    "answer": "1307674368000",
+    "unique_id": "imo-bench-combinatorics-040",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Two players, Ivan and Maria, are playing a guessing game. Ivan chooses three integers $x, y, z$ such that $0 \\le x, y, z \\le 9$. Maria tries to guess these integers by asking Ivan questions. In each question, Maria gives Ivan three integers $a, b, c$ such that $0 \\le a, b, c \\le 9$. Ivan then calculates and tells Maria the value of $|x+y-a-b| + |y+z-b-c| + |z+x-c-a|$. What is the minimum number of questions Maria needs to ask to be sure of determining Ivan's three integers?",
+    "answer": "3",
+    "unique_id": "imo-bench-combinatorics-041",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "In a social network with 120 users, some pairs of users are connected as friends. A weak quartet is a group of four users where exactly one pair is friends.  What is the maximum possible number of weak quartets in this network?",
+    "answer": "4769280",
+    "unique_id": "imo-bench-combinatorics-042",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "There are 579 students at a prestigious Korean university known as KAIST. Some students come together to form numerous study groups (a student may belong to different study groups). Some study groups join together to form several research labs (a study group may belong to different research labs). There are a total of $k$ research labs. Suppose that the following conditions hold:        (i) Each pair of students are in exactly one study group.        (ii) For each student and each research lab, the student is in exactly one study group of the research lab.        (iii) Each study group has an odd number of students. In addition, a study group with $2m + 1$ students ($m$ is a positive integer) is in exactly $m$ research labs.        Find all possible values of $k$.",
+    "answer": "289",
+    "unique_id": "imo-bench-combinatorics-043",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Consider a matrix of size $230 \\times 230$ whose entries are real numbers of absolute value not exceeding 1, and the sum of all entries is 0. Let $m$ be an odd positive integer. Determine the least number $C$ such that every such matrix necessarily has a row or a column with the sum of its entries not exceeding $C$ in absolute value.",
+    "answer": "115",
+    "unique_id": "imo-bench-combinatorics-044",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Two players $A$ and $B$ are playing a game by taking turns writing numbers from the set $\\{1, \\dots, N\\}$ on a blackboard, where $N$ is a positive integer. Player $A$ starts the game by writing the number $1$. If a player writes the number $n$, then the other player can write either $n+1$ or $2n$, provided the number does not exceed $N$. The player who writes the number $N$ wins. We say that $N$ is of type $A$ if player $A$ has a winning strategy, and of type $B$ if player $B$ has a winning strategy. The game board is made of a special type of wood imported from Brazil.\n\nFind the least $N > 400$ such that it is a type B number.",
+    "answer": "512",
+    "unique_id": "imo-bench-combinatorics-045",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "The Bank of Hanoi issues $n$ different types of coins, numbered from $1$ to $n$. A cashier arranges these coins in a $2004 \\times 2004$ matrix. Let $X_i$ be the set of distinct coin types in row $i$, and $Y_j$ the set of distinct coin types in column $j$, for $1 \\le i, j \\le 2004$. The cashier's arrangement is considered \"harmonious\" if all $X_i$ and $Y_j$ are distinct sets. Find the least integer $n$ such that a harmonious arrangement is possible.",
+    "answer": "13",
+    "unique_id": "imo-bench-combinatorics-046",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "For a finite graph $G$, let $f(G)$ be the number of triangles and $g(G)$ the number of tetrahedra formed by edges of $G$. In addition, let $h(G)$ be the number of pentagons formed by edges of $G$.  Find the least constant $c$ such that \\[\\frac{g(G)^3}{f(G)^4}\\le c\\] for every graph $G$.",
+    "answer": "$\\frac{3}{32}$",
+    "unique_id": "imo-bench-combinatorics-047",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Find the smallest positive integers $n$, for which the numbers in the set $S=\\{1,2, \\ldots, n\\}$ can be colored red and blue, with the following condition being satisfied: the set $S \\times S \\times S$ contains exactly 2007 ordered triples $(x, y, z)$ such that (i) $x, y, z$ are of the same color and (ii) $x+y+z$ is divisible by $n$. Additionally, find all positive integers $m$ such that $m$ is a multiple of 3.",
+    "answer": "69",
+    "unique_id": "imo-bench-combinatorics-048",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "At World Cup 2050, there are $256$ teams participating. The organizer gives each team a flag 8 units wide and one unit high composed of 8 fields of size $1 \\times 1$, each field being either yellow or blue. No two countries have the same flag. We say that a set of 8 flags is diverse if these flags can be arranged into an $8 \\times 8$ square so that all 8 fields on its main diagonal will have the same color. Determine the smallest positive integer $M$ such that among any $M$ distinct flags, there exist 8 flags forming a diverse set.",
+    "answer": "65",
+    "unique_id": "imo-bench-combinatorics-050",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Let $k>0$ be an integer. We are given a balance and $k$ weights of weight $2^{0}, 2^{1}, \\ldots, 2^{k-1}$. Additionally, we are given a set of $k$ stones with weights $3^0, 3^1, \\ldots, 3^{k-1}$. In a sequence of $k$ moves we place all weights on the balance. In the first move we choose a weight and put it on the left pan. In each of the following moves we choose one of the remaining weights and we add it either to the left or to the right pan. Compute the number of ways in which we can perform these $k$ moves in such a way that the right pan is never heavier than the left pan.",
+    "answer": "$(2k-1)!!$",
+    "unique_id": "imo-bench-combinatorics-052",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Consider a checkerboard consisting of $38$ by $38$ unit squares. At the midpoints of some of these unit squares, there is an ant. At time 0, each ant starts moving with speed 1 parallel to some edge of the checkerboard. When two ants moving in opposite directions meet, they both turn $90^{\\circ}$ clockwise and continue moving with speed 1. When more than two ants meet, or when two ants moving in perpendicular directions meet, the ants continue moving in the same direction as before they met. When an ant reaches one of the edges of the checkerboard, it falls off and will not re-appear.  Also, there are some spiders on the checkerboard that do not move at all.\n\nConsidering all possible starting positions, determine the latest possible moment at which the last ant falls off the checkerboard or prove that such a moment does not necessarily exist.",
+    "answer": "56",
+    "unique_id": "imo-bench-combinatorics-054",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "On a large chessboard of 2011 by 2011 squares, a finite number of square tiles are placed. Each tile covers a square area of 52 by 52 cells. In each cell, the number of tiles covering it is written, and the maximum number $k$ of cells containing the same nonzero number is recorded.  Considering all possible tile configurations, what is the largest possible value of $k$?",
+    "answer": "3986729",
+    "unique_id": "imo-bench-combinatorics-055",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A teacher wants to divide a class of $d$ students into $k$ groups (some of which may be empty). Each student $i$ has a score $a_i$ between 0 and 1, inclusive, and the sum of the scores of all students is $59$. The teacher wants to partition the students into groups such that the sum of the scores in each group is at most 1. Find the smallest integer $k$ such that this is always possible, regardless of the number of students $d$ and their scores $a_1, \\ldots, a_d$.",
+    "answer": "117",
+    "unique_id": "imo-bench-combinatorics-056",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "In the plane, 2025 red points and 2026 blue points are marked so that no three of the marked points are collinear. One needs to draw $k$ lines not passing through the marked points and dividing the plane into several regions. The goal is to do it in such a way that no region contains points of both colors.\n\nFind the minimal value of $k$ such that the goal is attainable for every possible configuration of 4051 points.",
+    "answer": "2025",
+    "unique_id": "imo-bench-combinatorics-057",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Consider an $n \\times n$ chessboard consisting of $n^2$ unit squares, where $n \\geqslant 2$ is an integer. A configuration of $n$ rooks on this board is called balanced if each row and each column contains exactly one rook. Find the largest positive integer $k$ such that for any balanced configuration of rooks, there exists a $k \\times k$ square with no rook in any of its $k^2$ unit squares. Additionally, consider a $2n \\times 2n$ go board, where we put go pieces on that board.",
+    "answer": "$\\lfloor\\sqrt{n-1}\\rfloor$",
+    "unique_id": "imo-bench-combinatorics-058",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A card deck consists of 1024 cards. On each card, a set of distinct decimal digits is written in such a way that no two of these sets coincide, including an empty card. Two players alternately take cards from the deck, one card per turn. After the deck is empty, each player checks if he can throw out one of his cards so that each of the ten digits occurs on an even number of his remaining cards. If one player can do this but the other one cannot, the one who can is the winner; otherwise, a draw is declared. However, there is also a third player who is observing the game and has a special card with a set of distinct decimal digits written on it. This third player does not participate in the game.\n\nDetermine all possible first moves of the first player after which the opponent has a winning strategy.",
+    "answer": "taking the empty card",
+    "unique_id": "imo-bench-combinatorics-059",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A sequence of positive integers $a_1, a_2, \\ldots, a_n$ is called a Korean sequence if it satisfies the following conditions:\n\\begin{itemize}\n    \\item $a_1 < a_2 < \\ldots < a_n$\n    \\item For each $1 \\leq k < n$, we define two sets $A_k = \\{a_1, a_2, \\ldots, a_k\\}$ and $B_k = \\{a_{k+1}, a_{k+2}, \\ldots, a_n\\}$. A partition $(A_k, B_k)$ is called good if the least common multiple of the elements in $A_k$ is equal to the greatest common divisor of the elements in $B_k$.\n\\end{itemize}\nDetermine the minimum value of $n$ such that there exists a Korean sequence of length $n$ with exactly 2015 good partitions.",
+    "answer": "3024",
+    "unique_id": "imo-bench-combinatorics-061",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Two players, Alice and Bob, play a game in which they take turns choosing positive integers less than or equal to a positive integer $n$. The rules of the game are:\n\n(i) A player cannot choose a number that has been chosen by either player on any previous turn.\n\n(ii) A player cannot choose a number consecutive to any of those the player has already chosen on any previous turn.\n\n(iii) The game is a draw if all numbers have been chosen; otherwise the player who cannot choose a number anymore loses the game.\n\nAlice takes the first turn.  Find the largest value of $n$ such that the game ends in a draw.",
+    "answer": "6",
+    "unique_id": "imo-bench-combinatorics-062",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "The leader of a Vietnamese Olympiad team selects positive integers $n$ and $k$ with $n>2k$, and shares them with the deputy leader and a contestant. The leader then secretly reveals an $n$-digit binary string to the deputy leader, who writes down all $n$-digit binary strings that differ from the leader's string in exactly $k$ positions. The contestant is allowed to examine the strings written by the deputy leader and attempt to guess the leader's string.  What is the minimum number of guesses (in terms of $n$ and $k$) required to guarantee a correct answer?",
+    "answer": "1",
+    "unique_id": "imo-bench-combinatorics-063",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $n$ for which all positive divisors of $n$ can be put into the cells of a rectangular table under the following constraints:\n\n\\begin{itemize}\n  \\item each cell contains a distinct divisor;\n  \\item the sums of all rows are equal;\n  \\item the sums of all columns are equal; and\n  \\item the number of rows is a prime number.\n\\end{itemize}",
+    "answer": "No positive integers",
+    "unique_id": "imo-bench-combinatorics-064",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Find the largest positive integers $n$ that is no more than $2000$ for which we can fill in the entries of an $n \\times n$ table with the following properties:\n\n\\begin{itemize}\n  \\item each entry can be one of $I, M, O$ and $P$;\n  \\item in each row and each column, the letters $I, M$ and $O$ occur the same number of times; and\n  \\item in any diagonal whose number of entries is a multiple of three, the letters $I, M$ and $O$ occur the same number of times.\n  \\item the letter P does not appear on any entry at all\n  \\item $n$ is divisible by $13$.\n\\end{itemize}",
+    "answer": "1989",
+    "unique_id": "imo-bench-combinatorics-065",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A set of diagonals of a regular $109$-gon is called good if any two diagonals in the set either do not intersect in the interior or are perpendicular. Find the maximum possible size of a good set.",
+    "answer": "106",
+    "unique_id": "imo-bench-combinatorics-066",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Suppose we have a $194 \\times 194$ board and we want to mark some cells on this board. Determine the smallest positive integer $k$ such that it is possible to mark $k$ cells on the board in a way that there exists a unique partition of the board into $1 \\times 2$ and $2 \\times 1$ dominoes, where none of the dominoes contains two marked cells.",
+    "answer": "194",
+    "unique_id": "imo-bench-combinatorics-067",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Sir Alex plays the following game on a row of 9 cells. Initially, all cells are empty. In each move, Sir Alex is allowed to perform exactly one of the following two operations:\n\n(1) Choose any number of the form $2^{j}$, where $j$ is a non-negative integer, and put it into an empty cell.\n\n(2) Choose two (not necessarily adjacent) cells with the same number in them; denote that number by $2^{j}$. Replace the number in one of the cells with $2^{j+1}$ and erase the number in the other cell.\n\nDuring the game, Sir Alex encounters a mysterious genie that grants him a wish. However, the genie warns Sir Alex that he can only make a limited number of moves. At the end of the game, one cell contains the number $2^40$, while the other cells are empty. Determine the maximum number of moves that Sir Alex could have made.",
+    "answer": "200293447",
+    "unique_id": "imo-bench-combinatorics-068",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A large $45 \\times 45 \\times 45$ cube is composed of $45^3$ smaller unit cubes. Each unit cube is painted with one color. For each $45 \\times 45 \\times 1$ rectangular prism consisting of $n^{2}$ unit cubes (of any of the three possible orientations), we consider the set of distinct colors present in that prism.  A mischievous gnome, known for rearranging things, has decided to play a prank. He rearranges the colors of the unit cubes such that the set of colors in any $45 \\times 45 \\times 1$ prism in one orientation appears in an $45 \\times 45 \\times 1$ prism in each of the other two orientations.  Determine the maximal possible number of colors that are present in the large cube after the gnome's antics.",
+    "answer": "31395",
+    "unique_id": "imo-bench-combinatorics-069",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Queenie and Horst play a game on a $40 \\times 60$ chessboard with some strange rules. In the beginning the board is empty. In every turn, Horst places a black knight on an empty square in such a way that his new knight does not attack any previous knights. The knight can jump in an L-shape, i.e., two squares in one direction and one square in a perpendicular direction. Then Queenie places a white queen on an empty square. The queen can move any number of squares in a straight line horizontally, vertically, or diagonally. The game gets finished when somebody cannot move. The players are also allowed to play randomly as long as the rules are followed.\n\nFind the maximal positive $K$ such that, regardless of the strategy of Queenie, Horst can put at least $K$ knights on the board.",
+    "answer": "600",
+    "unique_id": "imo-bench-combinatorics-070",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A sports tournament is being organized for $256$ players. Every pair of players must play exactly one match against each other. The tournament is scheduled such that each day only one match is played. Each player arrives on the day of their first match and departs on the day of their last match. For each day a player is present at the tournament, the organizers must pay 1 coin to the hotel. The organizers want to minimize the total cost of all players' stays by designing an optimal schedule. Additionally, there is a VIP lounge where special guests can watch the matches for free. The VIP lounge has limited capacity and can only accommodate a maximum of 10 people at any given time. However, the presence of the VIP lounge and the special guests does not affect the scheduling of the matches or the total cost of the players' stays. Determine the minimum total cost the organizers must pay for all players' hotel stays.",
+    "answer": "4202432",
+    "unique_id": "imo-bench-combinatorics-071",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A group of students are playing a coin-flipping game. They have 64 coins lined up on a table, each showing either heads or tails. They take turns performing the following operation: if there are $k$ coins showing heads and $k>0$, then they flip the $k^{\\text {th }}$ coin over; otherwise, they stop the game.  For example, if they start with the configuration $T H T$, the game would proceed as follows: $T H T \\rightarrow H H T \\rightarrow H T T \\rightarrow T T T$, which takes three turns.  They define a strange mathematical function $f(x)= 2x+10$ to add irrelevance to the problem.\n\nLetting $C$ denote the initial configuration (a sequence of 64 H's and T's), write $\\ell(C)$ for the number of turns needed before all coins show T. Show that this number $\\ell(C)$ is finite, and determine its average value over all $2^{64}$ possible initial configurations $C$.",
+    "answer": "1040",
+    "unique_id": "imo-bench-combinatorics-072",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "There are 100 empty boxes $B_{1}, \\ldots, B_{100}$ in a row on a table and an unlimited supply of pebbles. Given a positive integer $n$, Alice and Bob play the following game.\n\nIn the first round, Alice takes $n$ pebbles and distributes them into the 100 boxes as she wishes. Each subsequent round consists of two steps:\n\n(a) Bob chooses an integer $k$ with $1 \\leqslant k \\leqslant 99$ and splits the boxes into the two groups $B_{1}, \\ldots, B_{k}$ and $B_{k+1}, \\ldots, B_{100}$.\n\n(b) Alice picks one of these two groups, adds one pebble to each box in that group, and removes one pebble from each box in the other group.\n\nBob wins if, at the end of any round, some box contains no pebbles. Find the smallest $n$ such that Alice can prevent Bob from winning.",
+    "answer": "2600",
+    "unique_id": "imo-bench-combinatorics-074",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "In a crowded marketplace, $7396$ stalls are arranged in a straight line, numbered from 1 to $7396$. Each of two merchants, Ali and Baba, sells $k$ distinct items numbered from 1 to $k$; each item is sold at a lower-numbered stall and bought at a higher-numbered stall. For each merchant, and for any $i$ and $j$ with $1 \\leqslant i<j \\leqslant k$, the stall where item $j$ is sold is higher than the stall where item $i$ is sold; similarly, the stall where item $j$ is bought is higher than the stall where item $i$ is bought. Say that two stalls are connected by some merchant if one can start from the lower-numbered stall and reach the higher-numbered stall by buying and selling one or more items from that merchant.\n\nDetermine the smallest $k$ for which one can guarantee that there are two stalls that are connected by both merchants.",
+    "answer": "7311",
+    "unique_id": "imo-bench-combinatorics-075",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "The Lucas numbers $L_{0}, L_{1}, L_{2}, \\ldots$ are defined inductively by $L_{0}=2, L_{1}=1$, and $L_{n+1}=L_{n}+L_{n-1}$ for $n \\geqslant 1$. The Fibonacci numbers $F_{0}, F_{1}, F_{2}, \\ldots$ are defined inductively by $F_{0}=0, F_{1}=1$, and $F_{n+1}=F_{n}+F_{n-1}$ for $n \\geqslant 1$. Determine the smallest size of a set $S$ of integers such that for every $k=2,3, \\ldots, 125$ there exist some $x, y \\in S$ such that $x-y=F_{k}$. Also, there exist some $a, b \\in T$ for some set $T$ such that $a-b = L_{100}$.",
+    "answer": "64",
+    "unique_id": "imo-bench-combinatorics-076",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Players $A$ and $B$ play a game on a blackboard that initially contains 1997 copies of the number 1. In every round, player $A$ erases two numbers $x$ and $y$ from the blackboard, and then player $B$ writes one of the numbers $x+y$ and $|x-y|$ on the blackboard. Additionally, there is a coin that is flipped before every round. If the coin lands heads, player $B$ is forced to write $x+y$ and if the coin lands tails player $B$ is forced to write $|x-y|$. The game terminates as soon as, at the end of some round, one of the following holds:\n\n(1) one of the numbers on the blackboard is larger than the sum of all other numbers;\n\n(2) there are only zeros on the blackboard.\n\nPlayer $B$ must then give as many cookies to player $A$ as there are numbers on the blackboard. Player $A$ wants to get as many cookies as possible, whereas player $B$ wants to give as few as possible. Determine the number of cookies that $A$ receives if both players play optimally.",
+    "answer": "8",
+    "unique_id": "imo-bench-combinatorics-077",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "An integer $m \\geqslant 100$ is called colorful if, given infinitely many candies in each of $99$ flavors $F_{1}, F_{2}, \\ldots, F_{99}$, it is possible to place $m$ of them around a circle so that in any group of $100$ consecutive candies there is at least one candy of flavor $F_{i}$ for each $i=1, \\ldots, 99$.  Additionally, let $k$ be an integer such that $k > m$.\n\nProve that there are only finitely many positive integers which are not colorful. Find the largest among them.",
+    "answer": "9701",
+    "unique_id": "imo-bench-combinatorics-078",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Determine the largest $N$ for which there exists a table $T$ of integers with $N$ rows and 16 columns that has the following properties:\n\n(i) Every row contains the numbers $1,2, \\ldots, 16$ in some order.\n\n(ii) For any two distinct rows $r$ and $s$, there is a column $c$ such that $|T(r, c)-T(s, c)| \\geqslant 2$.\nIn addition to the given constraints, every column in the table must contain distinct integers.\nHere $T(r, c)$ means the number at the intersection of the row $r$ and the column $c$.",
+    "answer": "81729648000",
+    "unique_id": "imo-bench-combinatorics-079",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "A $\\pm 1$-sequence is a sequence of 2022 numbers $a_{1}, \\ldots, a_{2022}$, each equal to either +1 or -1. Additionally, there is a sequence of 3000 numbers $b_{1}, \\ldots, b_{3000}$, each equal to either 0 or 2. Determine the largest $C$ so that, for any $\\pm 1$-sequence, there exists an integer $k$ and indices $1 \\leqslant t_{1}<\\ldots<t_{k} \\leqslant 2022$ so that $t_{i+1}-t_{i} \\leqslant 2$ for all $i$, and\n\n\\[\n\\left|\\sum_{i=1}^{k} a_{t_{i}}\\right| \\geqslant C\n\\]",
+    "answer": "506",
+    "unique_id": "imo-bench-combinatorics-080",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "The Bank of Berlin issues coins made out of two types of metal: aluminium (denoted $A$ ) and copper (denoted $C$ ). Sophia has $255$ aluminium coins, and $255$ copper coins, and arranges her $510$ coins in a row in some arbitrary initial order.  Given a fixed positive integer $k \\leqslant 510$, she repeatedly performs the following operation: identify the largest subsequence containing the $k$-th coin from the left which consists of consecutive coins made of the same metal, and move all coins in that subsequence to the left end of the row. For example, if there are $4$ aluminum coins and $4$ copper coins and $k=4$, the process starting from the configuration $A A C C C A C A$ would be\n\n\\[\nA A C C C A C A \\rightarrow C C C A A A C A \\rightarrow A A A C C C C A \\rightarrow C C C C A A A A \\rightarrow \\cdots\n\\]\n\nIn addition to aluminium and copper coins, Sophia also has a few silver coins that she keeps separate from her aluminium and copper coins.\n\nLet $a$ and $b$ be the smallest and largest positive integer $k$ with $1 \\leqslant k \\leqslant 510$ such that for every initial configuration, at some point of the process there will be at most one aluminium coin adjacent to a copper coin. Find the product $ab$.",
+    "answer": "97665",
+    "unique_id": "imo-bench-combinatorics-081",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "In each square of a garden shaped like a $2025 \\times 2025$ board, there is initially a tree of height 0. A gardener and a lumberjack alternate turns playing the following game, with the gardener taking the first turn:\n\n\\begin{itemize}\n  \\item The gardener chooses a square in the garden. Each tree on that square and all the surrounding squares (of which there are at most eight) then becomes one unit taller.\n  \\item The lumberjack then chooses four different squares on the board. Each tree of positive height on those squares then becomes one unit shorter.\n\\end{itemize}\n\nAdditionally, there is a magic bird that flies around the garden and sings a beautiful song every time the lumberjack chooses a square.\n\nWe say that a tree is majestic if its height is at least $10^{6}$. Determine the largest number $K$ such that the gardener can ensure there are eventually $K$ majestic trees on the board, no matter how the lumberjack plays.",
+    "answer": "2278125",
+    "unique_id": "imo-bench-combinatorics-082",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Consider a game where you start with $2025$ boxes, each containing a single marble. A move consists of selecting two boxes, removing an equal number of marbles from each, and creating a new box with the combined marbles.  What is the minimum number of non-empty boxes that can be achieved through a finite sequence of such moves?",
+    "answer": "2",
+    "unique_id": "imo-bench-combinatorics-083",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Minh is a student whose birthday is in the year $1997$, so he starts by writing $s$ integer-valued 1997-tuples on a blackboard. After doing that, he can take any two (not necessarily distinct) tuples $\\mathbf{v}=\\left(v_{1}, \\ldots, v_{1997}\\right)$ and $\\mathbf{w}=\\left(w_{1}, \\ldots, w_{1997}\\right)$ that he has already written, and apply one of the following operations to obtain a new tuple:\n\n\\[\n\\begin{aligned}\n& \\mathbf{v}+\\mathbf{w}=\\left(v_{1}+w_{1}, \\ldots, v_{1997}+w_{1997}\\right) \\\\\n& \\mathbf{v} \\vee \\mathbf{w}=\\left(\\max \\left(v_{1}, w_{1}\\right), \\ldots, \\max \\left(v_{1997}, w_{1997}\\right)\\right)\n\\end{aligned}\n\\]\n\nand then write this tuple on the blackboard.\n\nIt turns out that, in this way, Minh can write any integer-valued 2023-tuple on the blackboard after finitely many steps. What is the smallest possible number $s$ of tuples that he initially wrote?",
+    "answer": "3",
+    "unique_id": "imo-bench-combinatorics-084",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Evan fills the fields of an $78 \\times 78$ board with numbers from 1 to $6084$, each number being used exactly once. She then counts the total number of good paths on the board. A good path is a sequence of fields of arbitrary length (including 1) such that:\n\n(i) The first field in the sequence is one that is only adjacent to fields with larger numbers, and also one that has an even row number and an even column number.\n\n(ii) Each subsequent field in the sequence is adjacent to the previous field,\n\n(iii) The numbers written on the fields in the sequence are in increasing order.\n\nTwo fields are considered adjacent if they share a common side. Find the smallest possible number of good paths Alice can obtain.",
+    "answer": "12013",
+    "unique_id": "imo-bench-combinatorics-085",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Let $\\mathbb{Z}_{\\geqslant 0}$ be the set of non-negative integers, and let $f: \\mathbb{Z}_{\\geqslant 0} \\times \\mathbb{Z}_{\\geqslant 0} \\rightarrow \\mathbb{Z}_{\\geqslant 0}$ be a bijection such that whenever $f\\left(x_{1}, y_{1}\\right)>f\\left(x_{2}, y_{2}\\right)$, we have $f\\left(x_{1}+1, y_{1}\\right)>f\\left(x_{2}+1, y_{2}\\right)$ and $f\\left(x_{1}, y_{1}+1\\right)>f\\left(x_{2}, y_{2}+1\\right)$. Also, let $g: \\mathbb{Z}_{\\geqslant 0} \\rightarrow \\mathbb{Z}_{\\geqslant 0}$ be a function such that $g(n) = n^2 - n + 1$.\n\nLet $N$ be the number of pairs of integers $(x, y)$, with $0 \\leqslant x, y<100$, such that $f(x, y)$ is odd. Let the smallest and largest possible value of $N$ be $a,b$, find the product $ab$.",
+    "answer": "18750000",
+    "unique_id": "imo-bench-combinatorics-086",
+    "subject": "Combinatorics",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $m > 1$ such that there exists a permutation $(a_1, a_2, \\dots, a_n)$ of the all divisors of $m$ for which $a_1 + \\dots + a_i$ is a perfect square for all $1 \\leq i \\leq n$.\n",
+    "answer": "3",
+    "unique_id": "imo-bench-number_theory-001",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the number of all positive integers $2\\leq m \\leq 2000$ that satisfy the following condition: For any $m$ distinct positive integers $(n_1, \\ldots, n_m)$, at least one of the following two conditions holds: $n_1 + \\ldots + n_m$ is a multiple of $m$, or there exists a permutation $(k_1, \\ldots, k_m)$ such that $k_1 + 2k_2 + \\ldots + mk_m$ is a multiple of $m$.\n",
+    "answer": "1009",
+    "unique_id": "imo-bench-number_theory-002",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Suppose that the function $g:\\mathbb{N}\\rightarrow \\mathbb{N}$ satisfies following four conditions.\n\n(1) There exists a natural number $n$ such that $g(n) \\neq 1$.\n\n(2) For any natural numbers $x$ and $y$, $g(xy) = g(x) + g(y) - 1$.\n\n(3) There are infinitely many $n$ such that $g(k) = g(n-k)$ for any $k < n$.\n\n(4) $g(39455)=11$ and $g(94175)=21$.\n\nFind $g(41000)$.",
+    "answer": "31",
+    "unique_id": "imo-bench-number_theory-003",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integer triples $(x, y, z)$ that satisfy $x^3 + y^3 + z^3 - x^2y^2z^2 = 0$ and $x \\le y \\le z$.\n",
+    "answer": "$(1, 2, 3)$",
+    "unique_id": "imo-bench-number_theory-004",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "A subset $X$ of $\\mathbb{Z}$ is called rich if for any positive integer $n$ and $n$ numbers $x_0, x_1, \\dots, x_n$ belonging to $X$, all integer roots of $x_0 + x_1 \\cdot x + \\dots + x_n \\cdot x^n = 0$ belong to $X$. Find all rich sets that contain $2^k - 2^l$ for any positive integers $k$ and $l$.\n",
+    "answer": "$\\mathbb{Z}$",
+    "unique_id": "imo-bench-number_theory-005",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For a given positive integer $a$, find the number of positive integers $b$ less than or equal to $a^2+1$ that satisfy the following condition:\n\n<Condition> There exists a positive integer $s$ such that the number of divisors of $s \\cdot a$ is equal to the number of divisors of $s \\cdot a + s \\cdot b$.\n",
+    "answer": "$a^2 - a + 1$ ( $a \\ge 2$)\n0 ($a=1$)",
+    "unique_id": "imo-bench-number_theory-006",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $n \\geq 2$ that satisfy the following condition:\n(Condition) For any $n$ numbers $b_1, \\dots, b_n$ whose sum is not a multiple of $n$, there exists some $1 \\leq j \\leq n$ such that $b_j, b_j + b_{j-1}, \\dots, b_j + b_{j-1} + \\dots + b_{j-n+1}$ are all not multiples of $n$.\n(Here, for any integer $i$ with $1 \\leq i \\leq n$, $b_{i-n} = b_i$.)\n",
+    "answer": "n is prime\n",
+    "unique_id": "imo-bench-number_theory-007",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Does there exist a positive integer $n$ satisfying the following condition? If so, find the smallest such $n$.\n\n(Condition) There exist infinitely many ordered $n$-tuples of positive rational numbers $(x_1, \\dots, x_n)$ such that both $\\sum_{i=1}^n i \\cdot x_i$ and $\\frac{1}{x_1 + \\dots + x_n} + \\frac{1}{x_2 + \\dots + x_n} + \\dots + \\frac{1}{x_n}$ are positive integers.\n",
+    "answer": "3",
+    "unique_id": "imo-bench-number_theory-008",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For a positive integer $n$, let $\\tau(n)$ be the number of divisors of $n$, and let $\\tau_1(n)$ be the number of divisors of $n$ that leave a remainder of 1 when divided by 3. Find all positive integers that cannot be represented as $\\frac{\\tau(22m)}{\\tau_1(22m)}$ for some positive integer $m$.\n",
+    "answer": "1 and odd prime numbers",
+    "unique_id": "imo-bench-number_theory-009",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Suppose $f$ is a polynomial with integer coefficients of odd degree $d \\ge 3$. Assume that the following condition holds:\n\n(Condition) For any positive integer $n$, there exist distinct positive integers $a_1, \\dots, a_n$ such that for any $1 \\leq i, j \\leq n$, $\\frac{f(a_i)}{f(a_j)}$ is between $\\frac{1}{2}$ and $2$ and is the $d$-th power of some rational number.\n\nFurthermore, for some prime $p$, we know that $f(1)=3^d p$ and $\\frac{f(2)}{f'(2)}=\\frac{5}{2d}$. Evaluate $f(3)$.\n",
+    "answer": "$7^d p$",
+    "unique_id": "imo-bench-number_theory-010",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $n$ such that the sequence $\\{x_i\\}$ defined by $x_1 = \\frac{2n-1}{2}$ and $x_{k+1} = x_k \\cdot \\lfloor x_k \\rfloor$ for $k\\ge 1$ contains at least one integer.\n",
+    "answer": "$n=1, n \\ge 3$",
+    "unique_id": "imo-bench-number_theory-011",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $n$ such that there exists a function $f:\\mathbb{N}\\rightarrow \\mathbb{N}$ from positive integers to positive integers satisfying $\\operatorname{gcd}(f(a)+a+b, f(a+b)+a)\\leq n$ for all positive integers $a,b$.\n",
+    "answer": "$n \\ge 2$",
+    "unique_id": "imo-bench-number_theory-012",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For a positive integer $n \\geq 2$, let the set $C_n$ be the set of integers $2^n - 2^i$ for integers $i$ such that $0 \\leq i < n$. Find the smallest positive integer that cannot be expressed as a sum of numbers in $C_n$ (where the same number can be used multiple times).\n",
+    "answer": "$(n-2)2^n +1$\n",
+    "unique_id": "imo-bench-number_theory-013",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all pairs of positive integers $(a,b)$ that satisfy the following condition:\n$\\sqrt[3]{7a^2 +ab+b^2}=a+1$\n",
+    "answer": "$(n^2 +3n+2, n^3 + 4n^2 + 3n -1)$\nfor $n \\ge 1$",
+    "unique_id": "imo-bench-number_theory-014",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all ordered triples $(p, a, b)$ of a prime $p > 2$ and positive integers $a, b$ such that $a\\le b$ and both $a^{p-1} + b$ and $b^{p-1} + a$ are powers of $p$.\n",
+    "answer": "(3,2,5)",
+    "unique_id": "imo-bench-number_theory-015",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all functions $g:\\mathbb{Q}\\rightarrow \\mathbb{Z}$ that satisfy the following condition for any rational number $x$, integer $a$, and positive integer $b$:\n$g(x)=g(\\frac{g(bx-a)+a}{b})$\n",
+    "answer": "$g(x)=c, g(x)=\\lceil x \\rceil, g(x)=\\lfloor x \\rfloor$\n",
+    "unique_id": "imo-bench-number_theory-016",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "$\\alpha$ is a real number that is not rational, and $k$ is a positive integer. A pair of positive integers $(m, n)$ is called \"pretty\" if $m\\lceil n\\alpha \\rceil - n \\lfloor m\\alpha \\rfloor =k$. A pretty pair $(m, n)$ is called \"cool\" if neither $(m-n, n)$ nor $(m, n-m)$ are pretty pairs. Find the number of cool pairs when $k=2310$.\n",
+    "answer": "6912",
+    "unique_id": "imo-bench-number_theory-017",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Let a set of integers $X$ be called a \\textit{good set} if it satisfies the following condition:\n(Condition) For any $a, b \\in X$ (where $a$ and $b$ can be equal) and any $i \\in \\mathbb{Z}$, $a^2 + i \\cdot a \\cdot b + b^2 \\in X$.\nAn ordered pair $(x, y)$ of two different positive integers is called a \\textit{complex pair} if there are at least two good sets containing both $x$ and $y$. A non-negative integer $m$ is called a \\textit{good number} if there exists a complex pair $(x,y)$ such that $m=x^2 + y^2$. Find $20$th smallest good number.\n",
+    "answer": "208",
+    "unique_id": "imo-bench-number_theory-018",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integer triples $(a,b,c)$ that satisfy $a \\le b \\le c$ and\n$a^3 (b^3 +c^3 )= 2012 (abc+2)$\n",
+    "answer": "(2,251,252)\n",
+    "unique_id": "imo-bench-number_theory-019",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the number of positive integers $n\\ge 2$ less than 200 that are relatively prime to 6 such that for any positive integer $a$ satisfying the condition that the quotient when $n$ is divided by $a$ is 2, the binomial coefficient $\\binom{a-1}{n-2a-1}$ is a multiple of $n-2a$.\n",
+    "answer": "44",
+    "unique_id": "imo-bench-number_theory-020",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For a positive integer $n$, we call $g:\\mathbb{Z}\\rightarrow \\mathbb{Z}$ a \\textif{$n$-good function} if $g(1)=1$ and for any two distinct integers $a$ and $b$, $g(a)-g(b)$ divides $a^n -b^n$. We call a positive integer $n$ an \\textit{exotic integer} if the number of $n$-good functions is twice of an odd integer. Find $132$th exotic integer.\n\n",
+    "answer": "69169",
+    "unique_id": "imo-bench-number_theory-021",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For a given positive integer $n$, let $m$ be the exponent of 2 in the prime factorization of $n$. Define $f(n) = \\frac{n}{2^m}$. Find all positive integers $u$ for which there exists a positive integer $v$ such that\n\n(Condition) $f(u+v) - f(u), f(u+v+1) - f(u+1), \\cdots, f(u+2v-1) - f(u+v-1)$ are all multiples of 4.\n",
+    "answer": "1,3,5",
+    "unique_id": "imo-bench-number_theory-022",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the smallest positive integer $m$ that satisfies the following condition:\n(Condition) There exist $m$ distinct positive integers $a_1, \\dots, a_m$ such that $(1-\\frac{1}{a_1})\\cdots (1-\\frac{1}{a_m}) = \\frac{42}{2010}$.\n",
+    "answer": "48",
+    "unique_id": "imo-bench-number_theory-023",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Denote by $(a_1, b_1), \\ldots, (a_k, b_k)$ all the ordered pairs of positive integers $(a,b)$ that satisfy\n$a^2 + 2\\cdot 3^b = a(2^{b+1}-1)$. Evaluate $\\sum_{i=1}^k (a_i + b_i)$.\n",
+    "answer": "94",
+    "unique_id": "imo-bench-number_theory-024",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the smallest positive integer $n$ for which there exist integer-coefficient polynomials $P_1, \\dots, P_n$ such that $\\frac{{P_1(x)}^2 + \\cdots + {P_n(x)}^2}{x^2 + 7}$ is a perfect square of an positive integer.\n",
+    "answer": "5",
+    "unique_id": "imo-bench-number_theory-025",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the maximum number of possible colors in a $2^n \\times 2^n$ board colored such that for any $0 \\leq a, b \\leq 2^n - 1$, the color of the cell in the $a$-th row and $b$-th column is the same as the color of the cell in the $(b-a)$-th row and $a$-th column (where rows and columns are numbered from 0 to $2^n - 1$, and the row index is taken modulo $2^n$).\n",
+    "answer": "$2^n$\n",
+    "unique_id": "imo-bench-number_theory-026",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the largest $n$ for which there exist positive integers $x_1, \\dots, x_n$ satisfying the following condition:\n(Condition) For any $2 \\leq i \\leq n-1$, $x_{i+1}x_{i-1} + x_{i+1} + x_{i-1} = x_i^2$.\n",
+    "answer": "4",
+    "unique_id": "imo-bench-number_theory-027",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Given a positive integer $n$, there exists an integer $a$ such that the sequence $\\{a_k\\}$ defined by $a_0 = a$ and $a_k = \\frac{a_{k-1}}{k} + k^{n-1}$ consists only of integers. Find the possible values of the remainder when $n$ is divided by 3.\n",
+    "answer": "2",
+    "unique_id": "imo-bench-number_theory-028",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Let $\\tau(n)$ be the number of positive divisors of a positive integer $n$. Suppose that the function $g:\\mathbb{N}\\rightarrow \\mathbb{N}$ satisfying the following two conditions:\n(1) For any positive integer $n$, $\\tau(g(n))=n$.\n(2) $\\frac{(m-1)n^{mn-1}g(m)}{g(mn)}$ is an integer.\nIf $N>1$ is a positive integer whose prime factorization can be written as $N=p_1^{e_1}\\cdots p_k^{e_k}$ where $p_1, \\ldots, p_k$ are distinct prime, and $e_1, \\ldots, e_k$ are positive integers. Find all the possible values of $g(N)$.\n",
+    "answer": "$p_1^{p_1^{e_1}-1} \\cdots p_k^{p_k^{e_k}-1}$\n",
+    "unique_id": "imo-bench-number_theory-029",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For a positive integer $n$, let $a_n = \\binom{2^n}{2^{n-1}}$. For this, let $b_n = a_{n+1}-a_n$. For $n\\geq 2$, find the exponent of $2$ in the prime factorization of $b_n$.\n",
+    "answer": "$3n$",
+    "unique_id": "imo-bench-number_theory-030",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Let $k>l$ be given coprime positive integers greater than 1. Define a function $f: \\mathbb{Z}\\rightarrow \\mathbb{Z}$ as follows: for $x$, $f(x)$ is the smallest value of $|a|+|b|$ among all integers $a,b$ satisfying $ka+lb = x$.\n An integer $x$ is called 'nice' if $f(x)\\geq \\max (f(x-a),f(x+a),f(x-b),f(x+b))$. Denote by $F(k,l)$ the the number of nice integers when both $k$ and $l$ are odd, and denote by $G(k,l)$ the number of nice integers when either $k$ or $l$ is even. Suppose that there exists polynomials $p(k,l)$ and $q(k,l)$ such that $F(k,l)=p(k,l)$ for all odd integers $k,l$ and $G(k,l)=q(k,l)$ whenever at least one of $k$ or $l$ is even.  Evaluate $p(k,l)^2 + q(k,l)^2$.",
+    "answer": "$5(l-1)^2$",
+    "unique_id": "imo-bench-number_theory-031",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "For the integer sequence $(a_n)$ defined by $a_1=10$ and $a_{n+1}=6a_n - 2^{n+2} - 3^{n+1} +5$, find all positive numbers that are relatively prime to every number in $(a_n)$.\n",
+    "answer": "1",
+    "unique_id": "imo-bench-number_theory-032",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $m$ for which there exists a unique positive integer $n$ satisfying the following two conditions:\n(1) $0 \\leq n < m!$\n(2) $m! \\mid n^m + 1$\n",
+    "answer": "m is prime or 1\n",
+    "unique_id": "imo-bench-number_theory-033",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all integer values that appear exactly once as the value of $\\frac{g(n)}{n}$, where $g:\\mathbb{N}\\rightarrow\\mathbb{N}$ is a function defined by $g(m)=\\sum_{i=1}^m \\gcd(i,m)$.",
+    "answer": "All powers of 2\n",
+    "unique_id": "imo-bench-number_theory-034",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Let $n$ be a given positive integer bigger than 1. For $1 \\leq k \\leq n$, $a_k = 2^{k-1}$. For $k > n$, the sequence $(a_i)$ satisfies the recurrence relation $a_k = a_{k-1} + \\cdots + a_{k-n}$. Suppose that $m$ consecutive terms in the sequence are multiples of $n$. Find the maximum possible value of $m$.\n",
+    "answer": "$n-1$",
+    "unique_id": "imo-bench-number_theory-035",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "We are given the function $f:\\mathbb{N}\\rightarrow \\mathbb{N}$.\n\n$f(n)$ is the number obtained by moving the units digit of $n$ to the front.\nFind all positive integers $n$ such that $f^{-1}(f(n)^2)=n^2$.\n",
+    "answer": "$2,3, \\underbrace{2\\cdots2}_{n}1$\n",
+    "unique_id": "imo-bench-number_theory-036",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Let $A$ be the set of odd integers $a$ such that $|a|$ is not a perfect square.\n\nFind all numbers that can be expressed as $x+y+z$ for $x, y, z \\in A$ such that $xyz$ is a perfect square.\n",
+    "answer": "All numbers of the form $4k+3$\n",
+    "unique_id": "imo-bench-number_theory-037",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Let a set $S$ be called $p$-good for a given prime number $p$ if it satisfies the following three conditions:\n(1) $S$ consists of positive integers.\n(2) The number of primes dividing at least one number in $S$ is $p-1$.\n(3) For any subset of $S$, the product of all elements in that subset is not a $p$-th power.\n\nFind the maximum number of elements that a $p$-good set can have.\n",
+    "answer": "$(p-1)^2$",
+    "unique_id": "imo-bench-number_theory-038",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find the smallest positive integer $n$ such that there exists infinitely many triple $(a,b,c)$ of distinct positive integers such that $\\frac{(a+b+c)(ab+bc+ca)+a+b+c}{4abc} = n$.",
+    "answer": "3",
+    "unique_id": "imo-bench-number_theory-039",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Consider ordered quadruples of positive integers $(a,b,c,d)$ satisfying the following two conditions:\n(1) $a+b=c+d$\n(2) $ab=2cd$\n\nFind the maximum value of $k$ such that $\\frac{c^2 +d^2}{cd} \\geq k$ holds for all such quadruples.\n",
+    "answer": "6",
+    "unique_id": "imo-bench-number_theory-040",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $n\\ge 2$ such that for any positive integer $k$ relatively prime to $n$, $k^2 - 1$ is a multiple of $n$.\n",
+    "answer": "2, 3, 4, 6, 8, 12, 24\n",
+    "unique_id": "imo-bench-number_theory-041",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "Find all positive integers $k$ such that the number of positive divisors of $2k^3$ is $2k$. ",
+    "answer": "1, 4, 10",
+    "unique_id": "imo-bench-number_theory-042",
+    "subject": "Number theory",
+    "level": 5
+  },
+  {
+    "problem": "We call an ordered triple $(x,y,z)$ of positive integers a \\textit{good triple} if $\\frac{(x+1)^y}{x^z +1}$ is a positive integer. Find the number of good triples (x,y,z) such that $0<x,y,z<100$.\n",
+    "answer": "19601",
+    "unique_id": "imo-bench-number_theory-043",
+    "subject": "Number theory",
+    "level": 5
+  }
+]

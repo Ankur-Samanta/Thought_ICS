@@ -1,0 +1,1253 @@
+{
+  "metadata": {
+    "model_name": "llama3b",
+    "dataset_name": "svamp",
+    "n_problems": 100,
+    "seed": 42,
+    "temperature": 0.5,
+    "max_depth": 100,
+    "max_tokens_per_thought": null,
+    "model_seed": null,
+    "cache_key": "288ddcec33d6157dbaa871353f632b79"
+  },
+  "chains": [
+    {
+      "problem_id": "svamp_57",
+      "problem_number": 1,
+      "chain": [
+        "He ate 14 cookies and gave 13 cookies, so he has 14 - 13 = 1 cookie left",
+        "He gave 13 cookies to his friend, so he ate 14 - 1 = 13 cookies in total",
+        "Therefore he ate 13 - 13 = \\boxed{0} cookies more than he gave to his friend"
+      ],
+      "answer": "0",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_12",
+      "problem_number": 2,
+      "chain": [
+        "Subtracting the number of apps he had initially from the final amount: 18 - 17 = 1",
+        "Therefore, he added 1 app",
+        "So the answer is \\boxed{1}"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_140",
+      "problem_number": 3,
+      "chain": [
+        "Let's find the difference between the number of apples Jackie has and the number of apples Adam has: 10 - 9 = 1",
+        "Therefore, Jackie has 1 more apple than Adam",
+        "So the answer is \\boxed{1}"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_125",
+      "problem_number": 4,
+      "chain": [
+        "Dan spent $ 2 + $ 3 = $ 5. He spent $ 3 - $ 2 = $ 1 more on chocolate than on candy bar",
+        "Therefore, he spent \\boxed{1} dollar more on chocolate"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_114",
+      "problem_number": 5,
+      "chain": [
+        "Let x be the number of people that can ride the Ferris wheel on the large seats",
+        "Since there are 7 large seats, the total capacity of the large seats = 12 \u00d7 7 = 84",
+        "Therefore x = 84",
+        "So the answer is \\boxed{84}"
+      ],
+      "answer": "84",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_71",
+      "problem_number": 6,
+      "chain": [
+        "Let's denote the number of cards Nell gave to Jeff as x",
+        "So 246 - x = 404, so x = 42. This means she gave 42 baseball cards to Jeff",
+        "She had 214 - x = 214 - 42 = 172 Ace cards left",
+        "The difference between the number of Ace cards and baseball cards = 495 - 404 = 91",
+        "Therefore, Nell now has 91 more Ace cards than baseball cards",
+        "So the answer is \\boxed{91}."
+      ],
+      "answer": "91",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_52",
+      "problem_number": 7,
+      "chain": [
+        "Let x be the length of the hair after the cutting. We know that x = 16 - 11 = 5",
+        "But x = 5 is not the final length. Since x = 5, the hair grew by 12, so the final length is x + 12 = 5 + 12 = 17",
+        "Therefore the final length of the hair is \\boxed{17}"
+      ],
+      "answer": "17",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_279",
+      "problem_number": 8,
+      "chain": [
+        "There were originally 41 children. Now there are 18. So, the difference is 41 - 18 = 23",
+        "The answer is \\boxed{23}"
+      ],
+      "answer": "23",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_44",
+      "problem_number": 9,
+      "chain": [
+        "The first chapter has 91 pages",
+        "The second chapter has 23 pages",
+        "The difference in pages is 91 - 23 = 68",
+        "Therefore the answer is \\boxed{68}"
+      ],
+      "answer": "68",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_216",
+      "problem_number": 10,
+      "chain": [
+        "Let n be the number of planks. Each plank requires 3 nails, so 3n nails are needed for the planks. An additional 8 nails are used, for a total of 3n + 8 nails. Since 11 nails are used in all, 3n + 8 = 11",
+        "Subtracting 8 from both sides: 3n = 3",
+        "Dividing by 3: n = 1",
+        "Therefore John needs \\boxed{1} plank."
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_16",
+      "problem_number": 11,
+      "chain": [
+        "To find the number of people per seat, divide the total number of people by the number of seats",
+        "So 20 \u00f7 4 = 5",
+        "Therefore each seat can hold \\boxed{5} people"
+      ],
+      "answer": "5",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_15",
+      "problem_number": 12,
+      "chain": [
+        "First, find the distance yet to travel: 1218 - 849 = 369",
+        "Then, find the time required to cover this distance: 369 / 17 = 21.588",
+        "Now, convert the time to hours and minutes: 0.588 \u00d7 60 = 35.28 minutes = 35 minutes and 17 seconds",
+        "Therefore the answer is 35 minutes and 17 seconds",
+        "However, the question asks for the distance, so the answer is 369 feet",
+        "Therefore the answer is \\boxed{369}"
+      ],
+      "answer": "369",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_47",
+      "problem_number": 13,
+      "chain": [
+        "We know that Jack received 3 + 4 + 8 = 15 emails in total",
+        "We want to find how many he received in the morning and the evening, so we can subtract the number of emails he received in the afternoon from the total",
+        "So, the number of emails received in the morning and evening = 15 - 4 = \\boxed{11}"
+      ],
+      "answer": "11",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_111",
+      "problem_number": 14,
+      "chain": [
+        "She weighed 114 - 50 = 64 in the first week",
+        "She weighed 64 - 60 = 4 in the second week",
+        "Therefore, Jessie weighs 4 kilograms now",
+        "\\boxed{4}"
+      ],
+      "answer": "4",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_119",
+      "problem_number": 15,
+      "chain": [
+        "Let x be the amount of money Olivia had initially",
+        "She spent 78 dollars, so she has x - 78 dollars left",
+        "Since she has 33 dollars left, we can set up the equation x - 78 = 33",
+        "Solving for x, we get x = 33 + 78 = 111",
+        "Therefore Olivia had \\boxed{111} dollars initially"
+      ],
+      "answer": "111",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_258",
+      "problem_number": 16,
+      "chain": [
+        "Jake has (19 - 12) peaches = 7 peaches",
+        "Therefore Jake has \\boxed{7} peaches"
+      ],
+      "answer": "7",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_13",
+      "problem_number": 17,
+      "chain": [
+        "Dan spent $ 7 + $ 6 = $ 13",
+        "Therefore Dan spent \\boxed{13} dollars."
+      ],
+      "answer": "13",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_101",
+      "problem_number": 18,
+      "chain": [
+        "Let Z be the number of push-ups Zachary did",
+        "From the problem: 44 = Z + 9",
+        "Subtracting Z from both sides: 44 - Z = 9",
+        "Subtracting 9 from both sides: 44 - 9 = Z",
+        "35 = Z",
+        "Therefore, Zachary did \\boxed{35} push-ups"
+      ],
+      "answer": "35",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_292",
+      "problem_number": 19,
+      "chain": [
+        "She must have had 6 \u00d7 14 = 84 pencils in the packs",
+        "Since she has 22 pencils in each row, she must have had 84 / 22 = 3.8181818... rows",
+        "Since she can't have a fraction of a row, she must have had 3 rows",
+        "So she must have had 3 \u00d7 22 = 66 pencils in the rows",
+        "Therefore, she has 84 + 66 = \\boxed{150} pencils"
+      ],
+      "answer": "150",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_214",
+      "problem_number": 20,
+      "chain": [
+        "Paco had x cookies in the beginning. After eating 19 cookies, he had x - 19 left",
+        "It is given that Paco had 35 cookies left, so x - 19 = 35",
+        "Solving for x: x = 35 + 19 = 54",
+        "Therefore Paco had \\boxed{54} cookies in the beginning"
+      ],
+      "answer": "54",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_112",
+      "problem_number": 21,
+      "chain": [
+        "Area of carpet = 14, so length times width = 14",
+        "Let length = l and width = w. We have l \u00d7 w = 14",
+        "We are given that l = 7. Substituting into l \u00d7 w = 14: 7w = 14",
+        "Dividing both sides by 7: w = 14/7 = 2",
+        "Therefore the width of her room is \\boxed{2} feet"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_229",
+      "problem_number": 22,
+      "chain": [
+        "Total tomatoes = 171",
+        "Yesterday's harvest = 134",
+        "Today's harvest = 30",
+        "So after today, he will have 171 - 134 - 30 = \\boxed{7}"
+      ],
+      "answer": "7",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_142",
+      "problem_number": 23,
+      "chain": [
+        "Let x be the number of games she needs to give away",
+        "Since she has 80 + 31 = 111 games, she needs to give away x games so that she has 111 - x = 6 games left",
+        "111 - x = 6, so x = 105",
+        "Therefore she needs to give away \\boxed{105} games"
+      ],
+      "answer": "105",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_3",
+      "problem_number": 24,
+      "chain": [
+        "Let's start by finding the number of days the water bottles will last: 200 / 312 = 0.64",
+        "Since you can't drink a fraction of a bottle, this means that Debby will run out of water bottles in 0.64 days, which is less than 1 day",
+        "Now, let's find the number of days the soda bottles will last: 256 / 308 = 0.83",
+        "So the soda bottles will last 0.83 days, which is less than 1 day",
+        "Therefore, the soda bottles will last less than 1 day",
+        "I will need to find the exact number of days, not an approximation",
+        "Let's divide the number of soda bottles by the number of soda bottles Debby drinks per day: 256 / 4 = 64",
+        "Therefore, the soda bottles will last \\boxed{64} days"
+      ],
+      "answer": "64",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_81",
+      "problem_number": 25,
+      "chain": [
+        "33 pieces of candy + 4 additional pieces = 37 pieces of candy",
+        "37 pieces of candy + 14 pieces of chocolate = 51 pieces altogether",
+        "The answer is \\boxed{51}"
+      ],
+      "answer": "51",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_290",
+      "problem_number": 26,
+      "chain": [
+        "The number of trees that died is 6",
+        "The number of trees that survived is 13 - 6 = 7",
+        "The difference is 7 - 6 = 1",
+        "Therefore, 1 more tree survived than those that died",
+        "So the answer is \\boxed{1}"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_174",
+      "problem_number": 27,
+      "chain": [
+        "Paul gave away 213 crayons and lost 16, so he gave away and lost 213 + 16 = 229",
+        "The total number of crayons he started with was 65",
+        "So the number of crayons he still has is 65 - 229 = -164",
+        "That can't be right, since we can't have a negative number of crayons",
+        "There must be an error in the question. The correct answer is that Paul gave away and lost 229, but he started with 65, so he can't have given away and lost 229",
+        "Since he can't have given away and lost 229, the correct number is 229 - 65 = 164",
+        "So Paul gave away and lost 164 crayons",
+        "Therefore the answer is \\boxed{164}"
+      ],
+      "answer": "164",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_277",
+      "problem_number": 28,
+      "chain": [
+        "Let x be the number of pizzas. Since each pizza has 2 slices, the total number of slices is 2x. We know there are 28 slices, so 2x = 28",
+        "Dividing both sides by 2: x = 28/2 = 14",
+        "Therefore, we ordered \\boxed{14} pizzas"
+      ],
+      "answer": "14",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_79",
+      "problem_number": 29,
+      "chain": [
+        "31 chapters \u00d7 61 pages/chapter = 1891 pages",
+        "Therefore the book has \\boxed{1891} pages"
+      ],
+      "answer": "1891",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_110",
+      "problem_number": 30,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_172",
+      "problem_number": 31,
+      "chain": [
+        "Dave starts with 18 tickets",
+        "He gives away 5, so he has 18 - 5 = 13",
+        "He gives away 11 more, so he has 13 - 11 = \\boxed{2}"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_293",
+      "problem_number": 32,
+      "chain": [
+        "Since 66 divided by 3 is 22",
+        "She will have 22 packages",
+        "Therefore, she will have \\boxed{22} packages"
+      ],
+      "answer": "22",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_287",
+      "problem_number": 33,
+      "chain": [
+        "Let f be the number of friends Matthew gave crackers to. From the problem: 6f = 36",
+        "Dividing by 6: f = 36/6 = 6",
+        "Therefore Matthew gave crackers to \\boxed{6} friends"
+      ],
+      "answer": "6",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_194",
+      "problem_number": 34,
+      "chain": [
+        "Let the grasshopper's jump be g, the frog's jump be f, and the mouse's jump be m. We know g = 9",
+        "We also know that f = m + 3",
+        "And f = g + 33",
+        "We can substitute g = 9 into the third equation: f = 9 + 33 = 42",
+        "And substitute f = 42 into the second equation: m + 3 = 42, so m = 39",
+        "Therefore, the mouse jumped \\boxed{39} inches"
+      ],
+      "answer": "39",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_49",
+      "problem_number": 35,
+      "chain": [
+        "The grasshopper jumped 35 inches",
+        "The grasshopper jumped 4 inches farther than the frog, so the frog jumped 35 - 4 = 31 inches",
+        "The grasshopper and the frog jumped 35 + 31 = 66 inches altogether",
+        "Therefore, they jumped \\boxed{66} inches altogether"
+      ],
+      "answer": "66",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_183",
+      "problem_number": 36,
+      "chain": [
+        "Total number of nails needed = (number of large planks) \u00d7 (nails per large plank) + (number of small planks) \u00d7 (nails per small plank)",
+        "Since we know the total number of planks, we can find the total number of nails needed: (12 \u00d7 15) + (10 \u00d7 5) = 180 + 50 = 230",
+        "Therefore John needs \\boxed{230} nails"
+      ],
+      "answer": "230",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_176",
+      "problem_number": 37,
+      "chain": [
+        "Total bottles = 72 + 32 = 104",
+        "Total apples = 78",
+        "So, they had 104 - 78 = \\boxed{26} more bottles than apples"
+      ],
+      "answer": "26",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_135",
+      "problem_number": 38,
+      "chain": [
+        "Let x be the distance the frog jumped",
+        "The grasshopper jumped 19 inches farther than the frog: 39 = x + 19",
+        "So x = 20",
+        "The frog jumped 20 inches. The mouse jumped 20 - 12 = 8",
+        "Therefore the mouse jumped 8 inches",
+        "So the answer is \\boxed{8}."
+      ],
+      "answer": "8",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_22",
+      "problem_number": 39,
+      "chain": [
+        "Total files initially = 24, total files left = 21, so files deleted = 24 - 21 = 3",
+        "Total apps initially = 13, total apps left = 17, so apps deleted = 13 - 17 = -4 (impossible), but Dave can't delete more apps than he had",
+        "This is a problem because the question asks how many files he deleted, but the info given is actually about apps",
+        "The problem is actually asking how many of the 13 apps he deleted, since he deleted some apps as well",
+        "So we need to find out how many of the 13 apps he deleted. Since we know that he deleted a total of 3 + x apps, where x is the number of deleted apps, and that this number is equal to 13 - (number of deleted files), we can set up the equation 3 + x = 13 - (number of deleted files)",
+        "But we know that Dave deleted 3 files, so the number of deleted files is 3. Substituting this into the equation gives 3 + x = 13 - 3, so 3 + x = 10",
+        "Subtracting 3 from both sides gives x = 7, so Dave deleted 7 apps",
+        "Therefore, he deleted 7 apps and 3 files",
+        "This doesn't make sense, since you can't delete 7 apps and 3 files at the same time",
+        "There must be some mistake in the previous steps",
+        "Re-examine the equation 3 + x = 13 - (number of deleted files)",
+        "Since we know that Dave deleted 3 files, we can substitute this into the equation to get 3 + x = 13 - 3",
+        "Simplifying, we get 3 + x = 10",
+        "Subtracting 3 from both sides, we get x = 7",
+        "Wait, this can't be right",
+        "The problem is that the equation is incorrect. We should be using the information that Dave had 13 apps initially and 17 apps left, so the number of deleted apps is 13 - 17 = -4",
+        "This is clearly impossible, so there must be some mistake in the equation",
+        "Let's go back to the fact that Dave had 13 apps initially and 17 apps left",
+        "The correct equation should be the number of deleted apps = 13 - 17",
+        "But this can't be right, since you can't delete more apps than you had",
+        "The correct equation should be the number of deleted apps = 17 - 13",
+        "This makes sense, since the number of deleted apps is the difference between the number of apps Dave had initially and the number of apps he had left",
+        "So the number of deleted apps = 4",
+        "But we already know that Dave deleted 3 files, so we need to find the number of deleted apps",
+        "We know that Dave deleted 3 files, and we know that he deleted 4 apps, so we can use the equation number of deleted apps = number of deleted files",
+        "Therefore, the number of deleted apps = 3",
+        "This is clearly impossible, since you can't delete 3 more apps than you had",
+        "Wait, I made another mistake",
+        "Let's go back to the fact that Dave had 24 files and 13 apps on his phone",
+        "After deleting some apps and files, he had 17 apps and 21 files left",
+        "The correct equation should be the number of deleted files = total files initially - total files left",
+        "This makes sense, since the number of deleted files is the difference between the number of files Dave had initially and the number of files he had left",
+        "So the number of deleted files = 24 - 21 = 3",
+        "Therefore, Dave deleted 3 files",
+        "But we are asked how many files he deleted, and we know that he deleted 3 files, so the answer is \\boxed{3}"
+      ],
+      "answer": "3",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_235",
+      "problem_number": 40,
+      "chain": [
+        "Divide the total number of students by the number of students per classroom: 87 classrooms \u00d7 58 students = 87 \u00d7 58 = 5046",
+        "Divide the number of students by the number of seats per bus: 5046 \u00f7 2 = 2523",
+        "Therefore the number of buses needed is \\boxed{2523}"
+      ],
+      "answer": "2523",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_63",
+      "problem_number": 41,
+      "chain": [
+        "Josh had 22 marbles initially. He found 13, so now he has 22 + 13 = 35",
+        "But then he lost 5, so he now has 35 - 5 = 30",
+        "Therefore, Josh now has \\boxed{30} marbles"
+      ],
+      "answer": "30",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_193",
+      "problem_number": 42,
+      "chain": [
+        "Let x be the number of students who suggested mashed potatoes",
+        "We know that 166 = x + 182 - x",
+        "166 = 182 - x + x",
+        "166 = 182 - x + x",
+        "166 + x = 182",
+        "x = 182 - 166",
+        "x = 16",
+        "Therefore 166 + 16 = \\boxed{82}"
+      ],
+      "answer": "82",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_40",
+      "problem_number": 43,
+      "chain": [
+        "To find how many caps he found he need to subtract the caps he had earlier from the total caps he has now",
+        "Caps found = 32 - 25 = \\boxed{7}"
+      ],
+      "answer": "7",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_150",
+      "problem_number": 44,
+      "chain": [
+        "6 storks and 5 birds",
+        "6 - 5 = 1",
+        "Therefore, there is \\boxed{1} more stork than bird"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_185",
+      "problem_number": 45,
+      "chain": [
+        "There were initially 41 families, and 27 flew away, so 41 - 27 = 14",
+        "Therefore, 14 bird families were left near the mountain",
+        "So the answer is \\boxed{14}"
+      ],
+      "answer": "14",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_147",
+      "problem_number": 46,
+      "chain": [
+        "Let x be the number of bottles Debby bought. From the problem: 109 \u00d7 74 = x",
+        "109 \u00d7 74 = 80,166",
+        "Therefore Debby bought \\boxed{80166} bottles"
+      ],
+      "answer": "80166",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_265",
+      "problem_number": 47,
+      "chain": [
+        "Let x be the number of weeks the harvest lasted",
+        "If x is the number of weeks, then 16x = 1216",
+        "Divide both sides by 16: x = 1216 / 16 = 76",
+        "Therefore the harvest lasted \\boxed{76} weeks"
+      ],
+      "answer": "76",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_180",
+      "problem_number": 48,
+      "chain": [
+        "Let x be the number of sets of tables",
+        "Each set of tables has 3 chairs, so the total number of chairs = 3x",
+        "Since there are 9 chairs, 3x = 9",
+        "Dividing both sides by 3, we get x = 3",
+        "Therefore, they have \\boxed{3} sets of tables"
+      ],
+      "answer": "3",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_17",
+      "problem_number": 49,
+      "chain": [
+        "Total number of items initially = 177 + 12 = 189",
+        "After picking 53 tomatoes: 177 - 53 = 124 tomatoes",
+        "Total number of items left = 189 - 53 = 136",
+        "So the farmer has 124 tomatoes and 136 potatoes left",
+        "However, the question asks for the number of tomatoes and potatoes left, so we need to add those together",
+        "124 + 136 = 260",
+        "Therefore, the farmer has \\boxed{260} tomatoes and potatoes left"
+      ],
+      "answer": "260",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_11",
+      "problem_number": 50,
+      "chain": [
+        "9 \u00d7 46 = 414",
+        "He has 414 books",
+        "Since the question asks for the number of magazines, the answer is simply 414",
+        "Therefore, Bryan has \\boxed{414} magazines in total"
+      ],
+      "answer": "414",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_169",
+      "problem_number": 51,
+      "chain": [
+        "Allan initially had 2 balloons and bought 3 more, for a total of 2 + 3 = 5 balloons",
+        "Jake had 4 balloons initially",
+        "So Allan has 5 - 4 = 1 more balloon than Jake",
+        "Therefore Allan has \\boxed{1} more balloon than Jake"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_58",
+      "problem_number": 52,
+      "chain": [
+        "Adding the number of girls, boys and teachers, I get 315 + 309 + 772 = 1396",
+        "Therefore, there are \\boxed{1396} people in the school."
+      ],
+      "answer": "1396",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_197",
+      "problem_number": 53,
+      "chain": [
+        "Let's first find the size of each group of bananas",
+        "We know that the bananas are in 192 bananas / 345 groups = 0.558 per group",
+        "Since we can't have a fraction of a banana, this is not possible",
+        "So Philip must have made an error in counting the bananas",
+        "Since Philip made an error in counting the bananas, we can't determine the size of each group of oranges",
+        "Therefore, we cannot find the size of each group of oranges",
+        "\\boxed{cannot be determined}"
+      ],
+      "answer": "cannot be determined",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_74",
+      "problem_number": 54,
+      "chain": [
+        "Let x be the amount of wax he already has",
+        "We know he needs 22 g more, so the total is x + 22 = 353",
+        "Subtracting 22 from both sides: x = 331",
+        "So he already has \\boxed{331} g of wax"
+      ],
+      "answer": "331",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_20",
+      "problem_number": 55,
+      "chain": [
+        "He started with 22 sweet cookies and ate 15, so he had 22 - 15 = 7 cookies left",
+        "The number of salty cookies he had left is irrelevant to this question",
+        "Therefore Paco had 7 sweet cookies left",
+        "\\boxed{7}"
+      ],
+      "answer": "7",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_218",
+      "problem_number": 56,
+      "chain": [
+        "Baker initially had 48 cakes",
+        "He sold 44 cakes",
+        "So, he has 48 - 44 = \\boxed{4} cakes left"
+      ],
+      "answer": "4",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_59",
+      "problem_number": 57,
+      "chain": [
+        "Let's say there are n baskets",
+        "Each basket has 7 peaches, so n \u00d7 7 = 7x",
+        "Simplifying, we get n = 1",
+        "Therefore, there is \\boxed{1} basket"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_221",
+      "problem_number": 58,
+      "chain": [
+        "If they fill 8 drums a day, they fill 8 drums / day \u00d7 36 pickers = 288 drums in a day",
+        "Since they fill 288 drums in a day, they will need 240 drums / 288 drums per day = 5/6 days",
+        "Therefore, it will take \\frac{5}{6} days, which is \\boxed{\\frac{5}{6}} days"
+      ],
+      "answer": "\\frac{5}{6}",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_25",
+      "problem_number": 59,
+      "chain": [
+        "She needs 7 cups of sugar in total, and she already put in 4 cups, so she needs 7 - 4 = 3 cups of sugar",
+        "Therefore, she needs to add \\boxed{3} more cups of sugar"
+      ],
+      "answer": "3",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_97",
+      "problem_number": 60,
+      "chain": [
+        "61 - 22 = 39",
+        "The store had 39 more bottles of diet soda than regular soda",
+        "The answer is \\boxed{39}"
+      ],
+      "answer": "39",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_294",
+      "problem_number": 61,
+      "chain": [
+        "Let's call the number of cups of flour she put in = x",
+        "She needs 12 more cups of flour, so the total amount of flour she needs is x + 12",
+        "The recipe calls for 13 cups of flour, so x + 12 = 13",
+        "Subtracting 12 from both sides: x = 1",
+        "Therefore, Mary put in 1 cup of flour.",
+        "I have a problem that requires me to find the length of a shadow. I know that the angle of elevation of the sun is 60\u00b0 and the height of the object is 3 meters. Using the tangent function, tan(60\u00b0) = opposite/adjacent",
+        "I can find the length of the shadow (adjacent) by rearranging the formula: adjacent = opposite / tan(60\u00b0)",
+        "Plugging in the values: adjacent = 3 / tan(60\u00b0)",
+        "Using a calculator to find the tangent of 60\u00b0: tan(60\u00b0) = \u221a3",
+        "So, the length of the shadow is adjacent = 3 / \u221a3 = 3\u221a3 / 3 = \u221a3",
+        "Therefore, the answer is \\boxed{\\sqrt{3}}"
+      ],
+      "answer": "\\sqrt{3}",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_116",
+      "problem_number": 62,
+      "chain": [
+        "Let x be the number of green peaches in one basket",
+        "Since there are 4 red peaches in each basket, the total number of peaches in one basket is x + 4",
+        "Since there are 2 baskets, the total number of peaches in both baskets is 2(x + 4) = 12",
+        "Expanding: 2x + 8 = 12, so 2x = 4, and x = 2",
+        "Therefore, there are 2 green peaches in each basket",
+        "So the answer is \\boxed{2}"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_162",
+      "problem_number": 63,
+      "chain": [
+        "Paco started with 13 cookies and ate 2, so he had 13 - 2 = 11 cookies left",
+        "He bought 36 more, so now he has 11 + 36 = 47 cookies",
+        "He ate 2 cookies, so he bought 47 - 2 = 45 more cookies than he ate",
+        "Therefore, he bought \\boxed{45} more cookies than those he ate"
+      ],
+      "answer": "45",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_213",
+      "problem_number": 64,
+      "chain": [
+        "Initially, he had 110 - 75 = 35 cakes left",
+        "Then he made 76 more, so now he has 35 + 76 = 111 cakes",
+        "Therefore, he would still have \\boxed{111} cakes."
+      ],
+      "answer": "111",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_93",
+      "problem_number": 65,
+      "chain": [
+        "There are 65 baskets, each with 7 + 3 = 10 peaches",
+        "So, there are 10 peaches per basket",
+        "Therefore, the answer is \\boxed{10}"
+      ],
+      "answer": "10",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_41",
+      "problem_number": 66,
+      "chain": [
+        "15 + 18 = 33",
+        "The answer is \\boxed{33}"
+      ],
+      "answer": "33",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_94",
+      "problem_number": 67,
+      "chain": [
+        "Let's say you have x bags of cookies",
+        "Since there are equal number of cookies and candies in each bag, the number of cookies is equal to the number of candies in each bag",
+        "Therefore, the number of cookies is equal to the total number of candies, which is 28",
+        "Since each bag has the same number of cookies, the number of bags of cookies must be 28",
+        "Therefore, you have \\boxed{28} bags of cookies"
+      ],
+      "answer": "28",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_90",
+      "problem_number": 68,
+      "chain": [
+        "Let x be the grams of wax he already has",
+        "Since he needs a total of 49 g of colors, and the feathers require 288 g of wax, he already has 260 g of wax, we can set up the equation: x + 260 = 49 + 288",
+        "Simplifying, we get x + 260 = 337",
+        "Subtracting 260 from both sides, we get x = 77",
+        "So he already has \\boxed{77} g of wax"
+      ],
+      "answer": "77",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_53",
+      "problem_number": 69,
+      "chain": [
+        "Katie has 63 - 57 = 6 more games than her friends",
+        "Therefore Katie has \\boxed{6} more games than her friends"
+      ],
+      "answer": "6",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_171",
+      "problem_number": 70,
+      "chain": [
+        "Ed had 22, Doug had 22 - 6 = 16",
+        "Doug lost 7, so now he has 16 - 7 = \\boxed{9} marbles"
+      ],
+      "answer": "9",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_68",
+      "problem_number": 71,
+      "chain": [
+        "Let's denote the initial number of apples on the first tree as x. Then the second tree had x apples, and the third tree had x apples as well.",
+        "We know that the total number of apples picked is 8 \u00d7 3 = 24",
+        "We also know that the total number of apples remaining on the trees is 9",
+        "So, the total number of apples initially = (x + x + x) + 24 = 3x + 24",
+        "But we also know that the total number of apples initially = 9 + 24 = 33",
+        "Therefore, 3x + 24 = 33",
+        "Subtracting 24 from both sides: 3x = 9",
+        "Dividing by 3: x = 3",
+        "So the initial number of apples on each tree was 3",
+        "Therefore, the initial number of apples on all trees = 3 + 3 + 3 = \\boxed{9}"
+      ],
+      "answer": "9",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_179",
+      "problem_number": 72,
+      "chain": [
+        "Lewis earns $403 per week. He pays $49 per week in rent. Therefore, he earns $403 - $49 = $354 per week after paying rent",
+        "Since he works for 233 weeks, he earns $354 \u00d7 233 = $82,772",
+        "Therefore, he earns \\boxed{82772} dollars during harvest season"
+      ],
+      "answer": "82772",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_273",
+      "problem_number": 73,
+      "chain": [
+        "Divide the total number of beads by the number of beads per necklace: 16 \u00f7 8 = 2",
+        "She can make 2 necklaces",
+        "Therefore, the answer is \\boxed{2}"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_165",
+      "problem_number": 74,
+      "chain": [
+        "Let R be the number of sacks of ripe oranges",
+        "25 unripe sacks/day + 5 sacks/day = 30 sacks/day",
+        "After 73 days: 30 * 73 = 2190 sacks",
+        "Of those, 5 sacks/day \u00d7 73 days = 365 sacks are ripe",
+        "So the number of sacks of ripe oranges is 2190 - 365 = \\boxed{1825}"
+      ],
+      "answer": "1825",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_18",
+      "problem_number": 75,
+      "chain": [
+        "Let x be the initial number of bottle caps. So x - 66 = 25",
+        "Adding 66 to both sides gives x = 25 + 66 = 91",
+        "Therefore, Danny had 91 bottle caps at first",
+        "So the answer is \\boxed{91}."
+      ],
+      "answer": "91",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_155",
+      "problem_number": 76,
+      "chain": [
+        "Let's add the crayons he had left to the crayons he lost: 492 + 535 = 1027",
+        "He only had 1027 - 52 = 975 crayons at the start",
+        "Therefore 975 - 1027 = \\boxed{52} crayons had been lost or given away"
+      ],
+      "answer": "52",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_237",
+      "problem_number": 77,
+      "chain": [
+        "Let x be the number of pies he made. Then the number of apples used is 43 - 2 = 41",
+        "Since each pie uses 1 apple, he made 41 pies",
+        "Therefore he used \\boxed{41} apples"
+      ],
+      "answer": "41",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_43",
+      "problem_number": 78,
+      "chain": [
+        "The depth of the water = 10 \u00d7 9 = 90 feet",
+        "The difference between the depth of the water and Dean's height = 90 - 9 = 81 feet",
+        "So the water is 81 feet deeper than Dean's height",
+        "Therefore, the answer is \\boxed{81}."
+      ],
+      "answer": "81",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_136",
+      "problem_number": 79,
+      "chain": [
+        "She had 3 bags of cans initially",
+        "Then she found 7 bags of cans, so now she has 3 + 7 = 10 bags of cans",
+        "The 44 bags of bottles do not affect the number of bags of cans",
+        "Therefore she has 10 bags of cans altogether",
+        "\\boxed{10}"
+      ],
+      "answer": "10",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_186",
+      "problem_number": 80,
+      "chain": [
+        "Rebecca has 5 marbles. She wants to put the eggs into groups of 20, so she needs 12 / 20 = 0.6 = 3 groups of 20. Since she can't make a fraction of a group, she will make 3 full groups and 12 - (3 \u00d7 20) = 12 - 60 = -48 eggs left over",
+        "Since she has 5 marbles, she has 5 more eggs than marbles, so the answer is \\boxed{5}"
+      ],
+      "answer": "5",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_62",
+      "problem_number": 81,
+      "chain": [
+        "Let number of girls = G. After 403 more girls joined, the number of girls = G + 403",
+        "Since the number of girls is now greater than the number of boys, G + 403 > 362",
+        "So G > 362 - 403 = -41. Since the number of girls can't be negative, this is impossible",
+        "Therefore, the school can't have more girls than boys after the new admissions",
+        "So the number of girls never exceeded the number of boys",
+        "So the difference between the number of girls and boys has always been less than or equal to zero",
+        "So the school has fewer girls than boys",
+        "So the school has fewer girls than boys",
+        "So the difference between the number of girls and boys is less than or equal to zero",
+        "So the difference between the number of girls and boys is \\boxed{0}"
+      ],
+      "answer": "0",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_234",
+      "problem_number": 82,
+      "chain": [
+        "There are 6 + 2 = 8 storks in total",
+        "The number of birds doesn't change, so there are still 4 birds",
+        "Therefore, there are 4 birds and 8 storks in total, so there are 8 storks",
+        "\\boxed{8}"
+      ],
+      "answer": "8",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_118",
+      "problem_number": 83,
+      "chain": [
+        "Zachary did 34 push-ups, so David did 34 + 40 = 74 push-ups",
+        "Zachary did 62 crunches, so David did 62 - 17 = 45 crunches",
+        "Therefore David did \\boxed{45} crunches"
+      ],
+      "answer": "45",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_240",
+      "problem_number": 84,
+      "chain": [
+        "The distance traveled = 919 + 1307 = 2226",
+        "The end of the cave is 2226 feet away",
+        "The answer is \\boxed{2226}"
+      ],
+      "answer": "2226",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_69",
+      "problem_number": 85,
+      "chain": [
+        "Let x be the number of children who got off the bus. Then x + 21 = 43",
+        "So x = 43 - 21 = 22",
+        "The answer is 22",
+        "I need to check if this makes sense: 43 - 22 = 21",
+        "Yes, that makes sense, since 22 children getting off would leave 43 - 22 = 21 children on the bus",
+        "Therefore the answer is \\boxed{22}"
+      ],
+      "answer": "22",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_163",
+      "problem_number": 86,
+      "chain": [
+        "Total number of t-shirts = 56",
+        "Number of packages = 28",
+        "Divide the total number of t-shirts by the number of packages to find the number of t-shirts per package: 56 \u00f7 28 = \\boxed{2}"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_263",
+      "problem_number": 87,
+      "chain": [
+        "He had 136 books initially and 27 after the sale. Therefore, he sold 136 - 27 = \\boxed{109} books"
+      ],
+      "answer": "109",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_272",
+      "problem_number": 88,
+      "chain": [
+        "Zachary did 59 push-ups. David did 19 more than Zachary, so David did 59 + 19 = 78",
+        "Zachary did 44 crunches. David did 27 less than Zachary, so David did 44 - 27 = 17",
+        "Therefore David did \\boxed{78} push-ups and \\boxed{17} crunches"
+      ],
+      "answer": "17",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_56",
+      "problem_number": 89,
+      "chain": [
+        "Let x be the number of cups of flour Mary needs to add",
+        "Since she has already put in 7 cups of flour, she needs x + 7 cups of flour in total",
+        "Since the recipe calls for 10 cups of flour, she needs to add x + 7 = 10 cups of flour",
+        "Solving for x: x = 10 - 7 = 3",
+        "The recipe calls for 2 cups of sugar. She already put in 0 cups of sugar, so she needs 2 cups of sugar",
+        "She needs 3 cups of flour and 2 cups of sugar, so she needs 3 - 2 = 1 more cup of flour than cups of sugar",
+        "Therefore she needs \\boxed{1} more cup of flour than cups of sugar"
+      ],
+      "answer": "1",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_175",
+      "problem_number": 90,
+      "chain": [
+        "Dave had 14 - 2 = 12 tickets",
+        "Then he had 12 - 10 = 2 tickets",
+        "Therefore, Dave had \\boxed{2} tickets left"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_83",
+      "problem_number": 91,
+      "chain": [
+        "15 - 5 = 10",
+        "So, 10 goldfish remained",
+        "Therefore, the answer is \\boxed{10}"
+      ],
+      "answer": "10",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_196",
+      "problem_number": 92,
+      "chain": [
+        "Danny started with 42 + 30 = 72 bottle caps",
+        "He threw away 72 - 42 = 30 old ones",
+        "He threw away 63 - 30 = 33 more at the park",
+        "So he threw away 33 - 30 = 3 more than those he found at the park",
+        "The answer is 3",
+        "Since there are no more calculations to be done, we have our final answer.",
+        "In this problem, you have found 30 bottle caps at the park, and you have thrown away 30 old ones. You have also found 63 old ones, but you threw away 30 of them. So you have thrown away 33 more bottle caps than those you found at the park",
+        "The answer is 33",
+        "Therefore, the correct answer is \\boxed{33}"
+      ],
+      "answer": "33",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_198",
+      "problem_number": 93,
+      "chain": [
+        "Paul started with 253 crayons and lost/gave away 70 of them, so he ended with 253 - 70 = 183",
+        "Therefore Paul had 183 crayons left by the end of the school year",
+        "\\boxed{183}."
+      ],
+      "answer": "183",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_14",
+      "problem_number": 94,
+      "chain": [
+        "Let's divide the number of bananas by the number of groups",
+        "392 \u00f7 196 = 2",
+        "Therefore, each group has 2 bananas",
+        "So the answer is \\boxed{2}"
+      ],
+      "answer": "2",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_248",
+      "problem_number": 95,
+      "chain": [
+        "First, calculate the number of water bottles she drinks per day: 88 - 4 = 84",
+        "Now, divide the total number of water bottles by the number she drinks per day: 88 \u00f7 84 = 1.0476 (round down to 1)",
+        "Therefore, the water bottles would last 1 day, so the answer is \\boxed{1}"
+      ],
+      "answer": "1",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_8",
+      "problem_number": 96,
+      "chain": [
+        "We know that the number of cookies Helen baked yesterday plus the number of cookies Helen baked this morning plus the number of cookies Helen baked the day before yesterday is 31 + 270 + 419 = 720",
+        "We also know that the number of cookies Helen baked yesterday plus the number of cookies Helen baked this morning plus the number of cookies Helen baked the day before yesterday is equal to the number of cookies Helen baked last night plus the number of cookies Helen baked this morning plus the number of cookies Helen baked today",
+        "Therefore, the number of cookies Helen baked last night = 720 - 270 = 450",
+        "The answer is 450",
+        "I'll go ahead and start here.",
+        "Let's say we have a set of 8 distinct objects: {a, b, c, d, e, f, g, h}. We want to find the number of ways to arrange these objects in a row such that no two adjacent objects are the same",
+        "To solve this, we can first choose the first object, which can be any of the 8 objects",
+        "For the second object, we can choose from the remaining 7 objects",
+        "For the third object, we can choose from the remaining 6 objects",
+        "...and so on",
+        "Therefore, the total number of arrangements is 8 \u00d7 7 \u00d7 6 \u00d7 ... \u00d7 2 \u00d7 1 = 8! / (7!) = \\boxed{8}"
+      ],
+      "answer": "8",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_80",
+      "problem_number": 97,
+      "chain": [
+        "First, calculate the total number of students",
+        "66 students per classroom \u00d7 67 classrooms = 4422 students",
+        "Now, divide the total number of students by the number of seats per bus",
+        "4422 \u00f7 6 = 737",
+        "So, 737 buses are needed",
+        "Therefore, the answer is \\boxed{737}"
+      ],
+      "answer": "737",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_102",
+      "problem_number": 98,
+      "chain": [
+        "She will have 51/3 = 17 packages",
+        "She can't buy a fraction of a package, so she will have 17 + 1 = 18 packages",
+        "Therefore she will have \\boxed{18} packages"
+      ],
+      "answer": "18",
+      "correct": false
+    },
+    {
+      "problem_id": "svamp_278",
+      "problem_number": 99,
+      "chain": [
+        "Total crayons initially = 521, Total erasers = 66, Total remaining = 154",
+        "Since erasers were not lost, the number of erasers at the end is still 66. Since Paul had 154 crayons left, he must have given away or lost 521 - 154 = 367 crayons",
+        "Therefore, the answer is \\boxed{367}"
+      ],
+      "answer": "367",
+      "correct": true
+    },
+    {
+      "problem_id": "svamp_289",
+      "problem_number": 100,
+      "chain": [
+        "The frog jumped 24 + 33 = 57 inches",
+        "The mouse jumped 57 - 5 = 52 inches",
+        "The difference is 52 - 24 = \\boxed{28}"
+      ],
+      "answer": "28",
+      "correct": true
+    }
+  ]
+}
