@@ -34,6 +34,32 @@ def _create_openai_client(api_key: str, base_url: Optional[str] = None):
         client_kwargs["base_url"] = resolved_base_url
     return OpenAI(**client_kwargs)
 
+
+def _response_text(response: Any) -> str:
+    """Extract non-empty text from OpenAI and common compatible responses."""
+    if not getattr(response, "choices", None):
+        raise RuntimeError("API response contained no choices")
+
+    message = response.choices[0].message
+    content = getattr(message, "content", None)
+    if content:
+        return str(content)
+
+    # Some reasoning-model providers expose generated text in reasoning_content.
+    reasoning_content = getattr(message, "reasoning_content", None)
+    if reasoning_content:
+        logger.warning("API returned reasoning_content without message.content")
+        return str(reasoning_content)
+
+    raise RuntimeError("API response contained no message text")
+
+
+def _total_tokens(response: Any) -> int:
+    """Return usage when supplied; OpenAI-compatible providers may omit it."""
+    usage = getattr(response, "usage", None)
+    return int(getattr(usage, "total_tokens", 0) or 0)
+
+
 # 发送一次错误定位请求
 def call_openai_api(
     prompt: str,
@@ -72,8 +98,8 @@ def call_openai_api(
                 ]
             )
 
-            response_text = response.choices[0].message.content
-            tokens_used = response.usage.total_tokens
+            response_text = _response_text(response)
+            tokens_used = _total_tokens(response)
 
             logger.info(f"3P API call successful ({tokens_used} tokens used)")
             return response_text, tokens_used
@@ -96,7 +122,7 @@ def call_openai_api_generate(
     api_key: str,
     model: str = "gpt-4o",
     temperature: float = 0.7,
-    max_tokens: int = 150,
+    max_tokens: Optional[int] = 150,
     top_p: float = 0.9,
     stop: Optional[List[str]] = None,
     max_retries: int = 10,
@@ -134,9 +160,10 @@ def call_openai_api_generate(
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": temperature,
-                "max_tokens": max_tokens,
                 "top_p": top_p,
             }
+            if max_tokens is not None:
+                api_params["max_tokens"] = max_tokens
 
             # Add stop sequences if provided (OpenAI supports up to 4)
             if stop:
@@ -144,8 +171,8 @@ def call_openai_api_generate(
 
             response = client.chat.completions.create(**api_params)
 
-            response_text = response.choices[0].message.content
-            tokens_used = response.usage.total_tokens
+            response_text = _response_text(response)
+            tokens_used = _total_tokens(response)
 
             logger.debug(f"3P generation successful ({tokens_used} tokens)")
             return response_text
@@ -206,7 +233,7 @@ class ThirdPartyModelManager:
     def generate(
         self,
         prompts: List[str],
-        max_tokens: int = 512,
+        max_tokens: Optional[int] = 512,
         temperature: float = 0.7,
         top_p: float = 0.9,
         top_k: int = 50,  # Ignored - OpenAI doesn't support top_k
@@ -253,7 +280,7 @@ class ThirdPartyModelManager:
                     self.total_generations += 1
                 except Exception as e:
                     logger.error(f"Generation failed for prompt: {e}")
-                    results.append("ERROR: Generation failed")
+                    raise RuntimeError("Third-party generation failed") from e
 
         return results
 

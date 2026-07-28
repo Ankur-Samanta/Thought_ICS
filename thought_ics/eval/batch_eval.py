@@ -15,6 +15,7 @@ sys.path.insert(0, str(next(_p for _p in Path(__file__).resolve().parents if (_p
 import json
 import argparse
 import logging
+import re
 from datetime import datetime
 from typing import List, Dict, Optional
 from datasets import load_dataset # load_dataset() 是 Hugging Face datasets 库的接口
@@ -44,13 +45,14 @@ from thought_ics.metrics import compute_metrics
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # Experiment configuration (defaults)
 GENERATION_TEMP = 1.0  # Initial ToT generation (affects cache)
 RESAMPLE_TEMP = 0.7    # Correction/regeneration (no cache impact)
 JUDGE_TEMP = 0.3       # Error detection/verification (no cache impact)
-MAX_DEPTH = 100  # Deep enough for complex problems, avoids recursion limit
-MAX_TOKENS_PER_THOUGHT = None  # No limit
+MAX_DEPTH = 100  # Paper setting: a trajectory terminates at depth 100
+MAX_TOKENS_PER_THOUGHT = 150  # Paper setting for structured generation
 SEED = 42
 
 
@@ -103,8 +105,10 @@ def generate_or_load_initial_chains(
         completed_paths = get_completed_paths(root)
 
         if not completed_paths:
-            logger.warning(f"No completed paths found for problem {idx+1}")
-            chain = []
+            raise RuntimeError(
+                f"No completed reasoning path generated for problem {idx+1}; "
+                "refusing to cache an empty chain"
+            )
         else:
             chain = completed_paths[0][1:]  # Skip question
 
@@ -197,8 +201,13 @@ def run_iterative_correction_with_cached_chain(
 
     # Iterative correction（Python 的 range 不包含结束值）
     for i in range(1, max_iterations + 1):
-        # Check if we got it right
-        if not no_auto_stop and normalize_answer(answer) == normalize_answer(ground_truth):
+        # Oracle auto-stop is valid only for L1/L2. L3 must not use the
+        # evaluation ground truth as an inference-time verification signal.
+        if (
+            autonomy_level in (1, 2)
+            and not no_auto_stop
+            and normalize_answer(answer) == normalize_answer(ground_truth)
+        ):
             logger.info(f"SUCCESS! Correct answer found at iteration {i-1}")
             break
 
@@ -317,7 +326,11 @@ def run_iterative_correction_with_cached_chain(
 
         logger.info(f"Iteration {i}: Answer = {answer}, Correct = {normalize_answer(answer) == normalize_answer(ground_truth)}")
 
-        if not no_auto_stop and normalize_answer(answer) == normalize_answer(ground_truth):
+        if (
+            autonomy_level in (1, 2)
+            and not no_auto_stop
+            and normalize_answer(answer) == normalize_answer(ground_truth)
+        ):
             logger.info(f"SUCCESS! Correct answer found at iteration {i}")
             break
 
@@ -328,7 +341,8 @@ def run_iterative_correction_with_cached_chain(
         'ground_truth': ground_truth,
         'iterations': iterations,
         'success': final_correct,
-        'total_iterations': len(iterations)
+        'total_iterations': max(0, len(iterations) - 1),
+        'states_recorded': len(iterations)
     }
 
 # 负责“整批题目的实验管理”
@@ -415,7 +429,8 @@ def run_batch_evaluation(
         context_suffix = "_with_context" if use_context else ""
         # Add 3P suffix if using 3P (OpenAI-compatible API) mode
         if use_3p:
-            model_suffix = f"_3p_{model_3p}"
+            safe_model_3p = re.sub(r"[^A-Za-z0-9_.-]+", "_", model_3p)
+            model_suffix = f"_3p_{safe_model_3p}"
         else:
             model_suffix = f"_{model_name}"
         experiment_name = f"eval{model_suffix}_{autonomy_name}_{dataset}{level_suffix}{prefix_suffix}{context_suffix}_{timestamp}"
@@ -445,6 +460,8 @@ def run_batch_evaluation(
         'use_3p': use_3p,
         'use_3p_localize': use_3p_localize,
         'model_3p': model_3p,
+        'evaluated_model': model_3p if use_3p else model_name,
+        'uses_custom_base_url': bool(base_url_3p),
         'inference_backend': 'openai_api' if use_3p else 'vllm',
         # Evaluation settings
         'n_problems': n_problems,
@@ -462,6 +479,10 @@ def run_batch_evaluation(
         'shared_prefix': shared_prefix,
         'no_auto_stop': no_auto_stop,
         'use_context': use_context,
+        'verify': verify,
+        'mv_verify': mv_verify,
+        'mv_k': mv_k,
+        'mv_criterion': mv_criterion,
         # MV localization settings
         'use_mv_localization': use_mv_localization,
         'mv_localization_k': mv_localization_k,

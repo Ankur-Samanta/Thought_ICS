@@ -284,7 +284,7 @@ class ToTAgent:
             return outputs
         except Exception as e:
             logger.error(f"Generation failed: {e}")
-            return ["ERROR: Generation failed"] * len(prompts)
+            raise
 
     def _parse_action(
         self,
@@ -364,13 +364,15 @@ class ToTEnvironment:
 
     def reset(
         self,
-        question: str
+        question: str,
+        initial_thoughts: Optional[List[str]] = None,
     ) -> ToTState:
         """
         Initialize a new reasoning episode.
 
         Args:
             question: The question to solve
+            initial_thoughts: Validated prefix to continue from
 
         Returns:
             Initial state
@@ -386,12 +388,29 @@ class ToTEnvironment:
         self.node_counter = 0
         self.total_episodes += 1
 
-        # Create initial state
+        # Materialize a validated prefix as actual thought history instead of
+        # embedding it in the question text. This preserves Thought-MDP state
+        # semantics and makes completed paths contain question + prefix + new
+        # generations in a predictable order.
+        prefix = tuple(initial_thoughts or ())
+        current_node = self.root
+        for depth, thought in enumerate(prefix, 1):
+            prefix_node = ThoughtNode(
+                thought=thought,
+                is_done='\\boxed{' in thought or depth >= self.max_depth,
+                confidence=1.0,
+                depth=depth,
+                parent=current_node,
+                node_id=self._create_node_id(),
+            )
+            current_node.children.append(prefix_node)
+            current_node = prefix_node
+
         return ToTState(
             question=question,
-            thought_history=tuple(),
-            depth=0,
-            node=self.root
+            thought_history=prefix,
+            depth=len(prefix),
+            node=current_node
         )
 
     def step(
@@ -419,9 +438,10 @@ class ToTEnvironment:
         new_depth = state.depth + 1
 
         # Create tree node
+        terminal_by_depth = new_depth >= self.max_depth
         new_node = ThoughtNode(
             thought=action.thought,
-            is_done=action.is_terminal,
+            is_done=action.is_terminal or terminal_by_depth,
             confidence=action.confidence,
             depth=new_depth,
             parent=state.node,
@@ -450,6 +470,7 @@ class ToTEnvironment:
         info = {
             'node_id': new_node.node_id,
             'is_terminal': action.is_terminal,
+            'terminal_by_depth': terminal_by_depth,
             'depth': new_depth,
             'thought': action.thought
         }
@@ -621,7 +642,8 @@ class TreeSearch:
     def search(
         self,
         question: str,
-        verbose: bool = True
+        verbose: bool = True,
+        initial_thoughts: Optional[List[str]] = None,
     ) -> ThoughtNode:
         """
         Execute tree search.
@@ -629,6 +651,7 @@ class TreeSearch:
         Args:
             question: Question to solve
             verbose: Whether to print progress
+            initial_thoughts: Validated thought prefix to continue from
 
         Returns:
             Root node of the generated tree
@@ -642,7 +665,7 @@ class TreeSearch:
             logger.info(f"{'='*80}\n")
 
         # Initialize episode
-        initial_state = self.env.reset(question)
+        initial_state = self.env.reset(question, initial_thoughts=initial_thoughts)
 
         # Dispatch to search strategy
         if self.strategy == "bfs":

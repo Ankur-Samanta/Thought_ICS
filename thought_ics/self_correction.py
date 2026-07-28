@@ -55,7 +55,7 @@ def extract_boxed_answer(text: str) -> str:
     return "NO ANSWER"
 
 
-def generate_full_chain(manager, problem: str, temperature: float = 1.0, max_depth: int = 20, max_tokens_per_thought: int = 150) -> List[str]:
+def generate_full_chain(manager, problem: str, temperature: float = 1.0, max_depth: int = 100, max_tokens_per_thought: int = 150) -> List[str]:
     """Generate a complete reasoning chain thought by thought."""
     logger.info("Generating initial chain...")
 
@@ -613,10 +613,7 @@ def generate_from_prefix(manager, problem: str, prefix: List[str], previous_chai
         prompt += f"{error_reasoning}\n"
         prompt += f"\nNow let's try again with the correct approach:\n"
 
-    # Add the prefix (correct steps to continue from)
     if prefix:
-        for step in prefix:
-            prompt += f"\n\n{step}"
         if previous_chain is None or error_reasoning is None:
             logger.info(f"Regenerating from prefix of {len(prefix)} steps...")
     else:
@@ -624,21 +621,22 @@ def generate_from_prefix(manager, problem: str, prefix: List[str], previous_chai
             logger.info("Regenerating from scratch...")
 
     agent = ToTAgent(manager, temperature=temperature, max_tokens=150)
-    env = ToTEnvironment(max_depth=20)
+    env = ToTEnvironment(max_depth=100)
     search = TreeSearch(agent, env, strategy="dfs", n_rollouts=1)
 
-    root = search.search(prompt, verbose=False)
+    root = search.search(prompt, verbose=False, initial_thoughts=prefix)
     completed_paths = get_completed_paths(root)
 
     if not completed_paths:
-        logger.warning("No completed paths found during regeneration!")
-        return prefix
+        raise RuntimeError(
+            "No completed reasoning path generated during regeneration; "
+            "refusing to reuse the unchanged prefix as a correction"
+        )
 
-    # Get new thoughts (skip the question)
+    # The completed path is question + validated prefix + new generations.
     all_thoughts = completed_paths[0][1:]
-
-    # The first len(prefix) thoughts are from the prefix
-    # We want to return: prefix + new thoughts
+    if all_thoughts[:len(prefix)] != prefix:
+        raise RuntimeError("Regenerated path did not preserve the validated prefix")
     new_thoughts = all_thoughts[len(prefix):]
     full_chain = prefix + new_thoughts
 
@@ -707,8 +705,13 @@ def iterative_self_correction(manager, problem: str, ground_truth: str, L: int =
         logger.info(f"ITERATION {i}")
         logger.info(f"{'='*100}")
 
-        # Check if we got it right
-        if not no_auto_stop and normalize_answer(answer) == normalize_answer(ground_truth):
+        # Ground-truth auto-stop is an oracle signal and is valid only for
+        # L1/L2. L3 must decide whether to stop from model verification.
+        if (
+            autonomy_level in (1, 2)
+            and not no_auto_stop
+            and normalize_answer(answer) == normalize_answer(ground_truth)
+        ):
             logger.info(f"SUCCESS! Correct answer found at iteration {i-1}")
             break
 
@@ -808,7 +811,11 @@ def iterative_self_correction(manager, problem: str, ground_truth: str, L: int =
 
         logger.info(f"\nIteration {i}: Answer = {answer}, Correct = {normalize_answer(answer) == normalize_answer(ground_truth)}")
 
-        if not no_auto_stop and normalize_answer(answer) == normalize_answer(ground_truth):
+        if (
+            autonomy_level in (1, 2)
+            and not no_auto_stop
+            and normalize_answer(answer) == normalize_answer(ground_truth)
+        ):
             logger.info(f"SUCCESS! Correct answer found at iteration {i}")
             break
 
@@ -830,7 +837,8 @@ def iterative_self_correction(manager, problem: str, ground_truth: str, L: int =
         'ground_truth': ground_truth,
         'iterations': iterations,
         'success': final_correct,
-        'total_iterations': len(iterations)
+        'total_iterations': max(0, len(iterations) - 1),
+        'states_recorded': len(iterations)
     }
 
 

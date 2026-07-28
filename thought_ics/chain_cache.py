@@ -131,6 +131,18 @@ def load_initial_chains(
         metadata.get('model_seed') == model_seed):
 
         chains = cache_data['chains']
+        empty_chain_ids = [
+            chain.get('problem_id', f'index_{idx}')
+            for idx, chain in enumerate(chains)
+            if not chain.get('chain')
+        ]
+        if empty_chain_ids:
+            print(
+                "Ignoring invalid cache containing empty reasoning chains: "
+                f"{cache_path.name} ({', '.join(empty_chain_ids[:5])})"
+            )
+            return None
+
         print(f"Loaded {len(chains)} initial chains from cache: {cache_path.name}")
         return chains
     else:
