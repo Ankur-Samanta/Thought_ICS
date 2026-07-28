@@ -47,7 +47,7 @@ def detect_experiment_type(results: Dict[str, Any]) -> ExperimentType:
 
     return ExperimentType.UNKNOWN
 
-
+# 计算每一轮结束后的整体准确率变化
 def compute_accuracy_trajectory(results: List[Dict[str, Any]],
                                 iter_key: str = "iterations") -> Dict[str, Any]:
     """
@@ -477,7 +477,7 @@ def compute_iteration_statistics(results: List[Dict[str, Any]],
         }
     }
 
-
+# 总入口
 def compute_metrics(experiment_dir: Path) -> Dict[str, Any]:
     """
     Main function to compute all metrics with clean schema.

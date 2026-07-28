@@ -77,7 +77,7 @@ def generate_full_chain(manager, problem: str, temperature: float = 1.0, max_dep
     logger.info(f"Generated chain with {len(chain)} steps, answer: {answer}")
     return chain
 
-
+# 检查推理链中的某一个步骤是否正确
 def verify_single_step(manager, problem: str, context_steps: List[str], current_step_idx: int, ground_truth: str, autonomy_level: int, temperature: float = 0.3) -> Tuple[bool, str]:
     """Verify if a single step is correct given the context.
 
@@ -186,7 +186,7 @@ Provide your reasoning first, then your conclusion.
             logger.warning(f"Could not determine YES/NO from response, assuming correct")
             return True, response
 
-
+# 从第一行开始逐步检查
 def identify_error_step_incremental(manager, problem: str, chain: List[str], ground_truth: str, autonomy_level: int = 1, temperature: float = 0.3) -> Tuple[int, str]:
     """Incrementally verify each step to identify where the error occurred.
 
@@ -316,7 +316,7 @@ Provide your reasoning and analysis. Then conclude with:
     logger.warning(f"Could not parse step number from response, defaulting to middle")
     return max(1, len(chain) // 2), response
 
-
+# 对同一条推理链做多次错误定位，然后多数投票
 def identify_error_step_with_mv(
     manager,
     problem: str,
@@ -462,7 +462,7 @@ Provide your reasoning and analysis. Then conclude with:
 
     return mv_step, combined_reasoning, all_decisions
 
-
+# self-verification: ask model if it thinks its final answer is correct
 def verify_solution_correctness(manager, problem: str, chain: List[str], temperature: float = 0.3,
                                  mv_verify: bool = False, mv_k: int = 5,
                                  mv_criterion: str = "unanimous") -> Tuple[bool, str]:

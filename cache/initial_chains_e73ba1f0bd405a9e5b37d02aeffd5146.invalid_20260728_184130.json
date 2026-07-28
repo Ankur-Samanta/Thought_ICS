@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "model_name": "Qwen/Qwen3-14B",
+    "dataset_name": "amc23",
+    "n_problems": 1,
+    "seed": 42,
+    "temperature": 1.0,
+    "max_depth": 100,
+    "max_tokens_per_thought": null,
+    "model_seed": null,
+    "cache_key": "e73ba1f0bd405a9e5b37d02aeffd5146"
+  },
+  "chains": [
+    {
+      "problem_id": "amc23_7",
+      "problem_number": 1,
+      "chain": [],
+      "answer": "NO ANSWER",
+      "correct": false
+    }
+  ]
+}

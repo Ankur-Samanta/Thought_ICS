@@ -10,6 +10,7 @@ Provides:
 """
 
 import logging
+import os
 import re
 import time
 from typing import List, Optional, Tuple, Any
@@ -22,11 +23,24 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def _create_openai_client(api_key: str, base_url: Optional[str] = None):
+    """Create an OpenAI client for OpenAI or any compatible endpoint."""
+    if OpenAI is None:
+        raise RuntimeError("OpenAI library not installed. Install with: pip install openai")
+
+    resolved_base_url = base_url or os.environ.get("OPENAI_BASE_URL")
+    client_kwargs = {"api_key": api_key}
+    if resolved_base_url:
+        client_kwargs["base_url"] = resolved_base_url
+    return OpenAI(**client_kwargs)
+
+# 发送一次错误定位请求
 def call_openai_api(
     prompt: str,
     api_key: str,
     model: str = "gpt-5",
-    max_retries: int = 3
+    max_retries: int = 3,
+    base_url: Optional[str] = None,
 ) -> Tuple[str, int]:
     """
     Call OpenAI API with the error localization prompt.
@@ -36,6 +50,7 @@ def call_openai_api(
         api_key: OpenAI API key
         model: Model to use (default: gpt-5)
         max_retries: Maximum number of retry attempts
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         (response_text, tokens_used)
@@ -43,10 +58,7 @@ def call_openai_api(
     Raises:
         RuntimeError: If OpenAI library not installed or API call fails
     """
-    if OpenAI is None:
-        raise RuntimeError("OpenAI library not installed. Install with: pip install openai")
-
-    client = OpenAI(api_key=api_key)
+    client = _create_openai_client(api_key=api_key, base_url=base_url)
 
     for attempt in range(max_retries):
         try:
@@ -78,7 +90,7 @@ def call_openai_api(
 
     return "", 0
 
-
+# 真正发送模型请求的底层函数
 def call_openai_api_generate(
     prompt: str,
     api_key: str,
@@ -87,7 +99,8 @@ def call_openai_api_generate(
     max_tokens: int = 150,
     top_p: float = 0.9,
     stop: Optional[List[str]] = None,
-    max_retries: int = 10
+    max_retries: int = 10,
+    base_url: Optional[str] = None,
 ) -> str:
     """
     Call OpenAI API for text generation with full parameter control.
@@ -104,6 +117,7 @@ def call_openai_api_generate(
         top_p: Nucleus sampling parameter (default: 0.9)
         stop: List of stop sequences (up to 4 supported by OpenAI)
         max_retries: Maximum number of retry attempts
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         Generated text (response content)
@@ -111,10 +125,7 @@ def call_openai_api_generate(
     Raises:
         RuntimeError: If OpenAI library not installed or API call fails
     """
-    if OpenAI is None:
-        raise RuntimeError("OpenAI library not installed. Install with: pip install openai")
-
-    client = OpenAI(api_key=api_key)
+    client = _create_openai_client(api_key=api_key, base_url=base_url)
 
     for attempt in range(max_retries):
         try:
@@ -152,7 +163,7 @@ def call_openai_api_generate(
 
     return ""
 
-
+# 把远程 API 包装成本地模型管理器相同的接口,全 API 改造的核心适配器
 class ThirdPartyModelManager:
     """
     Drop-in replacement for BaseModelManager that routes all inference to OpenAI API.
@@ -168,6 +179,7 @@ class ThirdPartyModelManager:
         self,
         api_key: str,
         model: str = "gpt-4o",
+        base_url: Optional[str] = None,
     ):
         """
         Initialize the third-party model manager.
@@ -175,12 +187,14 @@ class ThirdPartyModelManager:
         Args:
             api_key: OpenAI API key
             model: Model to use for generation (default: gpt-4o)
+            base_url: Optional OpenAI-compatible API base URL
         """
         if api_key is None:
             raise ValueError("API key is required for ThirdPartyModelManager")
 
         self.api_key = api_key
         self.model = model
+        self.base_url = base_url or os.environ.get("OPENAI_BASE_URL")
         self._loaded = True  # Always "loaded" since no GPU model to load
 
         # Statistics tracking (matches BaseModelManager interface)
@@ -232,7 +246,8 @@ class ThirdPartyModelManager:
                         temperature=temperature,
                         max_tokens=max_tokens,
                         top_p=top_p,
-                        stop=stop
+                        stop=stop,
+                        base_url=self.base_url,
                     )
                     results.append(response_text)
                     self.total_generations += 1
@@ -302,7 +317,7 @@ def extract_yes_no(text: str) -> Optional[str]:
 
     return None
 
-
+# 作用：提取最后一个 \boxed{...} 的内容。
 def extract_boxed_answer(text: str) -> str:
     """
     Extract answer from \\boxed{} format.
@@ -336,7 +351,7 @@ def extract_boxed_answer(text: str) -> str:
 
     return "NO ANSWER"
 
-
+# 构造 L2 批量错误定位提示词
 def construct_l2_batch_prompt(problem: str, chain: List[str]) -> str:
     """
     Construct L2 batch mode error localization prompt.
@@ -367,7 +382,7 @@ Provide your reasoning, then conclude with the step number in the format: \\boxe
 
     return prompt
 
-
+# 为某一个步骤构造验证提示词
 def construct_l2_incremental_prompt(
     problem: str,
     chain: List[str],
@@ -420,7 +435,8 @@ def call_3p_error_localization_batch(
     chain: List[str],
     ground_truth: str,
     api_key: str,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[int, str]:
     """
     Use 3rd-party API for batch mode error localization (L2).
@@ -443,7 +459,7 @@ def call_3p_error_localization_batch(
     prompt = construct_l2_batch_prompt(problem, chain)
 
     # Call 3P API
-    response, tokens = call_openai_api(prompt, api_key, model)
+    response, tokens = call_openai_api(prompt, api_key, model, base_url=base_url)
 
     # Extract step number
     step_num = extract_step_number(response)
@@ -463,7 +479,8 @@ def call_3p_error_localization_incremental(
     chain: List[str],
     ground_truth: str,
     api_key: str,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[int, str]:
     """
     Use 3rd-party API for incremental mode error localization (L2).
@@ -493,7 +510,7 @@ def call_3p_error_localization_incremental(
         prompt = construct_l2_incremental_prompt(problem, chain, step_idx)
 
         # Call 3P API
-        response, tokens = call_openai_api(prompt, api_key, model)
+        response, tokens = call_openai_api(prompt, api_key, model, base_url=base_url)
         all_reasoning.append(f"Step {step_idx}: {response}")
 
         # Extract YES/NO
@@ -525,7 +542,8 @@ def call_3p_error_localization(
     autonomy_level: int,
     method: str = "batch",
     api_key: Optional[str] = None,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[int, str]:
     """
     Main entry point for 3rd-party error localization.
@@ -538,6 +556,7 @@ def call_3p_error_localization(
         method: 'batch' or 'incremental'
         api_key: API key for 3rd-party service
         model: Model to use (default: gpt-5)
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         (step_number, reasoning_text)
@@ -553,11 +572,11 @@ def call_3p_error_localization(
 
     if method == "incremental":
         return call_3p_error_localization_incremental(
-            problem, chain, ground_truth, api_key, model
+            problem, chain, ground_truth, api_key, model, base_url
         )
     else:  # default: batch
         return call_3p_error_localization_batch(
-            problem, chain, ground_truth, api_key, model
+            problem, chain, ground_truth, api_key, model, base_url
         )
 
 
@@ -566,7 +585,8 @@ def call_3p_error_localization_cot_quote(
     solution: str,
     ground_truth: str,
     api_key: str,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[Optional[str], str]:
     """
     Use 3rd-party API for token-level error localization in CoT (shared prefix mode).
@@ -603,7 +623,7 @@ If you cannot find the error, respond with: \\boxed{{NO_ERROR}}
 """
 
     # Call 3P API
-    response, tokens = call_openai_api(prompt, api_key, model)
+    response, tokens = call_openai_api(prompt, api_key, model, base_url=base_url)
 
     # Extract boxed answer
     boxed = extract_boxed_answer(response)

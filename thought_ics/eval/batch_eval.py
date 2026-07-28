@@ -2,6 +2,7 @@
 """
 Batch Evaluation Script with Chain Caching
 Evaluates on 100 level-5 MATH problems with shared initial chains across autonomy levels
+不同 AutonomyLevel 可以共享相同的初始推理链
 """
 
 import os
@@ -16,8 +17,8 @@ import argparse
 import logging
 from datetime import datetime
 from typing import List, Dict, Optional
-from datasets import load_dataset
-from tqdm import tqdm
+from datasets import load_dataset # load_dataset() 是 Hugging Face datasets 库的接口
+from tqdm import tqdm # 用于显示进度条
 
 from thought_ics.thought_mdp import (
     ToTAgent, ToTEnvironment, TreeSearch,
@@ -33,6 +34,7 @@ from thought_ics.self_correction import (
 )
 from thought_ics.chain_cache import save_initial_chains, load_initial_chains
 from thought_ics.datasets import load_dataset_by_name, get_dataset_info, normalize_answer
+# Weights & Biases，简称 WandB，是实验追踪平台
 from thought_ics.utils.wandb_utils import (
     WandbConfig, init_wandb_run, log_metrics,
     log_problem_result, log_summary_metrics, finish_run,
@@ -84,11 +86,15 @@ def generate_or_load_initial_chains(
 
     # Generate new chains
     logger.info("Generating initial chains (not found in cache)...")
+
+    # 每处理一道题，就向其中添加一个结果字典
     initial_chains = []
 
     for idx, item in enumerate(tqdm(problems, desc="Generating initial chains")):
         logger.info(f"Generating initial chain for problem {idx+1}/{len(problems)}")
 
+        # 每道题有自己的 Agent 统计和状态
+        # 远程 API 客户端配置保持相同,manager相同
         agent = ToTAgent(manager, temperature=temperature, max_tokens=max_tokens_per_thought)
         env = ToTEnvironment(max_depth=max_depth)
         search = TreeSearch(agent, env, strategy="dfs", n_rollouts=1)
@@ -129,11 +135,11 @@ def generate_or_load_initial_chains(
 
     return initial_chains
 
-
+# 负责“一道题的纠错过程”
 def run_iterative_correction_with_cached_chain(
     manager,
     problem: str,
-    ground_truth: str,
+    ground_truth: str,  # The correct answer for the problem
     initial_chain: List[str],
     autonomy_level: int,
     max_iterations: int,
@@ -142,15 +148,16 @@ def run_iterative_correction_with_cached_chain(
     resample_temp: float = 0.7,
     judge_temp: float = 0.3,
     no_auto_stop: bool = False,
-    use_context: bool = False,
+    use_context: bool = False, # 决定重新生成时，是否向模型展示上一次失败的完整推理和错误分析
     use_3p_localize: bool = False,
     api_key_3p: Optional[str] = None,
     model_3p: str = 'gpt-4o',
-    verify: bool = False,
-    mv_verify: bool = False,
+    base_url_3p: Optional[str] = None,
+    verify: bool = False, # 决定每一轮定位错误之前，是否先问模型：你认为当前答案正确吗（self-verification）
+    mv_verify: bool = False, # 多数投票认证
     mv_k: int = 5,
-    mv_criterion: str = "unanimous",
-    use_mv_localization: bool = False,
+    mv_criterion: str = "unanimous", # 如何根据多个结果决定是否认为答案正确
+    use_mv_localization: bool = False, # 多数投票错误定位
     mv_localization_k: int = 10,
     mv_localization_temp: float = 0.5
 ) -> Dict:
@@ -164,6 +171,7 @@ def run_iterative_correction_with_cached_chain(
         use_3p_localize: Use 3rd-party API for error localization only
         api_key_3p: API key for 3rd-party service
         model_3p: Model to use for 3rd-party inference
+        base_url_3p: Optional OpenAI-compatible API base URL
     """
 
     iterations = []
@@ -171,7 +179,7 @@ def run_iterative_correction_with_cached_chain(
     answer = extract_boxed_answer(chain[-1] if chain else "")
 
     iterations.append({
-        'iteration': 0,
+        'iteration': 0, # 表示还没有纠错，是初始模型输出
         'chain': chain,
         'answer': answer,
         'correct': normalize_answer(answer) == normalize_answer(ground_truth),
@@ -187,7 +195,7 @@ def run_iterative_correction_with_cached_chain(
     previous_chain = None
     previous_error_reasoning = None
 
-    # Iterative correction
+    # Iterative correction（Python 的 range 不包含结束值）
     for i in range(1, max_iterations + 1):
         # Check if we got it right
         if not no_auto_stop and normalize_answer(answer) == normalize_answer(ground_truth):
@@ -243,7 +251,8 @@ def run_iterative_correction_with_cached_chain(
             from thought_ics.localization.third_party_api import call_3p_error_localization
             error_step, error_reasoning = call_3p_error_localization(
                 problem, chain, ground_truth, autonomy_level,
-                method=error_detection_method, api_key=api_key_3p, model=model_3p
+                method=error_detection_method, api_key=api_key_3p, model=model_3p,
+                base_url=base_url_3p
             )
         elif error_detection_method == 'incremental':
             error_step, error_reasoning = identify_error_step_incremental(manager, problem, chain, ground_truth, autonomy_level, temperature=judge_temp)
@@ -322,15 +331,15 @@ def run_iterative_correction_with_cached_chain(
         'total_iterations': len(iterations)
     }
 
-
-def run_batch_evaluation(
+# 负责“整批题目的实验管理”
+def run_batch_evaluation(  
     autonomy_level: int,
     gpu_ids: str,
     tensor_parallel_size: int,
     n_problems: int = 100,
     max_iterations: int = 10,
     dataset: str = "math500",
-    level: Optional[int] = None,
+    level: Optional[int] = None,  # 主要用于按照难度筛选题目
     model_name: str = "llama8b",
     experiment_name: Optional[str] = None,
     wandb_project: str = "thought-ics",
@@ -349,6 +358,7 @@ def run_batch_evaluation(
     use_3p_localize: bool = False,
     api_key_3p: Optional[str] = None,
     model_3p: str = 'gpt-4o',
+    base_url_3p: Optional[str] = None,
     manager=None,  # Optional pre-configured manager (for notebook use)
     verify: bool = False,
     mv_verify: bool = False,
@@ -385,6 +395,7 @@ def run_batch_evaluation(
         use_3p_localize: Use 3rd-party API for error localization only
         api_key_3p: API key for 3rd-party service
         model_3p: Model to use for 3rd-party inference (default: gpt-4o)
+        base_url_3p: Optional OpenAI-compatible API base URL
         manager: Optional pre-configured model manager (for notebook use). If provided,
             skips model initialization and uses this manager directly.
     """
@@ -528,7 +539,11 @@ def run_batch_evaluation(
             effective_model_name = model_name
     elif use_3p:
         logger.info(f"Initializing 3P API model '{model_3p}' (no local GPU required)...")
-        manager = initialize_model_3p(api_key=api_key_3p, model=model_3p)
+        manager = initialize_model_3p(
+            api_key=api_key_3p,
+            model=model_3p,
+            base_url=base_url_3p,
+        )
         effective_model_name = model_3p
     else:
         logger.info(f"Initializing local model '{model_name}' on GPUs {gpu_ids}...")
@@ -592,9 +607,10 @@ def run_batch_evaluation(
         logger.info(f"Initial chain: {len(init_chain_data['chain'])} steps, answer: {init_chain_data['answer']}, correct: {init_chain_data['correct']}")
         logger.info(f"{'='*80}")
 
-        # Determine if we should use 3P for localization
-        # (either explicit --3p-localize, or implicit when --3p is set)
-        effective_use_3p_localize = use_3p_localize or use_3p
+        # Full API mode already routes localization through the API-backed manager,
+        # preserving L1/L2/L3 prompt semantics. This special path is only for a
+        # local generation model paired with an external L2 localizer.
+        effective_use_3p_localize = use_3p_localize
 
         try:
             result = run_iterative_correction_with_cached_chain(
@@ -613,6 +629,7 @@ def run_batch_evaluation(
                 use_3p_localize=effective_use_3p_localize,
                 api_key_3p=api_key_3p,
                 model_3p=model_3p,
+                base_url_3p=base_url_3p,
                 verify=verify,
                 mv_verify=mv_verify,
                 mv_k=mv_k,
@@ -810,8 +827,12 @@ def main():
                         help='Use 3rd-party API for error localization only (L2). Local vLLM used for generation.')
     parser.add_argument('--3p-api-key', type=str, default=None,
                         help='API key for 3rd-party service (default: OPENAI_API_KEY env var)')
-    parser.add_argument('--3p-model', type=str, default='gpt-4o',
-                        help='Model to use for 3rd-party inference (default: gpt-4o)')
+    parser.add_argument('--3p-base-url', type=str, default=None,
+                        help='OpenAI-compatible API base URL (default: OPENAI_BASE_URL env var; '
+                             'omit for the official OpenAI endpoint)')
+    parser.add_argument('--3p-model', type=str, default=None,
+                        help='Model to use for 3rd-party inference '
+                             '(default: OPENAI_MODEL env var, then gpt-4o)')
     parser.add_argument('--verify', action='store_true',
                         help='Enable solution verification before error detection (L3 only)')
     parser.add_argument('--mv', action='store_true',
@@ -844,7 +865,8 @@ def main():
 
     # Get 3P API key from args or environment
     api_key_3p = getattr(args, '3p_api_key', None) or os.environ.get('OPENAI_API_KEY')
-    model_3p = getattr(args, '3p_model', 'gpt-4o')
+    base_url_3p = getattr(args, '3p_base_url', None) or os.environ.get('OPENAI_BASE_URL')
+    model_3p = getattr(args, '3p_model', None) or os.environ.get('OPENAI_MODEL') or 'gpt-4o'
 
     # Validation: --3p requires API key
     if use_3p and api_key_3p is None:
@@ -853,6 +875,8 @@ def main():
     # Validation: local inference requires GPU configuration (ignored under --3p)
     if use_3p:
         logger.info(f"3P mode enabled: ALL inference will use {model_3p} via OpenAI-compatible API")
+        if base_url_3p:
+            logger.info("Using a custom OpenAI-compatible API endpoint")
         logger.info("Local vLLM model will NOT be loaded (--gpus and --tensor-parallel-size ignored)")
     else:
         if args.gpus is None or args.tensor_parallel_size is None:
@@ -885,6 +909,7 @@ def main():
         use_3p_localize=use_3p_localize,
         api_key_3p=api_key_3p,
         model_3p=model_3p,
+        base_url_3p=base_url_3p,
         verify=args.verify,
         mv_verify=args.mv,
         mv_k=args.k,

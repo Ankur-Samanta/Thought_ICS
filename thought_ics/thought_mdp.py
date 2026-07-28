@@ -9,6 +9,8 @@ Components:
 - Utilities: Tree manipulation methods
 """
 
+from __future__ import annotations
+
 import os
 os.environ['VLLM_USE_V1'] = '1'
 
@@ -27,15 +29,17 @@ from typing import (
     Tuple,
     Callable,
     Any,
-    Union
+    Union,
+    TYPE_CHECKING,
 )
 from dataclasses import dataclass, field
 from collections import deque
 from abc import ABC, abstractmethod
 
-from thought_ics.models.base_manager import BaseModelManager
-from thought_ics.models.config import ModelConfigLoader, InferenceConfig
 from thought_ics import recommended_prompts  # active default prompts/delimiter/knobs
+
+if TYPE_CHECKING:
+    from thought_ics.models.base_manager import BaseModelManager
 
 # Wandb integration
 try:
@@ -1327,6 +1331,10 @@ def initialize_model(
     Returns:
         Initialized model manager
     """
+    # Keep heavyweight local-inference imports out of the API-only path.
+    from thought_ics.models.base_manager import BaseModelManager
+    from thought_ics.models.config import ModelConfigLoader, InferenceConfig
+
     # Only set CUDA_VISIBLE_DEVICES if not already set (e.g., for parallel runs)
     # This allows both single-run convenience and parallel-run flexibility
     if 'CUDA_VISIBLE_DEVICES' not in os.environ:
@@ -1359,7 +1367,8 @@ def initialize_model(
 
 def initialize_model_3p(
     api_key: str,
-    model: str = "gpt-4o"
+    model: str = "gpt-4o",
+    base_url: Optional[str] = None,
 ) -> 'ThirdPartyModelManager':
     """
     Initialize a third-party model manager for API-based inference.
@@ -1370,6 +1379,7 @@ def initialize_model_3p(
     Args:
         api_key: OpenAI API key
         model: Model to use for generation (default: gpt-4o)
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         Initialized ThirdPartyModelManager
@@ -1381,7 +1391,7 @@ def initialize_model_3p(
     from thought_ics.localization.third_party_api import ThirdPartyModelManager
 
     logger.info(f"Initializing 3P API model: {model} (no local GPU required)")
-    manager = ThirdPartyModelManager(api_key=api_key, model=model)
+    manager = ThirdPartyModelManager(api_key=api_key, model=model, base_url=base_url)
     manager.load_base_model()  # No-op, but called for consistency
 
     return manager
