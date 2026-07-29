@@ -14,6 +14,7 @@ import os
 import re
 import time
 from typing import List, Optional, Tuple, Any
+from urllib.parse import urlparse
 
 try:
     from openai import OpenAI
@@ -21,6 +22,10 @@ except ImportError:
     OpenAI = None
 
 logger = logging.getLogger(__name__)
+
+
+class EmptyAPIResponseError(RuntimeError):
+    """Raised when a successful completion contains no usable generated text."""
 
 
 def _create_openai_client(api_key: str, base_url: Optional[str] = None):
@@ -35,23 +40,86 @@ def _create_openai_client(api_key: str, base_url: Optional[str] = None):
     return OpenAI(**client_kwargs)
 
 
+def _text_value(value: Any) -> str:
+    """Normalize text returned as a string or as provider-specific content blocks."""
+    if isinstance(value, str):
+        return value
+    if not isinstance(value, list):
+        return ""
+
+    parts = []
+    for block in value:
+        if isinstance(block, dict):
+            text = block.get("text") or block.get("content")
+        else:
+            text = getattr(block, "text", None) or getattr(block, "content", None)
+        if text:
+            parts.append(str(text))
+    return "".join(parts)
+
+
 def _response_text(response: Any) -> str:
     """Extract non-empty text from OpenAI and common compatible responses."""
     if not getattr(response, "choices", None):
         raise RuntimeError("API response contained no choices")
 
-    message = response.choices[0].message
-    content = getattr(message, "content", None)
-    if content:
-        return str(content)
+    choice = response.choices[0]
+    message = choice.message
+    content = _text_value(getattr(message, "content", None))
+    if content.strip():
+        return content
 
     # Some reasoning-model providers expose generated text in reasoning_content.
-    reasoning_content = getattr(message, "reasoning_content", None)
-    if reasoning_content:
+    reasoning_content = _text_value(getattr(message, "reasoning_content", None))
+    if reasoning_content.strip():
         logger.warning("API returned reasoning_content without message.content")
-        return str(reasoning_content)
+        return reasoning_content
 
-    raise RuntimeError("API response contained no message text")
+    finish_reason = getattr(choice, "finish_reason", None)
+    usage = getattr(response, "usage", None)
+    completion_tokens = getattr(usage, "completion_tokens", None)
+    raise EmptyAPIResponseError(
+        "API response contained no message text "
+        f"(finish_reason={finish_reason!r}, completion_tokens={completion_tokens!r})"
+    )
+
+
+def _is_siliconflow_endpoint(base_url: Optional[str]) -> bool:
+    """Return whether provider-specific SiliconFlow sampling parameters are safe."""
+    resolved_base_url = base_url or os.environ.get("OPENAI_BASE_URL") or ""
+    hostname = (urlparse(resolved_base_url).hostname or "").lower()
+    return hostname == "siliconflow.cn" or hostname.endswith(".siliconflow.cn") or (
+        hostname == "siliconflow.com" or hostname.endswith(".siliconflow.com")
+    )
+
+
+def _first_nonempty_stop_segment(text: str, stop: Optional[List[str]]) -> str:
+    """Apply stop sequences locally, tolerating a provider-emitted leading delimiter."""
+    candidate = text.strip()
+    sequences = [sequence for sequence in (stop or []) if sequence]
+    if not candidate or not sequences:
+        return candidate
+
+    # A server-side stop can produce empty content when the model emits the
+    # delimiter first. During the no-stop fallback, skip such stray leading
+    # delimiters and keep the first substantive segment.
+    removed_leading_stop = True
+    while candidate and removed_leading_stop:
+        removed_leading_stop = False
+        for sequence in sequences:
+            if candidate.startswith(sequence):
+                candidate = candidate[len(sequence):].lstrip()
+                removed_leading_stop = True
+                break
+
+    stop_positions = [
+        position
+        for sequence in sequences
+        if (position := candidate.find(sequence)) >= 0
+    ]
+    if stop_positions:
+        candidate = candidate[:min(stop_positions)].rstrip()
+    return candidate
 
 
 def _total_tokens(response: Any) -> int:
@@ -124,6 +192,7 @@ def call_openai_api_generate(
     temperature: float = 0.7,
     max_tokens: Optional[int] = 150,
     top_p: float = 0.9,
+    top_k: Optional[int] = None,
     stop: Optional[List[str]] = None,
     max_retries: int = 10,
     base_url: Optional[str] = None,
@@ -141,6 +210,7 @@ def call_openai_api_generate(
         temperature: Sampling temperature (default: 0.7)
         max_tokens: Maximum tokens to generate (default: 150)
         top_p: Nucleus sampling parameter (default: 0.9)
+        top_k: Provider-specific top-k sampling parameter
         stop: List of stop sequences (up to 4 supported by OpenAI)
         max_retries: Maximum number of retry attempts
         base_url: Optional OpenAI-compatible API base URL
@@ -152,6 +222,7 @@ def call_openai_api_generate(
         RuntimeError: If OpenAI library not installed or API call fails
     """
     client = _create_openai_client(api_key=api_key, base_url=base_url)
+    use_server_stop = bool(stop)
 
     for attempt in range(max_retries):
         try:
@@ -165,19 +236,42 @@ def call_openai_api_generate(
             if max_tokens is not None:
                 api_params["max_tokens"] = max_tokens
 
-            # Add stop sequences if provided (OpenAI supports up to 4)
-            if stop:
+            # SiliconFlow documents top_k for its OpenAI-compatible endpoint.
+            # Keep it provider-scoped so official OpenAI and stricter compatible
+            # APIs do not receive an unsupported request field.
+            if top_k is not None and top_k > 0 and _is_siliconflow_endpoint(base_url):
+                api_params["extra_body"] = {"top_k": top_k}
+
+            # Add stop sequences if provided (OpenAI supports up to 4). If a
+            # provider returns empty content because the first generated token
+            # is the stop delimiter, retry without server-side truncation and
+            # apply the same delimiter locally.
+            if use_server_stop:
                 api_params["stop"] = stop[:4]  # Limit to 4 sequences
 
             response = client.chat.completions.create(**api_params)
 
             response_text = _response_text(response)
+            if not use_server_stop:
+                response_text = _first_nonempty_stop_segment(response_text, stop)
+                if not response_text:
+                    raise EmptyAPIResponseError(
+                        "API fallback contained only stop delimiters"
+                    )
             tokens_used = _total_tokens(response)
 
             logger.debug(f"3P generation successful ({tokens_used} tokens)")
             return response_text
 
         except Exception as e:
+            if isinstance(e, EmptyAPIResponseError) and use_server_stop:
+                use_server_stop = False
+                logger.warning(
+                    "API returned empty text after applying a stop sequence; "
+                    "retrying without server-side stop and truncating locally"
+                )
+                continue
+
             if attempt < max_retries - 1:
                 # Exponential backoff: 200ms, 400ms, 800ms, 1.6s, 3.2s, ...
                 wait_time = 0.2 * (2 ** attempt)
@@ -273,6 +367,7 @@ class ThirdPartyModelManager:
                         temperature=temperature,
                         max_tokens=max_tokens,
                         top_p=top_p,
+                        top_k=top_k,
                         stop=stop,
                         base_url=self.base_url,
                     )

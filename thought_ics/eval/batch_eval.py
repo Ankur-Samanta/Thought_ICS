@@ -56,6 +56,11 @@ MAX_TOKENS_PER_THOUGHT = 150  # Paper setting for structured generation
 SEED = 42
 
 
+def _format_optional_percent(value: Optional[float]) -> str:
+    """Format a metric that may be undefined when no attempts were observed."""
+    return "N/A" if value is None else f"{value:.1%}"
+
+
 def generate_or_load_initial_chains(
     manager,
     problems: List[Dict],
@@ -79,20 +84,44 @@ def generate_or_load_initial_chains(
         temperature=temperature,
         max_depth=max_depth,
         max_tokens_per_thought=max_tokens_per_thought,
-        model_seed=model_seed
+        model_seed=model_seed,
+        allow_partial=True,
     )
 
     if cached_chains is not None:
-        logger.info("Using cached initial chains")
-        return cached_chains
+        expected_ids = [item['unique_id'] for item in problems]
+        cached_ids = [chain.get('problem_id') for chain in cached_chains]
+        if cached_ids != expected_ids[:len(cached_ids)]:
+            logger.warning(
+                "Ignoring initial-chain cache because its problem order does "
+                "not match the currently sampled dataset"
+            )
+            cached_chains = None
+        elif len(cached_chains) == len(problems):
+            logger.info("Using complete cached initial chains")
+            return cached_chains
+        else:
+            logger.info(
+                "Resuming initial-chain generation from partial cache: "
+                f"{len(cached_chains)}/{len(problems)} complete"
+            )
 
-    # Generate new chains
-    logger.info("Generating initial chains (not found in cache)...")
+    # Generate new chains or continue a valid partial cache. Saving after each
+    # problem prevents a transient API failure from discarding prior work.
+    initial_chains = list(cached_chains or [])
+    if initial_chains:
+        logger.info("Continuing initial-chain generation...")
+    else:
+        logger.info("Generating initial chains (not found in cache)...")
 
-    # 每处理一道题，就向其中添加一个结果字典
-    initial_chains = []
-
-    for idx, item in enumerate(tqdm(problems, desc="Generating initial chains")):
+    remaining_problems = problems[len(initial_chains):]
+    progress = tqdm(
+        remaining_problems,
+        desc="Generating initial chains",
+        initial=len(initial_chains),
+        total=len(problems),
+    )
+    for idx, item in enumerate(progress, start=len(initial_chains)):
         logger.info(f"Generating initial chain for problem {idx+1}/{len(problems)}")
 
         # 每道题有自己的 Agent 统计和状态
@@ -124,18 +153,17 @@ def generate_or_load_initial_chains(
 
         logger.info(f"Problem {idx+1}: Generated chain with {len(chain)} steps, answer: {answer}, correct: {answer == item['answer']}")
 
-    # Save to cache
-    save_initial_chains(
-        chains=initial_chains,
-        model_name=model_name,
-        dataset_name=dataset_name,
-        n_problems=n_problems,
-        seed=seed,
-        temperature=temperature,
-        max_depth=max_depth,
-        max_tokens_per_thought=max_tokens_per_thought,
-        model_seed=model_seed
-    )
+        save_initial_chains(
+            chains=initial_chains,
+            model_name=model_name,
+            dataset_name=dataset_name,
+            n_problems=n_problems,
+            seed=seed,
+            temperature=temperature,
+            max_depth=max_depth,
+            max_tokens_per_thought=max_tokens_per_thought,
+            model_seed=model_seed
+        )
 
     return initial_chains
 
@@ -595,9 +623,23 @@ def run_batch_evaluation(
         try:
             with open(checkpoint_file, 'r') as f:
                 checkpoint_data = json.load(f)
-                results = checkpoint_data.get('results', [])
+                checkpoint_results = checkpoint_data.get('results', [])
+                retryable_errors = [
+                    result for result in checkpoint_results if result.get('error')
+                ]
+                # Transient API failures are not completed evaluations. Drop
+                # their placeholder records so a rerun of the same experiment
+                # retries those problems without duplicating them in metrics.
+                results = [
+                    result for result in checkpoint_results if not result.get('error')
+                ]
                 completed_problem_ids = set(r['problem_id'] for r in results)
                 logger.info(f"Resuming from checkpoint: {len(results)}/{len(problems)} problems already completed")
+                if retryable_errors:
+                    logger.info(
+                        f"Retrying {len(retryable_errors)} problems that previously "
+                        "ended with API/runtime errors"
+                    )
         except Exception as e:
             logger.warning(f"Error loading checkpoint: {e}. Starting fresh.")
             results = []
@@ -782,7 +824,11 @@ def run_batch_evaluation(
         if "error_detection_ability" in metrics:
             ed = metrics["error_detection_ability"]
             pm = ed.get("performance_metrics", {})
-            logger.info(f"  Error Detection - Precision: {pm.get('precision', 0):.1%}, Recall: {pm.get('recall', 0):.1%}")
+            precision = _format_optional_percent(pm.get('precision'))
+            recall = _format_optional_percent(pm.get('recall'))
+            logger.info(
+                f"  Error Detection - Precision: {precision}, Recall: {recall}"
+            )
     except Exception as e:
         logger.error(f"Failed to compute metrics: {e}")
         logger.error("Continuing anyway...")
