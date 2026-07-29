@@ -276,6 +276,29 @@ python -m thought_ics.eval.batch_eval \
     --3p --3p-model gpt-4o --3p-api-key $OPENAI_API_KEY
 ```
 
+For an API-only installation (including Windows), omit the local inference stack:
+
+```bash
+pip install -r requirements-api.txt
+pip install -e . --no-deps
+```
+
+The API configuration can be supplied with environment variables. `OPENAI_BASE_URL` is optional
+for the official OpenAI endpoint and enables any OpenAI-compatible provider; `OPENAI_MODEL` defaults
+to `gpt-4o` when omitted.
+
+```powershell
+$env:OPENAI_API_KEY = "your-api-key"
+$env:OPENAI_BASE_URL = "https://your-provider.example/v1"  # optional
+$env:OPENAI_MODEL = "your-model-name"                      # optional
+.\scripts\run_api.cmd -Dataset amc23 -NProblems 1
+```
+
+The equivalent CLI options are `--3p-api-key`, `--3p-base-url`, and `--3p-model`. Prefer the
+environment variable for the API key so it does not appear in shell history or process arguments.
+The `.cmd` launcher works even when direct PowerShell script execution is disabled and does not
+change the machine's persistent execution policy.
+
 **Baselines:**
 
 ```bash

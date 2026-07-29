@@ -10,9 +10,11 @@ Provides:
 """
 
 import logging
+import os
 import re
 import time
 from typing import List, Optional, Tuple, Any
+from urllib.parse import urlparse
 
 try:
     from openai import OpenAI
@@ -22,11 +24,117 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+class EmptyAPIResponseError(RuntimeError):
+    """Raised when a successful completion contains no usable generated text."""
+
+
+def _create_openai_client(api_key: str, base_url: Optional[str] = None):
+    """Create an OpenAI client for OpenAI or any compatible endpoint."""
+    if OpenAI is None:
+        raise RuntimeError("OpenAI library not installed. Install with: pip install openai")
+
+    resolved_base_url = base_url or os.environ.get("OPENAI_BASE_URL")
+    client_kwargs = {"api_key": api_key}
+    if resolved_base_url:
+        client_kwargs["base_url"] = resolved_base_url
+    return OpenAI(**client_kwargs)
+
+
+def _text_value(value: Any) -> str:
+    """Normalize text returned as a string or as provider-specific content blocks."""
+    if isinstance(value, str):
+        return value
+    if not isinstance(value, list):
+        return ""
+
+    parts = []
+    for block in value:
+        if isinstance(block, dict):
+            text = block.get("text") or block.get("content")
+        else:
+            text = getattr(block, "text", None) or getattr(block, "content", None)
+        if text:
+            parts.append(str(text))
+    return "".join(parts)
+
+
+def _response_text(response: Any) -> str:
+    """Extract non-empty text from OpenAI and common compatible responses."""
+    if not getattr(response, "choices", None):
+        raise RuntimeError("API response contained no choices")
+
+    choice = response.choices[0]
+    message = choice.message
+    content = _text_value(getattr(message, "content", None))
+    if content.strip():
+        return content
+
+    # Some reasoning-model providers expose generated text in reasoning_content.
+    reasoning_content = _text_value(getattr(message, "reasoning_content", None))
+    if reasoning_content.strip():
+        logger.warning("API returned reasoning_content without message.content")
+        return reasoning_content
+
+    finish_reason = getattr(choice, "finish_reason", None)
+    usage = getattr(response, "usage", None)
+    completion_tokens = getattr(usage, "completion_tokens", None)
+    raise EmptyAPIResponseError(
+        "API response contained no message text "
+        f"(finish_reason={finish_reason!r}, completion_tokens={completion_tokens!r})"
+    )
+
+
+def _is_siliconflow_endpoint(base_url: Optional[str]) -> bool:
+    """Return whether provider-specific SiliconFlow sampling parameters are safe."""
+    resolved_base_url = base_url or os.environ.get("OPENAI_BASE_URL") or ""
+    hostname = (urlparse(resolved_base_url).hostname or "").lower()
+    return hostname == "siliconflow.cn" or hostname.endswith(".siliconflow.cn") or (
+        hostname == "siliconflow.com" or hostname.endswith(".siliconflow.com")
+    )
+
+
+def _first_nonempty_stop_segment(text: str, stop: Optional[List[str]]) -> str:
+    """Apply stop sequences locally, tolerating a provider-emitted leading delimiter."""
+    candidate = text.strip()
+    sequences = [sequence for sequence in (stop or []) if sequence]
+    if not candidate or not sequences:
+        return candidate
+
+    # A server-side stop can produce empty content when the model emits the
+    # delimiter first. During the no-stop fallback, skip such stray leading
+    # delimiters and keep the first substantive segment.
+    removed_leading_stop = True
+    while candidate and removed_leading_stop:
+        removed_leading_stop = False
+        for sequence in sequences:
+            if candidate.startswith(sequence):
+                candidate = candidate[len(sequence):].lstrip()
+                removed_leading_stop = True
+                break
+
+    stop_positions = [
+        position
+        for sequence in sequences
+        if (position := candidate.find(sequence)) >= 0
+    ]
+    if stop_positions:
+        candidate = candidate[:min(stop_positions)].rstrip()
+    return candidate
+
+
+def _total_tokens(response: Any) -> int:
+    """Return usage when supplied; OpenAI-compatible providers may omit it."""
+    usage = getattr(response, "usage", None)
+    return int(getattr(usage, "total_tokens", 0) or 0)
+
+
+# 发送一次错误定位请求
 def call_openai_api(
     prompt: str,
     api_key: str,
     model: str = "gpt-5",
-    max_retries: int = 3
+    max_retries: int = 3,
+    base_url: Optional[str] = None,
 ) -> Tuple[str, int]:
     """
     Call OpenAI API with the error localization prompt.
@@ -36,6 +144,7 @@ def call_openai_api(
         api_key: OpenAI API key
         model: Model to use (default: gpt-5)
         max_retries: Maximum number of retry attempts
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         (response_text, tokens_used)
@@ -43,10 +152,7 @@ def call_openai_api(
     Raises:
         RuntimeError: If OpenAI library not installed or API call fails
     """
-    if OpenAI is None:
-        raise RuntimeError("OpenAI library not installed. Install with: pip install openai")
-
-    client = OpenAI(api_key=api_key)
+    client = _create_openai_client(api_key=api_key, base_url=base_url)
 
     for attempt in range(max_retries):
         try:
@@ -60,8 +166,8 @@ def call_openai_api(
                 ]
             )
 
-            response_text = response.choices[0].message.content
-            tokens_used = response.usage.total_tokens
+            response_text = _response_text(response)
+            tokens_used = _total_tokens(response)
 
             logger.info(f"3P API call successful ({tokens_used} tokens used)")
             return response_text, tokens_used
@@ -78,16 +184,18 @@ def call_openai_api(
 
     return "", 0
 
-
+# 真正发送模型请求的底层函数
 def call_openai_api_generate(
     prompt: str,
     api_key: str,
     model: str = "gpt-4o",
     temperature: float = 0.7,
-    max_tokens: int = 150,
+    max_tokens: Optional[int] = 150,
     top_p: float = 0.9,
+    top_k: Optional[int] = None,
     stop: Optional[List[str]] = None,
-    max_retries: int = 10
+    max_retries: int = 10,
+    base_url: Optional[str] = None,
 ) -> str:
     """
     Call OpenAI API for text generation with full parameter control.
@@ -102,8 +210,10 @@ def call_openai_api_generate(
         temperature: Sampling temperature (default: 0.7)
         max_tokens: Maximum tokens to generate (default: 150)
         top_p: Nucleus sampling parameter (default: 0.9)
+        top_k: Provider-specific top-k sampling parameter
         stop: List of stop sequences (up to 4 supported by OpenAI)
         max_retries: Maximum number of retry attempts
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         Generated text (response content)
@@ -111,10 +221,8 @@ def call_openai_api_generate(
     Raises:
         RuntimeError: If OpenAI library not installed or API call fails
     """
-    if OpenAI is None:
-        raise RuntimeError("OpenAI library not installed. Install with: pip install openai")
-
-    client = OpenAI(api_key=api_key)
+    client = _create_openai_client(api_key=api_key, base_url=base_url)
+    use_server_stop = bool(stop)
 
     for attempt in range(max_retries):
         try:
@@ -123,23 +231,47 @@ def call_openai_api_generate(
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": temperature,
-                "max_tokens": max_tokens,
                 "top_p": top_p,
             }
+            if max_tokens is not None:
+                api_params["max_tokens"] = max_tokens
 
-            # Add stop sequences if provided (OpenAI supports up to 4)
-            if stop:
+            # SiliconFlow documents top_k for its OpenAI-compatible endpoint.
+            # Keep it provider-scoped so official OpenAI and stricter compatible
+            # APIs do not receive an unsupported request field.
+            if top_k is not None and top_k > 0 and _is_siliconflow_endpoint(base_url):
+                api_params["extra_body"] = {"top_k": top_k}
+
+            # Add stop sequences if provided (OpenAI supports up to 4). If a
+            # provider returns empty content because the first generated token
+            # is the stop delimiter, retry without server-side truncation and
+            # apply the same delimiter locally.
+            if use_server_stop:
                 api_params["stop"] = stop[:4]  # Limit to 4 sequences
 
             response = client.chat.completions.create(**api_params)
 
-            response_text = response.choices[0].message.content
-            tokens_used = response.usage.total_tokens
+            response_text = _response_text(response)
+            if not use_server_stop:
+                response_text = _first_nonempty_stop_segment(response_text, stop)
+                if not response_text:
+                    raise EmptyAPIResponseError(
+                        "API fallback contained only stop delimiters"
+                    )
+            tokens_used = _total_tokens(response)
 
             logger.debug(f"3P generation successful ({tokens_used} tokens)")
             return response_text
 
         except Exception as e:
+            if isinstance(e, EmptyAPIResponseError) and use_server_stop:
+                use_server_stop = False
+                logger.warning(
+                    "API returned empty text after applying a stop sequence; "
+                    "retrying without server-side stop and truncating locally"
+                )
+                continue
+
             if attempt < max_retries - 1:
                 # Exponential backoff: 200ms, 400ms, 800ms, 1.6s, 3.2s, ...
                 wait_time = 0.2 * (2 ** attempt)
@@ -152,7 +284,7 @@ def call_openai_api_generate(
 
     return ""
 
-
+# 把远程 API 包装成本地模型管理器相同的接口,全 API 改造的核心适配器
 class ThirdPartyModelManager:
     """
     Drop-in replacement for BaseModelManager that routes all inference to OpenAI API.
@@ -168,6 +300,7 @@ class ThirdPartyModelManager:
         self,
         api_key: str,
         model: str = "gpt-4o",
+        base_url: Optional[str] = None,
     ):
         """
         Initialize the third-party model manager.
@@ -175,12 +308,14 @@ class ThirdPartyModelManager:
         Args:
             api_key: OpenAI API key
             model: Model to use for generation (default: gpt-4o)
+            base_url: Optional OpenAI-compatible API base URL
         """
         if api_key is None:
             raise ValueError("API key is required for ThirdPartyModelManager")
 
         self.api_key = api_key
         self.model = model
+        self.base_url = base_url or os.environ.get("OPENAI_BASE_URL")
         self._loaded = True  # Always "loaded" since no GPU model to load
 
         # Statistics tracking (matches BaseModelManager interface)
@@ -192,7 +327,7 @@ class ThirdPartyModelManager:
     def generate(
         self,
         prompts: List[str],
-        max_tokens: int = 512,
+        max_tokens: Optional[int] = 512,
         temperature: float = 0.7,
         top_p: float = 0.9,
         top_k: int = 50,  # Ignored - OpenAI doesn't support top_k
@@ -232,13 +367,15 @@ class ThirdPartyModelManager:
                         temperature=temperature,
                         max_tokens=max_tokens,
                         top_p=top_p,
-                        stop=stop
+                        top_k=top_k,
+                        stop=stop,
+                        base_url=self.base_url,
                     )
                     results.append(response_text)
                     self.total_generations += 1
                 except Exception as e:
                     logger.error(f"Generation failed for prompt: {e}")
-                    results.append("ERROR: Generation failed")
+                    raise RuntimeError("Third-party generation failed") from e
 
         return results
 
@@ -302,7 +439,7 @@ def extract_yes_no(text: str) -> Optional[str]:
 
     return None
 
-
+# 作用：提取最后一个 \boxed{...} 的内容。
 def extract_boxed_answer(text: str) -> str:
     """
     Extract answer from \\boxed{} format.
@@ -336,7 +473,7 @@ def extract_boxed_answer(text: str) -> str:
 
     return "NO ANSWER"
 
-
+# 构造 L2 批量错误定位提示词
 def construct_l2_batch_prompt(problem: str, chain: List[str]) -> str:
     """
     Construct L2 batch mode error localization prompt.
@@ -367,7 +504,7 @@ Provide your reasoning, then conclude with the step number in the format: \\boxe
 
     return prompt
 
-
+# 为某一个步骤构造验证提示词
 def construct_l2_incremental_prompt(
     problem: str,
     chain: List[str],
@@ -420,7 +557,8 @@ def call_3p_error_localization_batch(
     chain: List[str],
     ground_truth: str,
     api_key: str,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[int, str]:
     """
     Use 3rd-party API for batch mode error localization (L2).
@@ -443,7 +581,7 @@ def call_3p_error_localization_batch(
     prompt = construct_l2_batch_prompt(problem, chain)
 
     # Call 3P API
-    response, tokens = call_openai_api(prompt, api_key, model)
+    response, tokens = call_openai_api(prompt, api_key, model, base_url=base_url)
 
     # Extract step number
     step_num = extract_step_number(response)
@@ -463,7 +601,8 @@ def call_3p_error_localization_incremental(
     chain: List[str],
     ground_truth: str,
     api_key: str,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[int, str]:
     """
     Use 3rd-party API for incremental mode error localization (L2).
@@ -493,7 +632,7 @@ def call_3p_error_localization_incremental(
         prompt = construct_l2_incremental_prompt(problem, chain, step_idx)
 
         # Call 3P API
-        response, tokens = call_openai_api(prompt, api_key, model)
+        response, tokens = call_openai_api(prompt, api_key, model, base_url=base_url)
         all_reasoning.append(f"Step {step_idx}: {response}")
 
         # Extract YES/NO
@@ -525,7 +664,8 @@ def call_3p_error_localization(
     autonomy_level: int,
     method: str = "batch",
     api_key: Optional[str] = None,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[int, str]:
     """
     Main entry point for 3rd-party error localization.
@@ -538,6 +678,7 @@ def call_3p_error_localization(
         method: 'batch' or 'incremental'
         api_key: API key for 3rd-party service
         model: Model to use (default: gpt-5)
+        base_url: Optional OpenAI-compatible API base URL
 
     Returns:
         (step_number, reasoning_text)
@@ -553,11 +694,11 @@ def call_3p_error_localization(
 
     if method == "incremental":
         return call_3p_error_localization_incremental(
-            problem, chain, ground_truth, api_key, model
+            problem, chain, ground_truth, api_key, model, base_url
         )
     else:  # default: batch
         return call_3p_error_localization_batch(
-            problem, chain, ground_truth, api_key, model
+            problem, chain, ground_truth, api_key, model, base_url
         )
 
 
@@ -566,7 +707,8 @@ def call_3p_error_localization_cot_quote(
     solution: str,
     ground_truth: str,
     api_key: str,
-    model: str = "gpt-5"
+    model: str = "gpt-5",
+    base_url: Optional[str] = None,
 ) -> Tuple[Optional[str], str]:
     """
     Use 3rd-party API for token-level error localization in CoT (shared prefix mode).
@@ -603,7 +745,7 @@ If you cannot find the error, respond with: \\boxed{{NO_ERROR}}
 """
 
     # Call 3P API
-    response, tokens = call_openai_api(prompt, api_key, model)
+    response, tokens = call_openai_api(prompt, api_key, model, base_url=base_url)
 
     # Extract boxed answer
     boxed = extract_boxed_answer(response)

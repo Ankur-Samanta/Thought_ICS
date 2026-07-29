@@ -82,15 +82,24 @@ def save_initial_chains(
             'max_depth': max_depth,
             'max_tokens_per_thought': max_tokens_per_thought,
             'model_seed': model_seed,
-            'cache_key': cache_key
+            'cache_key': cache_key,
+            'num_chains': len(chains),
+            'complete': len(chains) == n_problems,
         },
         'chains': chains
     }
 
-    with open(cache_path, 'w') as f:
+    # Write atomically so an interrupted API run cannot leave invalid JSON.
+    temp_path = cache_path.with_suffix(cache_path.suffix + ".tmp")
+    with open(temp_path, 'w') as f:
         json.dump(cache_data, f, indent=2)
+    os.replace(temp_path, cache_path)
 
-    print(f"Saved {len(chains)} initial chains to cache: {cache_path.name}")
+    status = "complete" if len(chains) == n_problems else "partial"
+    print(
+        f"Saved {len(chains)}/{n_problems} initial chains "
+        f"to {status} cache: {cache_path.name}"
+    )
 
 
 def load_initial_chains(
@@ -102,12 +111,14 @@ def load_initial_chains(
     max_depth: int,
     max_tokens_per_thought: int,
     model_seed: Optional[int] = None,
-    cache_type: str = "tot"
+    cache_type: str = "tot",
+    allow_partial: bool = False,
 ) -> Optional[List[Dict]]:
     """Load initial chains from cache if they exist.
 
     Args:
         cache_type: Either "tot" for ToT chains or "cot" for CoT chains
+        allow_partial: Return a valid prefix cache for resumable generation
     """
     cache_key = get_cache_key(model_name, dataset_name, n_problems, seed, temperature, max_depth, max_tokens_per_thought, model_seed)
     cache_path = get_cache_path(cache_key, cache_type)
@@ -131,6 +142,32 @@ def load_initial_chains(
         metadata.get('model_seed') == model_seed):
 
         chains = cache_data['chains']
+        empty_chain_ids = [
+            chain.get('problem_id', f'index_{idx}')
+            for idx, chain in enumerate(chains)
+            if not chain.get('chain')
+        ]
+        if empty_chain_ids:
+            print(
+                "Ignoring invalid cache containing empty reasoning chains: "
+                f"{cache_path.name} ({', '.join(empty_chain_ids[:5])})"
+            )
+            return None
+
+        if len(chains) > n_problems:
+            print(
+                f"Ignoring invalid cache with {len(chains)} chains "
+                f"for n_problems={n_problems}: {cache_path.name}"
+            )
+            return None
+
+        if len(chains) < n_problems and not allow_partial:
+            print(
+                f"Ignoring incomplete cache with {len(chains)}/{n_problems} chains: "
+                f"{cache_path.name}"
+            )
+            return None
+
         print(f"Loaded {len(chains)} initial chains from cache: {cache_path.name}")
         return chains
     else:

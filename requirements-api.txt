@@ -1,0 +1,5 @@
+# Lightweight dependencies for --3p API-only inference.
+# Install the package itself with: pip install -e . --no-deps
+datasets==3.6.0
+openai==1.86.0
+tqdm==4.67.1

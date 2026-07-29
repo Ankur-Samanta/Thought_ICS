@@ -47,7 +47,7 @@ def detect_experiment_type(results: Dict[str, Any]) -> ExperimentType:
 
     return ExperimentType.UNKNOWN
 
-
+# 计算每一轮结束后的整体准确率变化
 def compute_accuracy_trajectory(results: List[Dict[str, Any]],
                                 iter_key: str = "iterations") -> Dict[str, Any]:
     """
@@ -320,11 +320,11 @@ def compute_stopping_behavior(results: List[Dict[str, Any]],
         if len(iterations) == 0:
             continue
 
-        total_iters = len(iterations)
+        correction_iters = max(0, len(iterations) - 1)
         final_correct = iterations[-1]["correct"]
 
         # Check stop reason
-        if total_iters >= max_iterations:
+        if correction_iters >= max_iterations:
             hit_max_iterations += 1
         else:
             stopped_before_max += 1
@@ -448,7 +448,7 @@ def compute_iteration_statistics(results: List[Dict[str, Any]],
 
     for problem in results:
         iterations = problem.get(iter_key, [])
-        num_iters = len(iterations)
+        num_iters = max(0, len(iterations) - 1)
         total_iterations += num_iters
 
         if problem.get("success", False):
@@ -477,7 +477,7 @@ def compute_iteration_statistics(results: List[Dict[str, Any]],
         }
     }
 
-
+# 总入口
 def compute_metrics(experiment_dir: Path) -> Dict[str, Any]:
     """
     Main function to compute all metrics with clean schema.
@@ -507,7 +507,15 @@ def compute_metrics(experiment_dir: Path) -> Dict[str, Any]:
             "experiment_type": exp_type,
             "computed_at": datetime.now().isoformat(),
             "config": {
-                "model": config.get("model_name", results_data.get("stats", {}).get("baseline_name", "unknown")),
+                "model": config.get(
+                    "evaluated_model",
+                    config.get("model_3p")
+                    if config.get("use_3p")
+                    else config.get(
+                        "model_name",
+                        results_data.get("stats", {}).get("baseline_name", "unknown")
+                    )
+                ),
                 "dataset": config.get("dataset", "unknown"),
                 "max_iterations": config.get("max_iterations", 10),
                 "total_problems": len(results_data.get("results", []))
@@ -530,7 +538,10 @@ def compute_metrics(experiment_dir: Path) -> Dict[str, Any]:
 
         # Overall performance (derived from trajectory)
         first_iter = trajectory["by_iteration"].get("iter_0", {})
-        last_iter_key = max(k for k in trajectory["by_iteration"].keys())
+        last_iter_key = max(
+            trajectory["by_iteration"].keys(),
+            key=lambda key: int(key.rsplit("_", 1)[1])
+        )
         last_iter = trajectory["by_iteration"][last_iter_key]
 
         first_acc = first_iter.get("accuracy", 0.0)
