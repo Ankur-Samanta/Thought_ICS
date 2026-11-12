@@ -67,7 +67,7 @@ Each step should be a complete, self-contained thought — one observation, calc
 - Contains substantive reasoning (not filler like "let me think" or restating the problem)
 - Coheres logically with the previous steps
 
-Keep each step to a single paragraph (no blank lines inside a step), and do not insert separator lines (such as ---) between steps. When a step arrives at the final answer, include \\boxed{{answer}}.
+Keep each step to a single paragraph (no blank lines inside a step), and do not insert separator lines (such as ---) between steps. Continue until you reach the final answer, and include it as \\boxed{{answer}} in the step that arrives at it.
 
 Q: {question}
 """
@@ -80,7 +80,7 @@ Your reasoning should:
 - Contain substantive reasoning (not filler like "let me think" or restating the problem)
 - Cohere logically from one step to the next
 
-When you arrive at the final answer, include \\boxed{{answer}}.
+Continue until you reach the final answer, and include it as \\boxed{{answer}}.
 
 Q: {question}
 """

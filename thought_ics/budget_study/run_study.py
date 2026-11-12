@@ -46,7 +46,9 @@ MODELS = {
     "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, **UNIFORM,
                    "final_prefill": True, "prefix_caching": False},
 }
-HARMONY_FINAL_HEADER = "<|channel|>final<|message|>"
+# gpt-oss: an explicitly empty analysis block, then the final channel, so the turn has the
+# harmony structure the model was trained on while all solution reasoning stays visible.
+HARMONY_FINAL_HEADER = "<|channel|>analysis<|message|><|end|><|start|>assistant<|channel|>final<|message|>"
 
 
 def boxed_answer(text: str) -> str:
