@@ -45,6 +45,12 @@ MODELS = {
                   "final_prefill": True, "prefix_caching": False},
     "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, **UNIFORM,
                    "final_prefill": True, "prefix_caching": False},
+    # remaining paper models, same protocol (prefix caching is only disabled for gpt-oss)
+    "llama3b": {"hf": "meta-llama/Llama-3.2-3B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
+    "llama8b": {"hf": "meta-llama/Llama-3.1-8B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
+    "llama70b": {"hf": "meta-llama/Llama-3.3-70B-Instruct", "tp": 4, **UNIFORM, "final_prefill": False},
+    "qwen7b": {"hf": "Qwen/Qwen2.5-7B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
+    "qwen14b": {"hf": "Qwen/Qwen2.5-14B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
 }
 # gpt-oss: an explicitly empty analysis block, then the final channel, so the turn has the
 # harmony structure the model was trained on while all solution reasoning stays visible.
