@@ -322,3 +322,12 @@ def test_boundary_rules():
     eng = LeadEngine()
     g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
     assert len(g["thoughts"]) == 2 and g["thoughts"][1].startswith("Thus") and g["status"] == "answer"
+
+
+def test_opens_next_headers_and_unfinished_sentences():
+    assert P.opens_next("**Case \\(k=4\\).**\n\n") and P.opens_next("## Step 2\n\n")
+    assert P.opens_next("Thus the equation is  \n")
+    assert P.opens_next("Substituting, the equation becomes  \n") and P.opens_next("so that x =  \n")
+    assert not P.opens_next("- (1,2) and (2,1), 2 pairs\n\n")      # list item without a period
+    assert not P.opens_next("Use \\(xy=20\\) to find \\(x^2\\).  \n")
+    assert not P.opens_next("so \\(a=3\\)\\]\n\n") and not P.opens_next("The answer is \\(\\boxed{4}\\)")

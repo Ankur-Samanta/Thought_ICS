@@ -40,7 +40,10 @@ MAX_TOKENS_PER_THOUGHT = 2048
 # prompt/format variants) and Qwen ends its chat reply after it (diag_thought_*.py), whereas
 # blank-line paragraph breaks are produced reliably by all models.
 THOUGHT_DELIMITER = "\n\n"
-THOUGHT_STOPS = [THOUGHT_DELIMITER]
+# A markdown hard line break also ends a thought: gpt-oss writes one step per line inside a
+# paragraph ("...  \n...  \n"); without it ~30% of gpt-oss-20b thoughts bundle several steps
+# (scripts/budget_study/diag_step_prompts.py + judge_variants.py).
+THOUGHT_STOPS = [THOUGHT_DELIMITER, "  \n"]
 LOCALIZATION_MAX_TOKENS = 4096
 LOCALIZATION_TEMP = 0.5
 MAX_ICS_ITERATIONS = 10
@@ -62,12 +65,12 @@ MAX_EMPTY_RETRIES = 3
 # --- Generation prompts -------------------------------------------------------------
 THOUGHT_TEMPLATE = """Solve the problem step by step. Write your reasoning as a sequence of steps, one step per paragraph, with a blank line between steps.
 
-Each step should be a complete, self-contained thought — one observation, calculation, or deduction that:
-- Makes forward progress toward the solution
-- Contains substantive reasoning (not filler like "let me think" or restating the problem)
-- Coheres logically with the previous steps
+Each step must do exactly one thing: a single observation, calculation, or deduction, usually one or two sentences. Whenever you move on to something new (a new calculation, a new case, a new deduction, the next option), start a new paragraph. Each step should:
+- Make forward progress toward the solution
+- Contain substantive reasoning (not filler like "let me think" or restating the problem)
+- Cohere logically with the previous steps
 
-Keep each step to a single paragraph (no blank lines inside a step), and do not insert separator lines (such as ---) between steps. Continue until you reach the final answer, and include it as \\boxed{{answer}} in the step that arrives at it.
+Keep each step to a single paragraph (no blank lines inside a step), keep any equation in the same paragraph as the sentence that introduces it, and do not insert headers or separator lines (such as ---) between steps. Continue until you reach the final answer, and include it as \\boxed{{answer}} in the step that arrives at it.
 
 Q: {question}
 """
@@ -110,11 +113,23 @@ def is_display_math(unit: str) -> bool:
     return _DISPLAY_MATH.fullmatch(_TRAILING_SEPARATORS.sub("", unit)) is not None
 
 
+_HEADER = re.compile(r"(#{1,6}\s+.*|\*\*[^*]+\*\*[.:]?)")
+_DANGLING = re.compile(r"(=|,|;|\b(is|are|was|were|be|gives|give|yields|becomes|equals|so|thus|then|"
+                       r"and|or|of|to|as|by|with|from|that|which|where|for|in|than|get|obtain))$",
+                       re.IGNORECASE)
+
+
 def opens_next(thought: str) -> bool:
-    """A thought that only introduces what follows (ends with ':' or is a bare connective such
-    as 'Thus') is unfinished: the next paragraph is attached to it."""
+    """A thought that is unfinished on its own gets the next unit attached to it:
+    it introduces what follows (ends with ':'), is a bare connective ('Thus'), is only a
+    markdown header ('**Case k=4.**'), or ends mid-sentence on an operator / connecting word
+    ('Thus the equation is', 'so that x ='). Lines that merely lack a period (list items) are
+    left alone."""
     t = _TRAILING_SEPARATORS.sub("", thought).strip()
-    return t.endswith(":") or t.rstrip(".,").lower() in _CONNECTIVES
+    if not t:
+        return False
+    return (t.endswith(":") or t.rstrip(".,").lower() in _CONNECTIVES
+            or _HEADER.fullmatch(t) is not None or _DANGLING.search(t) is not None)
 
 
 def chain_text(thoughts: List[str]) -> str:
