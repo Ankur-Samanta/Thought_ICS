@@ -48,6 +48,20 @@ MAX_DEPTH = 100  # Deep enough for complex problems, avoids recursion limit
 MAX_TOKENS_PER_THOUGHT = None  # No limit
 SEED = 42
 
+# Generation budget for every CoT call (initial solution, prefix continuation, context
+# regeneration, majority-vote samples). Set via --cot-max-tokens. The paper used 2048,
+# which binds for long-reasoning models (qwen32b, gpt-oss-20b/120b) and truncates many
+# outputs before a \boxed answer, while Thought-ICS chains have no comparable cap.
+COT_MAX_TOKENS = 2048
+# CoT caches produced with the original 2048 budget were saved under the label 4096;
+# keep that label for 2048 so existing caches still resolve.
+LEGACY_COT_CACHE_LABEL = {2048: 4096}
+
+
+def cot_cache_max_tokens() -> int:
+    """Max-tokens value used in the CoT cache key for the current COT_MAX_TOKENS."""
+    return LEGACY_COT_CACHE_LABEL.get(COT_MAX_TOKENS, COT_MAX_TOKENS)
+
 
 def extract_boxed_answer(text: str) -> str:
     """Extract answer from \\boxed{} format."""
@@ -202,7 +216,7 @@ def continue_from_prefix(
     manager,
     problem: str,
     prefix: str,
-    max_tokens: int = 2048,
+    max_tokens: Optional[int] = None,
     temperature: float = 0.7
 ) -> str:
     """Continue generation from a prefix (shared prefix mode).
@@ -225,7 +239,7 @@ Solution:
         temperature=temperature,
         top_p=0.9,
         top_k=50,
-        max_tokens=max_tokens
+        max_tokens=max_tokens if max_tokens is not None else COT_MAX_TOKENS
     )
 
     continuation = outputs[0].strip()
@@ -358,7 +372,7 @@ Conclude with \\boxed{{YES}} if the solution is correct, or \\boxed{{NO}} if it 
         return False, response
 
 
-def generate_cot_solution(manager, problem: str, max_tokens: int = 2048, temperature: float = 1.0) -> str:
+def generate_cot_solution(manager, problem: str, max_tokens: Optional[int] = None, temperature: float = 1.0) -> str:
     """Generate a standard CoT solution without Tree of Thought."""
 
     prompt = f"""Solve the following math problem step by step. Show your reasoning clearly, then provide your final answer in the format \\boxed{{answer}}.
@@ -372,7 +386,7 @@ Solution:"""
         temperature=temperature,
         top_p=0.9,
         top_k=50,
-        max_tokens=max_tokens
+        max_tokens=max_tokens if max_tokens is not None else COT_MAX_TOKENS
     )
 
     return outputs[0].strip()
@@ -479,7 +493,7 @@ Solution:"""
         temperature=temperature,
         top_p=0.9,
         top_k=50,
-        max_tokens=2048
+        max_tokens=COT_MAX_TOKENS
     )
 
     return outputs[0].strip()
@@ -761,7 +775,7 @@ def baseline_cot_majority_vote(manager, problem: str, ground_truth: str, n_sampl
 
     for i in range(start_idx, n_samples):
         logger.info(f"Sample {i+1}/{n_samples}")
-        solution = generate_cot_solution(manager, problem, max_tokens=2048, temperature=generation_temp)
+        solution = generate_cot_solution(manager, problem, temperature=generation_temp)
         answer = extract_boxed_answer(solution)
 
         samples.append({
@@ -918,6 +932,7 @@ def run_baseline_evaluation(
         'regenerate_cot': regenerate_cot,
         'cache_type': cache_type,
         'shared_prefix': shared_prefix,
+        'cot_max_tokens': COT_MAX_TOKENS,
         'generation_temp': generation_temp,
         'resample_temp': resample_temp,
         'judge_temp': judge_temp,
@@ -995,11 +1010,11 @@ def run_baseline_evaluation(
     cached_chains = None
     if use_cached_chains and not regenerate_cot:
         logger.info(f"Attempting to load cached {cache_type.upper()} chains...")
-        # For CoT cache, use max_depth=1 and max_tokens=4096 to match how caches are saved
+        # For CoT cache, use max_depth=1 and the label for the active CoT budget (see cot_cache_max_tokens)
         # For ToT cache, use the global defaults (MAX_DEPTH=100, MAX_TOKENS_PER_THOUGHT=None)
         if cache_type == "cot":
             cache_max_depth = 1
-            cache_max_tokens = 4096
+            cache_max_tokens = cot_cache_max_tokens()
         else:
             cache_max_depth = MAX_DEPTH
             cache_max_tokens = MAX_TOKENS_PER_THOUGHT
@@ -1295,7 +1310,7 @@ def run_baseline_evaluation(
             seed=SEED,
             temperature=generation_temp,
             max_depth=1,  # CoT is single-step
-            max_tokens_per_thought=MAX_TOKENS_PER_THOUGHT if MAX_TOKENS_PER_THOUGHT else 4096,
+            max_tokens_per_thought=cot_cache_max_tokens(),
             cache_type="cot"
         )
         logger.info(f"CoT cache saved successfully!")
@@ -1446,10 +1461,18 @@ def main():
     parser.add_argument('--mv-criterion', type=str, default='unanimous',
                         choices=['unanimous', 'majority', 'any'],
                         help='MV voting criterion: unanimous (all YES), majority (>50%% YES), any (>=1 YES). Default: unanimous')
+    parser.add_argument('--cot-max-tokens', type=int, default=2048,
+                        help='Generation budget for every CoT call (default: 2048, as in the paper). '
+                             'Use e.g. 16384 for long-reasoning models (qwen32b, gptoss20b, gptoss120b) '
+                             'so the budget does not truncate solutions before the answer.')
     parser.add_argument('--seed', type=int, default=42,
                         help='Random seed for reproducibility (default: 42)')
 
     args = parser.parse_args()
+
+    global COT_MAX_TOKENS
+    COT_MAX_TOKENS = args.cot_max_tokens
+    logger.info(f"CoT generation budget: {COT_MAX_TOKENS} tokens (cache label {cot_cache_max_tokens()})")
 
     # Validation: --mv requires --verify
     if args.mv and not args.verify:
