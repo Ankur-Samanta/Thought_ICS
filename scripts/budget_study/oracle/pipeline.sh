@@ -13,6 +13,7 @@ REPO="$(cd "$HERE/../../.." && pwd)"
 FULL=${FULL:-$REPO/experiments_budget_study/full}
 ODIR=${ODIR:-$REPO/experiments_budget_study/oracle}
 PY=${PY:-/home/$USER/miniconda3/envs/scpo/bin/python}
+export HF_HUB_OFFLINE=${HF_HUB_OFFLINE:-1} HF_DATASETS_OFFLINE=${HF_DATASETS_OFFLINE:-1}
 case "${1:-}" in
     build)   "$PY" "$HERE/build.py" "$FULL" "$ODIR" "${2:-30}" "${3:-3}" ;;
     task)    python3 "$HERE/task.py" "$ODIR" "${2:?judge}" "${3:?batch}" ;;

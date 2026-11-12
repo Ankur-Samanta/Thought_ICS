@@ -16,9 +16,11 @@ import sys
 from pathlib import Path
 
 full, out = Path(sys.argv[1]), Path(sys.argv[2])
-per_model = int(sys.argv[3]) if len(sys.argv) > 3 else 30
+per_model = int(sys.argv[3]) if len(sys.argv) > 3 else 30   # 0 = ALL wrong first attempts, all datasets
 n_batches = int(sys.argv[4]) if len(sys.argv) > 4 else 3
 QUOTA = {"amc23": 6, "aime": 8, "math500": 8, "mathqa": 8}  # math datasets: errors are checkable
+if per_model == 0:  # full oracle: every wrong first attempt on every dataset
+    QUOTA = {ds: 10**9 for ds in ("amc23", "aime", "math500", "csqa", "gpqa", "mathqa")}
 random.seed(0)
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from thought_ics.datasets import load_dataset_by_name  # noqa: E402
@@ -75,11 +77,17 @@ for model in ("qwen32b", "gptoss20b", "gptoss120b"):
     items += pool
 random.shuffle(items)
 out.mkdir(parents=True, exist_ok=True)
+# balance batches by total step count (greedy, largest first)
+assign, load = [[] for _ in range(n_batches)], [0] * n_batches
+for x in sorted(items, key=lambda x: -len(x["steps"])):
+    j = load.index(min(load))
+    assign[j].append(x)
+    load[j] += len(x["steps"])
 for b in range(n_batches):
-    batch = items[b::n_batches]
+    batch = assign[b]
     (out / f"batch_{b}.json").write_text(json.dumps(batch, indent=1))
     print(f"batch_{b}: {len(batch)} items, {sum(len(x['steps']) for x in batch)} steps")
 (out / "manifest.json").write_text(json.dumps({
     "per_model_quota": QUOTA, "seed": 0, "n_batches": n_batches, "sources": sources,
-    "batches": {f"batch_{b}": [x["id"] for x in items[b::n_batches]] for b in range(n_batches)}}, indent=1))
+    "batches": {f"batch_{b}": [x["id"] for x in assign[b]] for b in range(n_batches)}}, indent=1))
 print("total", len(items), {m: sum(x['model'] == m for x in items) for m in ("qwen32b", "gptoss20b", "gptoss120b")})
