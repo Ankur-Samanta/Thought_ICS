@@ -9,6 +9,8 @@
 #   scripts/budget_study/submit.sh all all               # 18 jobs (3 models x 6 datasets)
 #   scripts/budget_study/submit.sh list                  # print jobs without submitting
 #
+# Jobs run with the HF hub offline (weights must already be in ~/.cache/huggingface);
+# proxy variables from the submitting shell are cleared on the compute node.
 # Extra args after the dataset are forwarded to run_study.py
 # (e.g. --response-length 8192).
 
@@ -45,7 +47,7 @@ submit() {  # model dataset_args job_name time extra...
     sbatch --partition=${PARTITION} --nodes=1 --gpus-per-node=${gpus} --cpus-per-gpu=10 \
            --time=${time} --job-name=${name} \
            --output=${LOG_DIR}/${name}_%j.out --error=${LOG_DIR}/${name}_%j.err \
-           --wrap="bash -c 'source ${CONDA_PATH}/etc/profile.d/conda.sh && conda activate ${CONDA_ENV} && cd ${REPO} && export VLLM_CACHE_ROOT=/tmp/vllm_cache_\$SLURM_JOB_ID && ${cmd}'"
+           --wrap="bash -c 'source ${CONDA_PATH}/etc/profile.d/conda.sh && conda activate ${CONDA_ENV} && cd ${REPO} && unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy && export HF_HUB_OFFLINE=\${HF_HUB_OFFLINE:-1} VLLM_CACHE_ROOT=/tmp/vllm_cache_\$SLURM_JOB_ID && ${cmd}'"
 }
 
 case "${1:-}" in
