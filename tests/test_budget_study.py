@@ -331,3 +331,57 @@ def test_opens_next_headers_and_unfinished_sentences():
     assert not P.opens_next("- (1,2) and (2,1), 2 pairs\n\n")      # list item without a period
     assert not P.opens_next("Use \\(xy=20\\) to find \\(x^2\\).  \n")
     assert not P.opens_next("so \\(a=3\\)\\]\n\n") and not P.opens_next("The answer is \\(\\boxed{4}\\)")
+
+
+class L3Engine(FakeEngine):
+    """Verifier: YES iff the reviewed solution boxes 42. Localizer: step 2 / quote 'wrong part'
+    (or 'no error' when self.loc_no_error)."""
+    loc_no_error = False
+
+    def generate(self, prompt_ids, params):
+        outs, rest = [], []
+        for ids, prm in zip(prompt_ids, params):
+            text = self.tok.decode(ids)
+            if text.startswith("<chat>You are reviewing"):
+                out = "\\boxed{YES}" if "\\boxed{42}" in text else "\\boxed{NO}"
+                outs.append({"ids": self.tok.encode(out), "text": out, "finish_reason": "stop", "stop_reason": None})
+            elif text.startswith("<chat>") and self.loc_no_error:
+                out = "\\boxed{0}" if "first erroneous thought" in text else "\\boxed{NO_ERROR}"
+                outs.append({"ids": self.tok.encode(out), "text": out, "finish_reason": "stop", "stop_reason": None})
+            else:
+                outs.append(None); rest.append((ids, prm))
+        sub = iter(super().generate([r[0] for r in rest], [r[1] for r in rest]) if rest else [])
+        return [o if o is not None else next(sub) for o in outs]
+
+
+def test_l3_self_verified_correction(monkeypatch):
+    _patch_resample_marker(monkeypatch)
+    eng = L3Engine()
+    r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt"), "thought", PROBLEMS[:1])[0]
+    its = r["iterations"]
+    assert not its[0]["correct"]
+    assert its[1]["localization"]["verification"]["verdict"] is False and its[1]["correct"]
+    assert its[2].get("stopped") == "verified" and r["exit"] == "verified"
+    assert r["final_correct"] and r["final_correct_A"]
+
+
+def test_l3_vl_disagreement_resets_to_initial():
+    eng = L3Engine()
+    eng.loc_no_error = True
+    r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", response_length=5000), "token", PROBLEMS[:1])[0]
+    assert r["exit"] == "vl_disagreement" and r["final_correct_A"] == r["iterations"][0]["correct"]
+
+
+def test_l3_initially_verified_never_resamples():
+    class Right(L3Engine):
+        def generate(self, prompt_ids, params):
+            outs = super().generate(prompt_ids, params)
+            for o, ids in zip(outs, prompt_ids):
+                if not self.tok.decode(ids).startswith("<chat>"):
+                    o.update(text="so \\boxed{42}", ids=self.tok.encode("so \\boxed{42}"))
+            return outs
+    eng = Right()
+    r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", response_length=5000), "token", PROBLEMS[:1])[0]
+    assert r["exit"] == "verified" and len([i for i in r["iterations"] if "gen_status" in i]) == 1
+    s = R.summarize("token", [r])
+    assert s["exits"] == {"verified": 1} and s["final_accuracy_A"] == 1.0

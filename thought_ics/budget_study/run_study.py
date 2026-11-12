@@ -222,6 +222,15 @@ def gen_token_solutions(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
     return states
 
 
+def verify(eng: Engine, cfg, prompt_texts: List[str]) -> List[dict]:
+    """L3 self-verification call (paper's verifier prompt), same budget/temperature/template as
+    the localizer. Unparseable verdicts count as NO (paper default: assume needs correction)."""
+    outs = localize(eng, cfg, prompt_texts)
+    for o in outs:
+        o["verdict"] = P.parse_verdict(o["response"])
+    return outs
+
+
 def localize(eng: Engine, cfg, prompt_texts: List[str]) -> List[dict]:
     """Chat-templated localization call, no stop tokens (SRPO ``_localize_error``)."""
     ids = [eng.chat_ids(t) for t in prompt_texts]
@@ -316,10 +325,30 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
         done[i] = rec["correct"]
     logger.info(f"[{method}] init accuracy {sum(done.values())}/{len(records)}")
 
+    L3 = cfg.autonomy_level == 3
+    exit_reason = {}
     for it in range(1, cfg.max_ics_iterations + 1):
-        active = [i for i in range(len(records)) if not done[i] and not stopped.get(i)]
+        # L1/L2: the oracle stops correct problems. L3: no oracle -- the model self-verifies.
+        active = [i for i in range(len(records)) if not stopped.get(i) and (L3 or not done[i])]
         if not active:
             break
+        if L3:
+            vtexts = [P.verify_prompt(problems[i]["problem"], current[i]["text"], boxed_answer(current[i]["text"]))
+                      for i in active]
+            verdicts = verify(eng, cfg, vtexts)
+            still = []
+            for i, vt, v in zip(active, vtexts, verdicts):
+                vinfo = {"verify_prompt": vt, **v}
+                if v["verdict"] is True:  # exit (1): self-verified as correct
+                    stopped[i] = True
+                    exit_reason[i] = "verified"
+                    records[i]["iterations"].append({"iteration": it, "verification": vinfo, "stopped": "verified"})
+                else:
+                    still.append(i)
+                    records[i].setdefault("_pending_verification", {})[it] = vinfo
+            active = still
+            if not active:
+                break
         if method == "thought":
             texts = [P.thought_localization_prompt(problems[i]["problem"], current[i]["thoughts"],
                                                    records[i]["ground_truth"], cfg.autonomy_level)
@@ -380,7 +409,11 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
             loc_info[i] = info
 
         for i in active:
+            if L3:
+                (failed[i] if i in failed else loc_info[i])["verification"] = \
+                    records[i]["_pending_verification"].pop(it)
             if stopped.get(i):
+                exit_reason[i] = "vl_disagreement"  # exit (2): verifier said wrong, localizer found none
                 records[i]["iterations"].append({"iteration": it, "localization": loc_info[i],
                                                  "stopped": "no_error_found"})
             elif i in failed:
@@ -396,7 +429,17 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
         logger.info(f"[{method}] iter {it}: accuracy {sum(done.values())}/{len(records)}")
 
     for i, r in enumerate(records):
-        r["final_correct"] = done[i]
+        r.pop("_pending_verification", None)
+        if L3:
+            # final answer = the last generated solution (no oracle); paper's confidence safeguard
+            # (Thought-ICS-A): reset to the first attempt on exits (2) V/L disagreement / (3) MaxIter
+            last = [it for it in r["iterations"] if "gen_status" in it][-1]
+            r["exit"] = exit_reason.get(i, "max_iter")
+            r["final_correct"] = last["correct"]
+            r["final_correct_A"] = (r["iterations"][0]["correct"] if r["exit"] in ("vl_disagreement", "max_iter")
+                                    else last["correct"])
+        else:
+            r["final_correct"] = done[i]
     return records
 
 
@@ -407,6 +450,14 @@ def summarize(method: str, records: List[dict]) -> dict:
     locs = [it["localization"] for r in records for it in r["iterations"] if "localization" in it]
     init = sum(r["iterations"][0]["correct"] for r in records)
     final = sum(r["final_correct"] for r in records)
+    l3 = {}
+    if records and "exit" in records[0]:
+        vs = [it["verification"] if "verification" in it else it.get("localization", {}).get("verification")
+              for r in records for it in r["iterations"][1:]]
+        l3 = {"final_accuracy_A": sum(r["final_correct_A"] for r in records) / len(records),
+              "exits": dict(Counter(r["exit"] for r in records)),
+              "verifications": sum(v is not None for v in vs),
+              "verifier_unparseable": sum(v is not None and v["verdict"] is None for v in vs)}
     budget_status = ("budget", "max_thoughts", "context")
     s = {
         "method": method, "n_problems": n,
@@ -431,6 +482,7 @@ def summarize(method: str, records: List[dict]) -> dict:
                                     for r in records for it in r["iterations"]
                                     if "gen_status" in it and "localization" in it),
         "resamples": sum("gen_status" in it for r in records for it in r["iterations"][1:]),
+        **l3,
     }
     if method == "thought":
         s["thought_cap_hit_rate"] = (sum(g["thought_cap_hits"] for g in gens)
@@ -460,7 +512,8 @@ def main():
                     help="unusable localization (unparseable/empty/quote not found): 'attempt' = "
                          "the iteration is used up with no resample; 'scratch' = paper behaviour "
                          "(resample from scratch)")
-    ap.add_argument("--autonomy-level", type=int, choices=[1, 2], default=P.AUTONOMY_LEVEL)
+    ap.add_argument("--autonomy-level", type=int, choices=[1, 2, 3], default=P.AUTONOMY_LEVEL,
+                    help="1 oracle localization, 2 binary oracle (told it is wrong), 3 self-verified")
     ap.add_argument("--max-thoughts", type=int, default=P.MAX_THOUGHTS)
     ap.add_argument("--max-tokens-per-thought", type=int, default=P.MAX_TOKENS_PER_THOUGHT)
     ap.add_argument("--response-length", type=int, default=None,

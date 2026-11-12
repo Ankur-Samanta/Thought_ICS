@@ -142,7 +142,20 @@ def chain_text(thoughts: List[str]) -> str:
 
 def thought_localization_prompt(question: str, thoughts: List[str], ground_truth: str,
                                 autonomy_level: int = AUTONOMY_LEVEL) -> str:
-    """Verbatim copy of SRPO ``_localize_error`` prompt text."""
+    """Verbatim copy of SRPO ``_localize_error`` prompt text (L1/L2).
+
+    L3 (self-verified): the same L2 text, with the "is incorrect" premise replaced by the
+    model's own verification verdict and a \\boxed{0} "no error found" option (so the paper's
+    V/L-disagreement exit can occur)."""
+    if autonomy_level == 3:
+        n = len(thoughts)
+        return (thought_localization_prompt(question, thoughts, ground_truth, 2)
+                .replace("Your incorrect reasoning chain:", "Your reasoning chain:")
+                .replace("The final answer this chain produces is incorrect — therefore at least one step contains an error.",
+                         "Your own check of this chain concluded that its final answer is likely incorrect — if so, at least one step contains an error.")
+                .replace(f"- Commit to exactly ONE step number (1 to {n}).\n",
+                         f"- Commit to exactly ONE step number (1 to {n}).\n"
+                         "- If, after careful checking, no step is erroneous, the final line must instead be \\boxed{0}.\n"))
     n_steps = len(thoughts)
     ct = chain_text(thoughts)
     if autonomy_level == 1:
@@ -191,7 +204,17 @@ def thought_localization_prompt(question: str, thoughts: List[str], ground_truth
 
 def token_localization_prompt(question: str, solution: str, ground_truth: str,
                               autonomy_level: int = AUTONOMY_LEVEL) -> str:
-    """Token-ICS version of the SRPO prompt: same wording, localized by quote."""
+    """Token-ICS version of the SRPO prompt: same wording, localized by quote.
+    L3: same transformation as thought_localization_prompt, with \\boxed{NO_ERROR}."""
+    if autonomy_level == 3:
+        return (token_localization_prompt(question, solution, ground_truth, 2)
+                .replace("Your incorrect solution:", "Your solution:")
+                .replace("The final answer this solution produces is incorrect — therefore at least one part of it contains an error.",
+                         "Your own check of this solution concluded that its final answer is likely incorrect — if so, at least one part of it contains an error.")
+                .replace("originating error begins.\n- Stop at the first claim",
+                         "originating error begins.\n"
+                         "- If, after careful checking, nothing is erroneous, the final line must instead be \\boxed{NO_ERROR}.\n"
+                         "- Stop at the first claim"))
     quote_fmt = '\\boxed{ERROR_QUOTE: "exact text from the solution"}'
     if autonomy_level == 1:
         return (
@@ -235,6 +258,36 @@ def token_localization_prompt(question: str, solution: str, ground_truth: str,
         f"{quote_fmt} on its own line — NOT the answer to the "
         f"problem. Do NOT add any text after the \\boxed{{...}}.\n"
     )
+
+
+# --- Self-verification (L3) -----------------------------------------------------------
+def verify_prompt(question: str, solution: str, answer: str) -> str:
+    """The paper's self-verification prompt (TREE iterative_self_correction.verify_solution_correctness),
+    verbatim. Both methods see the same plain-text solution."""
+    return f"""You are reviewing a solution to a problem. Analyze it carefully to see if they arrived at the right answer.
+
+Problem: {question}
+
+Solution to review:
+{solution}
+
+Final answer: {answer}
+
+Verify the reasoning step by step and determine whether the final answer is correct or not.
+
+Conclude with \\boxed{{YES}} if the solution is correct, or \\boxed{{NO}} if it contains errors."""
+
+
+def parse_verdict(response: str) -> Optional[bool]:
+    """True = model says correct, False = says incorrect, None = unparseable."""
+    b = _last_boxed(response)
+    if b is not None:
+        u = b.strip().upper()
+        if u.startswith("YES"):
+            return True
+        if u.startswith("NO"):
+            return False
+    return None
 
 
 # --- Parsing ------------------------------------------------------------------------
