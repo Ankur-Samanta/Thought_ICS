@@ -119,6 +119,7 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
                "thoughts": list(j.get("prefix_thoughts", [])),
                "bounds": list(j.get("prefix_bounds", [])),
                "prefix_n": len(j.get("prefix_thoughts", [])),
+               "prefix_tokens": len(j.get("prefix_ids", [])),
                "status": None, "thought_cap_hits": 0} for j in jobs]
     while True:
         active, params = [], []
@@ -145,31 +146,33 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
             break
         outs = eng.generate([s["prompt_ids"] + s["ids"] for s in active], params)
         for s, o in zip(active, outs):
-            if not o["ids"]:
-                s["status"] = "empty_output"
-                continue
+            # End of the assistant reply: any stop other than the step boundary (EOS may be
+            # reported as stop_reason None or as an int EOS id from generation_config).
+            eos = o["finish_reason"] == "stop" and o["stop_reason"] not in P.THOUGHT_STOPS
             start = len(s["ids"])
             s["ids"].extend(o["ids"])
-            if not P.has_content(o["text"]) and s["thoughts"]:
-                # separator / whitespace-only unit: part of the previous thought, not a step
-                s["thoughts"][-1] += o["text"]
-                s["bounds"][-1] = (s["bounds"][-1][0], len(s["ids"]))
-            else:
+            if P.has_content(o["text"]):
                 s["bounds"].append((start, len(s["ids"])))
                 s["thoughts"].append(o["text"])
                 s["thought_cap_hits"] += o["finish_reason"] == "length"
-            # Answer check on the whole chain: a \\boxed{...} can span a thought boundary.
-            if P._last_boxed("".join(s["thoughts"])) is not None:
-                s["status"] = "answer"
+            elif s["thoughts"]:
+                # separator / whitespace-only unit: part of the previous thought, not a step
+                s["thoughts"][-1] += o["text"]
+                s["bounds"][-1] = (s["bounds"][-1][0], len(s["ids"]))
+            # Like Token-ICS, the chain runs until the reply ends (so post-answer checks and
+            # revisions are kept) and is graded on its last \\boxed{} (which may span a
+            # thought boundary).
+            if eos or not o["ids"]:
+                if P._last_boxed("".join(s["thoughts"])) is not None:
+                    s["status"] = "answer"
+                else:
+                    s["status"] = "eos_no_answer" if s["thoughts"] else "empty_output"
             elif len(s["ids"]) >= cfg.response_length:
                 s["status"] = "budget"
-            elif o["finish_reason"] == "stop" and o["stop_reason"] is None:
-                # End of the assistant reply without an answer. In chat format the reply
-                # is over, so the chain ends here (same as Token-ICS stopping at EOS).
-                s["status"] = "eos_no_answer"
     for s in states:
         s["text"] = "".join(s["thoughts"])
         s["n_tokens"] = len(s["ids"])
+        s["n_new_tokens"] = len(s["ids"]) - s["prefix_tokens"]
     return states
 
 
@@ -194,6 +197,7 @@ def gen_token_solutions(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
         s["ids"] = s["prefix_ids"] + s["gen_ids"]
         s["text"] = s["prefix_text"] + s["gen_text"]
         s["n_tokens"] = len(s["ids"])
+        s["n_new_tokens"] = len(s["gen_ids"])
         if s["status"] is None:
             if "\\boxed{" in s["text"]:
                 s["status"] = "answer"
@@ -222,7 +226,7 @@ def is_empty(method: str, g: dict) -> bool:
 
 
 def gen_record(method: str, g: dict, gt: str) -> dict:
-    rec = {"n_tokens": g["n_tokens"], "gen_status": g["status"],
+    rec = {"n_tokens": g["n_tokens"], "n_new_tokens": g["n_new_tokens"], "gen_status": g["status"],
            "answer": boxed_answer(g["text"]), "correct": is_correct(g["text"], gt)}
     if method == "thought":
         rec.update(chain=g["thoughts"], n_thoughts=len(g["thoughts"]),
@@ -351,7 +355,11 @@ def summarize(method: str, records: List[dict]) -> dict:
         "init_accuracy": init / n, "final_accuracy": final / n, "lift": (final - init) / n,
         "initial_gen_status": dict(Counter(r["iterations"][0]["gen_status"] for r in records)),
         "initial_no_answer_from_budget": sum(r["iterations"][0]["gen_status"] in budget_status
+                                             and r["iterations"][0]["answer"] == "NO ANSWER"
                                              for r in records) / n,
+        # compute actually spent (generation incl. resamples, and localization)
+        "total_new_gen_tokens": sum(g["n_new_tokens"] for g in gens),
+        "total_loc_tokens": sum(l["n_tokens"] for l in locs),
         "all_gen_status": dict(Counter(g["gen_status"] for g in gens)),
         "empty_retries": sum(r["empty_retries"] for r in records),
         "n_localizations": len(locs),

@@ -46,6 +46,8 @@ class FakeEngine:
                     out = "I think Step 1 is wrong" if "p_prose" in text else "reasoning\n\\boxed{2}"
                 else:
                     out = 'reasoning\n\\boxed{ERROR_QUOTE: "wrong part"}'
+            elif prm.stop and "\\boxed{" in text.split("Q:")[-1]:
+                out = ""  # reply ends after the answer (EOS)
             elif prm.stop:  # thought generation
                 n_done = text.count(P.THOUGHT_DELIMITER) - text.split("Q:")[0].count(P.THOUGHT_DELIMITER)
                 if "p_empty" in text and not self.empty_served:
@@ -63,7 +65,7 @@ class FakeEngine:
                     out = " then fixed so \\boxed{42}"
                 else:
                     out = "good part wrong part so \\boxed{7}"
-            outs.append({"ids": self.tok.encode(out), "text": out,
+            outs.append({"ids": self.tok.encode(out) or [1], "text": out,
                          "finish_reason": "stop",
                          "stop_reason": P.THOUGHT_DELIMITER if out.endswith(P.THOUGHT_DELIMITER) else None})
         return outs
@@ -175,6 +177,8 @@ def test_boxed_split_across_thoughts():
     class SplitEngine(FakeEngine):
         def generate(self, prompt_ids, params):
             text = self.tok.decode(prompt_ids[0])
+            if "{42}" in text:
+                return [{"ids": [1], "text": "", "finish_reason": "stop", "stop_reason": None}]
             out = "so \\boxed" if not text.endswith("\\boxed") else "{42}"
             return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "length",
                      "stop_reason": None} for _ in prompt_ids]
@@ -188,10 +192,47 @@ def test_separator_units_merge_into_previous_thought():
         def generate(self, prompt_ids, params):
             text = self.tok.decode(prompt_ids[0])
             n = text.count("step") - text.split("Q:")[0].count("step")
-            out = ["step one\n\n", "---\n\n", "step two \\boxed{1}"][min(n + text.count("---"), 2)]
+            k = min(n + text.count("---"), 2)
+            out = ["step one\n\n", "---\n\n", "step two \\boxed{1}"][k]
             return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "stop",
-                     "stop_reason": "\n\n"} for _ in prompt_ids]
+                     "stop_reason": "\n\n" if k < 2 else None} for _ in prompt_ids]
     eng = SepEngine()
     g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
     assert g["thoughts"] == ["step one\n\n---\n\n", "step two \\boxed{1}"]
     assert g["bounds"][0][1] == g["bounds"][1][0] and g["status"] == "answer"
+
+
+def test_thought_chain_continues_after_box_until_reply_ends():
+    """Like Token-ICS: a later revision after a first \\boxed{} is kept and graded."""
+    class ReviseEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0]).split("Q:")[-1]
+            if "\\boxed{7}" not in text:
+                out, sr = "so \\boxed{7}\n\n", "\n\n"
+            elif "recheck" not in text:
+                out, sr = "recheck: actually \\boxed{42}", 200002  # int EOS stop_reason
+            else:
+                raise AssertionError("generated past the end of the reply")
+            return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "stop",
+                     "stop_reason": sr}]
+    eng = ReviseEngine()
+    g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
+    assert g["status"] == "answer" and R.boxed_answer(g["text"]) == "42" and len(g["thoughts"]) == 2
+
+
+def test_immediate_eos_is_empty_and_retried():
+    class EmptyEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            return [{"ids": [1], "text": "", "finish_reason": "stop", "stop_reason": None}
+                    for _ in prompt_ids]
+    eng = EmptyEngine()
+    recs = R.run_method(eng, _cfg(max_ics_iterations=0), "thought", PROBLEMS[:1])
+    assert recs[0]["empty_retries"] == P.MAX_EMPTY_RETRIES
+
+
+def test_quote_parser_format_leniency():
+    assert P.parse_error_quote('\\boxed{"a b c"}') == ("a b c", "boxed")
+    assert P.parse_error_quote("\\boxed{ERROR_QUOTE: 'x y'}") == ("x y", "boxed")
+    assert P.parse_error_quote('end \\boxed{ERROR_QUOTE: "\\frac{a"}') == ("\\frac{a", "prose")
+    assert P.parse_error_quote('\\boxed{ERROR_QUOTE: "he said "hi" here"}') == ('he said "hi" here', "boxed")
+    assert P.parse_error_quote("\\boxed{42}") == (None, "default")

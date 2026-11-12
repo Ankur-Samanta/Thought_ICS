@@ -98,7 +98,7 @@ def chain_text(thoughts: List[str]) -> str:
     """SRPO formatting: '\\nStep i: <thought without delimiter>'."""
     out = ""
     for i, t in enumerate(thoughts, 1):
-        out += f"\nStep {i}: {t.replace(THOUGHT_DELIMITER, '').strip()}"
+        out += f"\nStep {i}: {re.sub(r'\n\s*\n', chr(10), t.strip())}"
     return out
 
 
@@ -240,8 +240,25 @@ def parse_error_step(response: str, chain_length: int) -> Tuple[int, str]:
     return 1, "default"
 
 
-_QUOTE_RE = re.compile(r'ERROR_QUOTE:\s*["\u201c](.+?)["\u201d]\s*$', re.DOTALL)
-_PROSE_QUOTE_RE = re.compile(r'ERROR_QUOTE:\s*["\u201c](.+?)["\u201d]', re.DOTALL)
+_QUOTE_CLOSERS = {'"': '"', "\u201c": "\u201d", "'": "'", "\u2018": "\u2019", "`": "`"}
+
+
+def _quoted(body: str, boxed: bool) -> Optional[str]:
+    """Text inside a leading quote of any common style; None if ``body`` is not quoted."""
+    body = body.strip()
+    if not body or body[0] not in _QUOTE_CLOSERS:
+        return None
+    closer, inner = _QUOTE_CLOSERS[body[0]], body[1:]
+    k = inner.rfind(closer) if boxed else inner.find(closer + "}")
+    if k == -1:
+        k = inner.rfind(closer)
+    q = inner[:k].strip() if k > 0 else ""
+    return q or None
+
+
+def _after_last_tag(text: str) -> Optional[str]:
+    tags = list(re.finditer(r"ERROR_QUOTE\s*:\s*", text, re.IGNORECASE))
+    return text[tags[-1].end():] if tags else None
 
 
 def parse_error_quote(response: str) -> Tuple[Optional[str], str]:
@@ -249,18 +266,24 @@ def parse_error_quote(response: str) -> Tuple[Optional[str], str]:
 
     Returns (quote, status): quote "" = no error (\\boxed{NO_ERROR}), None = no usable
     quote, which maps to SRPO's "default to step 1" (resample from an empty prefix).
-    status is "boxed", "prose" (last ERROR_QUOTE: "..." outside a box) or "default".
+    status: "boxed" (last \\boxed{...}: ERROR_QUOTE-tagged or a bare quoted span, any quote
+    style), "prose" (last ERROR_QUOTE: "..." elsewhere, e.g. a box with unbalanced braces),
+    or "default". Lenient about the answer FORMAT only; the quote itself must still match
+    the solution (see find_quote).
     """
     boxed = _last_boxed(response)
     if boxed is not None:
         if boxed.strip().upper() in ("NO_ERROR", "CORRECT"):
             return "", "boxed"
-        m = _QUOTE_RE.search(boxed)
-        if m and m.group(1).strip():
-            return m.group(1).strip(), "boxed"
-    prose = list(_PROSE_QUOTE_RE.finditer(response))
-    if prose and prose[-1].group(1).strip():
-        return prose[-1].group(1).strip(), "prose"
+        rest = _after_last_tag(boxed)
+        q = _quoted(rest if rest is not None else boxed, boxed=True)
+        if q:
+            return q, "boxed"
+    rest = _after_last_tag(response)
+    if rest is not None:
+        q = _quoted(rest, boxed=False)
+        if q:
+            return q, "prose"
     return None, "default"
 
 
