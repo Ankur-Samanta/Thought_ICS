@@ -121,24 +121,29 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
                "prefix_n": len(j.get("prefix_thoughts", [])),
                "status": None, "thought_cap_hits": 0} for j in jobs]
     while True:
-        active = []
+        active, params = [], []
         for s in states:
             if s["status"] is not None:
                 continue
+            # Same total budget as Token-ICS: each thought may use the per-thought cap or
+            # whatever remains of response_length, whichever is smaller. (SRPO instead stops
+            # once a full-cap thought no longer fits, which would give Thought-ICS up to
+            # max_tokens_per_thought fewer tokens than Token-ICS.)
+            remaining = cfg.response_length - len(s["ids"])
+            room = eng.max_model_len - len(s["prompt_ids"]) - len(s["ids"])
             if len(s["thoughts"]) >= cfg.max_thoughts:
                 s["status"] = "max_thoughts"
-            elif len(s["ids"]) + cfg.max_tokens_per_thought > cfg.response_length:
+            elif remaining <= 0:
                 s["status"] = "budget"
-            elif (len(s["prompt_ids"]) + len(s["ids"]) + cfg.max_tokens_per_thought
-                  > eng.max_model_len):
+            elif room <= 0:
                 s["status"] = "context"
             else:
                 active.append(s)
+                params.append(sp(cfg, max_tokens=min(cfg.max_tokens_per_thought, remaining, room),
+                                 temperature=cfg.generation_temp, stop=P.THOUGHT_STOPS))
         if not active:
             break
-        params = sp(cfg, max_tokens=cfg.max_tokens_per_thought, temperature=cfg.generation_temp,
-                    stop=P.THOUGHT_STOPS)
-        outs = eng.generate([s["prompt_ids"] + s["ids"] for s in active], [params] * len(active))
+        outs = eng.generate([s["prompt_ids"] + s["ids"] for s in active], params)
         for s, o in zip(active, outs):
             if not o["ids"]:
                 s["status"] = "empty_output"
@@ -156,6 +161,8 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
             # Answer check on the whole chain: a \\boxed{...} can span a thought boundary.
             if P._last_boxed("".join(s["thoughts"])) is not None:
                 s["status"] = "answer"
+            elif len(s["ids"]) >= cfg.response_length:
+                s["status"] = "budget"
             elif o["finish_reason"] == "stop" and o["stop_reason"] is None:
                 # End of the assistant reply without an answer. In chat format the reply
                 # is over, so the chain ends here (same as Token-ICS stopping at EOS).

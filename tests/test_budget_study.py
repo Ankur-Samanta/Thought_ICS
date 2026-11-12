@@ -131,12 +131,15 @@ def test_token_ics_flow():
     assert [m for chat, m, _ in eng.calls if chat] == [P.LOCALIZATION_MAX_TOKENS]
 
 
-def test_thought_budget_rule():
-    """SRPO rule: stop before a thought that cannot fit in response_length."""
+def test_thought_budget_matches_token_budget():
+    """Thoughts may use whatever remains of response_length (same total as Token-ICS)."""
     eng = FakeEngine()
-    cfg = _cfg(response_length=P.MAX_TOKENS_PER_THOUGHT + 10, max_ics_iterations=0)
+    first = len("step 0 ok\n\n")
+    cfg = _cfg(response_length=first + 4, max_ics_iterations=0)
     g = R.gen_thought_chains(eng, cfg, [{"prompt_ids": eng.gen_prompt_ids("Q: p_main")}])[0]
-    assert g["status"] == "budget" and len(g["thoughts"]) == 1
+    thought_calls = [m for _, m, s in eng.calls if s]
+    assert thought_calls[:2] == [first + 4, 4]           # 2nd thought gets the remaining 4
+    assert g["status"] == "budget" and g["n_tokens"] >= cfg.response_length
 
 
 def test_parsers():
