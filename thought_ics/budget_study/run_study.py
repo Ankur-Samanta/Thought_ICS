@@ -50,7 +50,7 @@ MODELS = {
     "llama8b": {"hf": "meta-llama/Llama-3.1-8B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
     "llama70b": {"hf": "meta-llama/Llama-3.3-70B-Instruct", "tp": 4, **UNIFORM, "final_prefill": False},
     "qwen7b": {"hf": "Qwen/Qwen2.5-7B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
-    "qwen14b": {"hf": "Qwen/Qwen2.5-14B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
+    "qwen14b": {"hf": "Qwen/Qwen2.5-14B-Instruct", "tp": 2, **UNIFORM, "final_prefill": False},
 }
 # gpt-oss: an explicitly empty analysis block, then the final channel, so the turn has the
 # harmony structure the model was trained on while all solution reasoning stays visible.
