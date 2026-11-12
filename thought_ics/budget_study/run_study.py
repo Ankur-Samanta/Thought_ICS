@@ -143,10 +143,16 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
                 continue
             start = len(s["ids"])
             s["ids"].extend(o["ids"])
-            s["bounds"].append((start, len(s["ids"])))
-            s["thoughts"].append(o["text"])
-            s["thought_cap_hits"] += o["finish_reason"] == "length"
-            if "\\boxed{" in o["text"]:
+            if not P.has_content(o["text"]) and s["thoughts"]:
+                # separator / whitespace-only unit: part of the previous thought, not a step
+                s["thoughts"][-1] += o["text"]
+                s["bounds"][-1] = (s["bounds"][-1][0], len(s["ids"]))
+            else:
+                s["bounds"].append((start, len(s["ids"])))
+                s["thoughts"].append(o["text"])
+                s["thought_cap_hits"] += o["finish_reason"] == "length"
+            # Answer check on the whole chain: a \\boxed{...} can span a thought boundary.
+            if P._last_boxed("".join(s["thoughts"])) is not None:
                 s["status"] = "answer"
             elif o["finish_reason"] == "stop" and o["stop_reason"] is None:
                 # End of the assistant reply without an answer. In chat format the reply

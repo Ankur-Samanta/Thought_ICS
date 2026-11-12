@@ -24,13 +24,16 @@ reply that ends (EOS) without \\boxed{} ends the chain for both methods.
 """
 
 import re
+import unicodedata
 from typing import List, Optional, Tuple
 
 # --- Budgets / sampling (SRPO thought_agent_config_ics_eval.yaml unless noted) -------
 # Depth: high enough that the 16k total token budget, not the step count, is what binds
 # (paragraph steps can be ~20-30 tokens; at 100 steps 15% of gpt-oss-120b AIME chains hit the cap).
 MAX_THOUGHTS = 500
-MAX_TOKENS_PER_THOUGHT = 512
+# Per-thought cap is only a safety limit (a blank line defines a step). SRPO's 512 split ~3% of
+# gpt-oss paragraphs mid-sentence, so it is raised (uniformly) to 2048.
+MAX_TOKENS_PER_THOUGHT = 2048
 # A thought is one paragraph: generation of each thought stops at a blank line, and the next
 # thought is generated conditioned on the exact tokens so far (inference-time structure; no
 # retroactive splitting). </thought> is not used: gpt-oss ignores it (5-32% compliance across
@@ -64,7 +67,7 @@ Each step should be a complete, self-contained thought — one observation, calc
 - Contains substantive reasoning (not filler like "let me think" or restating the problem)
 - Coheres logically with the previous steps
 
-Keep each step to a single paragraph (no blank lines inside a step). When a step arrives at the final answer, include \\boxed{{answer}}.
+Keep each step to a single paragraph (no blank lines inside a step), and do not insert separator lines (such as ---) between steps. When a step arrives at the final answer, include \\boxed{{answer}}.
 
 Q: {question}
 """
@@ -84,6 +87,13 @@ Q: {question}
 
 
 # --- Localization prompts -----------------------------------------------------------
+def has_content(unit: str) -> bool:
+    """A generated paragraph counts as a thought only if it has reasoning content (any letter
+    or digit); separator/whitespace-only units (e.g. '---') are attached to the previous
+    thought. Tokens are unchanged -- this only decides where a step boundary is recorded."""
+    return re.search(r"[A-Za-z0-9]", unit) is not None
+
+
 def chain_text(thoughts: List[str]) -> str:
     """SRPO formatting: '\\nStep i: <thought without delimiter>'."""
     out = ""
@@ -254,7 +264,35 @@ def parse_error_quote(response: str) -> Tuple[Optional[str], str]:
     return None, "default"
 
 
+def _normalize_with_map(text: str):
+    """NFKC + collapse whitespace runs to one space; return (normalized, map to original idx)."""
+    out, idx_map, prev_space = [], [], False
+    for i, ch in enumerate(text):
+        for c in unicodedata.normalize("NFKC", ch):
+            if c.isspace():
+                if prev_space:
+                    continue
+                c, prev_space = " ", True
+            else:
+                prev_space = False
+            out.append(c)
+            idx_map.append(i)
+    return "".join(out), idx_map
+
+
 def find_quote(solution: str, quote: str) -> Optional[int]:
-    """Exact-match location of the quote (paper Token-ICS behavior). None if absent."""
+    """Location of the quote in the solution, or None.
+
+    Exact match, up to whitespace and Unicode normalization only (e.g. gpt-oss writes
+    U+202F thin spaces). Paraphrased, drifting or invented quotes still fail: copying the
+    span faithfully is part of Token-ICS localization.
+    """
     idx = solution.find(quote)
-    return idx if idx != -1 else None
+    if idx != -1:
+        return idx
+    norm_sol, idx_map = _normalize_with_map(solution)
+    norm_q = _normalize_with_map(quote)[0].strip()
+    if not norm_q:
+        return None
+    j = norm_sol.find(norm_q)
+    return idx_map[j] if j != -1 else None

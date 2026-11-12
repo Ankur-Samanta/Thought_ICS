@@ -159,3 +159,36 @@ def test_thought_eos_ends_chain():
     eng = EosEngine()
     g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
     assert g["status"] == "eos_no_answer" and len(g["thoughts"]) == 1
+
+
+def test_find_quote_normalization():
+    sol = "First we note 12\u202f000 / 30 = 400.  Then   we add."
+    assert P.find_quote(sol, "12 000 / 30") == sol.index("12")       # Unicode space
+    assert P.find_quote(sol, "Then we add") == sol.index("Then")      # whitespace runs
+    assert P.find_quote(sol, "Then we multiply") is None              # misquote still fails
+
+
+def test_boxed_split_across_thoughts():
+    class SplitEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0])
+            out = "so \\boxed" if not text.endswith("\\boxed") else "{42}"
+            return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "length",
+                     "stop_reason": None} for _ in prompt_ids]
+    eng = SplitEngine()
+    g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
+    assert g["status"] == "answer" and R.boxed_answer(g["text"]) == "42"
+
+
+def test_separator_units_merge_into_previous_thought():
+    class SepEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0])
+            n = text.count("step") - text.split("Q:")[0].count("step")
+            out = ["step one\n\n", "---\n\n", "step two \\boxed{1}"][min(n + text.count("---"), 2)]
+            return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "stop",
+                     "stop_reason": "\n\n"} for _ in prompt_ids]
+    eng = SepEngine()
+    g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
+    assert g["thoughts"] == ["step one\n\n---\n\n", "step two \\boxed{1}"]
+    assert g["bounds"][0][1] == g["bounds"][1][0] and g["status"] == "answer"
