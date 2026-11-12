@@ -151,12 +151,14 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
             eos = o["finish_reason"] == "stop" and o["stop_reason"] not in P.THOUGHT_STOPS
             start = len(s["ids"])
             s["ids"].extend(o["ids"])
-            if P.has_content(o["text"]):
+            attach = s["thoughts"] and (not P.has_content(o["text"]) or P.is_display_math(o["text"]))
+            if not attach and P.has_content(o["text"]):
                 s["bounds"].append((start, len(s["ids"])))
                 s["thoughts"].append(o["text"])
                 s["thought_cap_hits"] += o["finish_reason"] == "length"
-            elif s["thoughts"]:
-                # separator / whitespace-only unit: part of the previous thought, not a step
+            elif attach:
+                # separator / whitespace-only unit, or a bare displayed equation completing the
+                # previous sentence: part of the previous thought, not a step of its own
                 s["thoughts"][-1] += o["text"]
                 s["bounds"][-1] = (s["bounds"][-1][0], len(s["ids"]))
             # Like Token-ICS, the chain runs until the reply ends (so post-answer checks and
@@ -237,17 +239,20 @@ def gen_record(method: str, g: dict, gt: str) -> dict:
     return rec
 
 
-def load_shared_init(eng: Engine, path: str, problems: List[dict]) -> Dict[int, dict]:
+def load_shared_init(eng: Engine, path, problems: List[dict]) -> Dict[int, dict]:
     """Token-ICS initial solutions = the Thought-ICS initial chains, joined into one reply.
 
     Thought chains are generated with the exact tokens so far at every step, so a joined
     chain is distributed exactly as one uninterrupted generation under the same prompt;
     both methods then start from the identical first attempt on every problem.
     """
-    by_id = {}
-    for line in open(Path(path) / "thought_results.jsonl"):
-        r = json.loads(line)
-        by_id[r["problem_id"]] = r
+    if isinstance(path, list):  # Thought-ICS records from this same job
+        by_id = {r["problem_id"]: r for r in path}
+    else:
+        by_id = {}
+        for line in open(Path(path) / "thought_results.jsonl"):
+            r = json.loads(line)
+            by_id[r["problem_id"]] = r
     out = {}
     for k, p in enumerate(problems):
         r = by_id[p.get("unique_id", str(k))]
@@ -260,9 +265,10 @@ def load_shared_init(eng: Engine, path: str, problems: List[dict]) -> Dict[int, 
     return out
 
 
-def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict]:
+def run_method(eng: Engine, cfg, method: str, problems: List[dict],
+               shared_init=None) -> List[dict]:
     gen = gen_thought_chains if method == "thought" else gen_token_solutions
-    shared_prompt = method == "token" and cfg.token_prompt == "thought"
+    shared_prompt = method == "token" and (cfg.token_prompt == "thought" or shared_init is not None)
     template = P.THOUGHT_TEMPLATE if (method == "thought" or shared_prompt) else P.TOKEN_TEMPLATE
     prompt_ids = [eng.gen_prompt_ids(template.format(question=p["problem"])) for p in problems]
     records = [{"problem_id": p.get("unique_id", str(k)), "ground_truth": p["answer"],
@@ -271,8 +277,9 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict
     # Initial generation; SRPO regenerates zero-thought chains (bounded retries, both methods).
     current: Dict[int, dict] = {}
     pending = list(range(len(problems)))
-    if method == "token" and cfg.token_init_from:
-        current = load_shared_init(eng, cfg.token_init_from, problems)
+    if method == "token" and (shared_init is not None or cfg.token_init_from):
+        current = load_shared_init(eng, shared_init if shared_init is not None else cfg.token_init_from,
+                                   problems)
         for i, r in enumerate(records):
             r["empty_retries"] = current[i]["empty_retries"]
         pending = []
@@ -313,7 +320,7 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict
                      for i in active]
         locs = localize(eng, cfg, texts)
 
-        jobs, job_idx, loc_info = [], [], {}
+        jobs, job_idx, loc_info, failed = [], [], {}, {}
         for i, text, loc in zip(active, texts, locs):
             g = current[i]
             info = {"loc_prompt": text, **loc}
@@ -324,6 +331,9 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict
                 else:
                     step, status = P.parse_error_step(loc["response"], n)
                 info.update(parse_status=status, error_step=step)
+                if cfg.fallback == "attempt" and status in ("default", "empty"):
+                    failed[i] = info  # no usable localization: the attempt is used up
+                    continue
                 if step == 0:
                     stopped[i] = True
                     loc_info[i] = info
@@ -344,9 +354,12 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict
                     loc_info[i] = info
                     continue
                 idx = P.find_quote(g["text"], quote) if quote else None
-                if status == "empty":  # SRPO empty-output rule: middle of the trace
+                if status == "empty" and cfg.fallback == "scratch":  # SRPO rule: middle of trace
                     idx = len(g["text"]) // 2
                 info["quote_found"] = idx is not None
+                if cfg.fallback == "attempt" and idx is None:
+                    failed[i] = info  # no usable localization (unparseable / not found)
+                    continue
                 prefix_text = g["text"][:idx].rstrip() if idx else ""
                 job = {"prompt_ids": prompt_ids[i], "prefix_text": prefix_text,
                        "prefix_ids": eng.tok.encode(prefix_text, add_special_tokens=False)
@@ -360,7 +373,11 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict
             if stopped.get(i):
                 records[i]["iterations"].append({"iteration": it, "localization": loc_info[i],
                                                  "stopped": "no_error_found"})
-        for i, g in zip(job_idx, gen(eng, cfg, jobs)):
+            elif i in failed:
+                # attempt used up; the next iteration re-localizes the same chain
+                records[i]["iterations"].append({"iteration": it, "localization": failed[i],
+                                                 "failed_localization": True})
+        for i, g in zip(job_idx, gen(eng, cfg, jobs) if jobs else []):
             rec = gen_record(method, g, records[i]["ground_truth"])
             rec.update(iteration=it, localization=loc_info[i])
             records[i]["iterations"].append(rec)
@@ -397,6 +414,13 @@ def summarize(method: str, records: List[dict]) -> dict:
         "loc_finish_length_rate": (sum(l["finish_reason"] == "length" for l in locs) / len(locs))
         if locs else None,
         "loc_parse_status": dict(Counter(l["parse_status"] for l in locs)),
+        "failed_localizations": sum(it.get("failed_localization", False)
+                                    for r in records for it in r["iterations"]),
+        # resamples that start from an empty prefix because the model localized the very start
+        "resamples_from_start": sum(it["localization"].get("prefix_len", 1) == 0
+                                    for r in records for it in r["iterations"]
+                                    if "gen_status" in it and "localization" in it),
+        "resamples": sum("gen_status" in it for r in records for it in r["iterations"][1:]),
     }
     if method == "thought":
         s["thought_cap_hit_rate"] = (sum(g["thought_cap_hits"] for g in gens)
@@ -419,6 +443,13 @@ def main():
     ap.add_argument("--token-init-from", default=None,
                     help="run dir whose Thought-ICS initial chains (joined) are the Token-ICS "
                          "initial solutions; implies --token-prompt thought")
+    ap.add_argument("--shared-init", action="store_true",
+                    help="with --method both: Token-ICS starts from this job's Thought-ICS initial "
+                         "chains (joined) and uses the same prompt")
+    ap.add_argument("--fallback", choices=["attempt", "scratch"], default="attempt",
+                    help="unusable localization (unparseable/empty/quote not found): 'attempt' = "
+                         "the iteration is used up with no resample; 'scratch' = paper behaviour "
+                         "(resample from scratch)")
     ap.add_argument("--autonomy-level", type=int, choices=[1, 2], default=P.AUTONOMY_LEVEL)
     ap.add_argument("--max-thoughts", type=int, default=P.MAX_THOUGHTS)
     ap.add_argument("--max-tokens-per-thought", type=int, default=P.MAX_TOKENS_PER_THOUGHT)
@@ -450,7 +481,9 @@ def main():
     max_model_len = cfg.max_model_len or m["max_model_len"]
     problems = load_dataset_by_name(cfg.dataset, n_problems=cfg.n_problems, level=cfg.level, seed=cfg.seed)
     ds_tag = f"{cfg.dataset}_L{cfg.level}" if cfg.level else cfg.dataset
-    tag = "_sharedinit" if cfg.token_init_from else ("_sharedprompt" if cfg.token_prompt == "thought" else "")
+    tag = ("_shared" if cfg.shared_init else "_sharedinit" if cfg.token_init_from
+           else "_sharedprompt" if cfg.token_prompt == "thought" else "")
+    tag += "_fbattempt" if cfg.fallback == "attempt" else ""
     run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_L{cfg.autonomy_level}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
     run_dir.mkdir(parents=True, exist_ok=True)
     try:
@@ -468,10 +501,13 @@ def main():
     eng = Engine(m["hf"], tp, max_model_len, cfg.seed, cfg.gpu_mem, m["final_prefill"],
                  m.get("prefix_caching", True))
     methods = ["thought", "token"] if cfg.method == "both" else [cfg.method]
-    summaries = {}
+    summaries, thought_records = {}, None
     for method in methods:
         t0 = time.time()
-        records = run_method(eng, cfg, method, problems)
+        shared = thought_records if (cfg.shared_init and method == "token") else None
+        records = run_method(eng, cfg, method, problems, shared_init=shared)
+        if method == "thought":
+            thought_records = records
         with open(run_dir / f"{method}_results.jsonl", "w") as f:
             for r in records:
                 f.write(json.dumps(r) + "\n")

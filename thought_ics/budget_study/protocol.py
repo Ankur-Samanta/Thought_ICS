@@ -94,6 +94,17 @@ def has_content(unit: str) -> bool:
     return re.search(r"[A-Za-z0-9]", unit) is not None
 
 
+_DISPLAY_MATH = re.compile(r"\s*(\\\[.*\\\]|\$\$.*\$\$|\\begin\{[a-zA-Z*]+\}.*\\end\{[a-zA-Z*]+\})\s*[.,;]?\s*",
+                           re.DOTALL)
+
+
+def is_display_math(unit: str) -> bool:
+    """A paragraph that is only a displayed equation (\\[...\\], $$...$$, \\begin{..}..\\end{..}).
+    gpt-oss puts display math in its own paragraph ("... gives" / "\\[ b+3c=11 \\]"); such a
+    unit completes the previous thought rather than being a reasoning step of its own."""
+    return _DISPLAY_MATH.fullmatch(unit) is not None
+
+
 def chain_text(thoughts: List[str]) -> str:
     """SRPO formatting: '\\nStep i: <thought without delimiter>'."""
     out = ""

@@ -80,7 +80,7 @@ def _cfg(**kw):
                 localization_temp=P.LOCALIZATION_TEMP, generation_temp=P.GENERATION_TEMP,
                 top_p=P.TOP_P, top_k=P.TOP_K, max_ics_iterations=3,
                 max_empty_retries=P.MAX_EMPTY_RETRIES, autonomy_level=2,
-                token_prompt="token", token_init_from=None)
+                token_prompt="token", token_init_from=None, fallback="scratch")
     base.update(kw)
     return types.SimpleNamespace(**base)
 
@@ -255,3 +255,53 @@ def test_token_shared_initial_cache(tmp_path):
     gen_prompts = [eng.last_prompts[k] for k in range(len(eng.last_prompts)) if not eng.last_prompts[k].startswith("<chat>")]
     assert all("one step per paragraph" in p for p in gen_prompts)   # Thought-ICS prompt
     assert r["final_correct"]
+
+
+def test_display_math_attaches_to_previous_thought():
+    assert P.is_display_math("\\[\nb+3c=11.\n\\]\n\n") and P.is_display_math("$$x=1$$")
+    assert not P.is_display_math("Thus \\[x=1\\] holds.")
+    class MathEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0]).split("Q:")[-1]
+            seq = ["Subtracting gives\n\n", "\\[\nb+3c=11.\n\\]\n\n", "so \\boxed{11}"]
+            k = sum(x in text for x in ("gives", "b+3c"))
+            sr = "\n\n" if k < 2 else None
+            return [{"ids": self.tok.encode(seq[k]), "text": seq[k], "finish_reason": "stop",
+                     "stop_reason": sr}]
+    eng = MathEngine()
+    g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
+    assert len(g["thoughts"]) == 2 and "b+3c" in g["thoughts"][0] and g["status"] == "answer"
+
+
+def test_failed_localization_uses_up_attempt():
+    """fallback='attempt': unusable localization -> no resample; the next iteration re-localizes."""
+    class BadLocEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0])
+            if text.startswith("<chat>"):
+                self.n_loc = getattr(self, "n_loc", 0) + 1
+                out = "no idea" if self.n_loc == 1 else 'ok \\boxed{ERROR_QUOTE: "wrong part"}'
+                return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "stop",
+                         "stop_reason": None}]
+            return super().generate(prompt_ids, params)
+    eng = BadLocEngine()
+    r = R.run_method(eng, _cfg(response_length=5000, fallback="attempt", max_ics_iterations=3),
+                     "token", PROBLEMS[:1])[0]
+    its = r["iterations"]
+    assert its[1].get("failed_localization") and "gen_status" not in its[1]
+    assert its[2]["localization"]["quote_found"] and its[2]["correct"] and r["final_correct"]
+
+
+def test_quote_not_found_uses_up_attempt():
+    class MissEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0])
+            if text.startswith("<chat>"):
+                out = '\\boxed{ERROR_QUOTE: "text that is not there"}'
+                return [{"ids": self.tok.encode(out), "text": out, "finish_reason": "stop",
+                         "stop_reason": None}]
+            return super().generate(prompt_ids, params)
+    eng = MissEngine()
+    r = R.run_method(eng, _cfg(response_length=5000, fallback="attempt", max_ics_iterations=2),
+                     "token", PROBLEMS[:1])[0]
+    assert all(it.get("failed_localization") for it in r["iterations"][1:]) and not r["final_correct"]
