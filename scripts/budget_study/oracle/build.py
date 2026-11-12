@@ -18,6 +18,7 @@ from pathlib import Path
 full, out = Path(sys.argv[1]), Path(sys.argv[2])
 per_model = int(sys.argv[3]) if len(sys.argv) > 3 else 30   # 0 = ALL wrong first attempts, all datasets
 n_batches = int(sys.argv[4]) if len(sys.argv) > 4 else 3
+MODELS_ = sys.argv[5].split(",") if len(sys.argv) > 5 else ["qwen32b", "gptoss20b", "gptoss120b"]
 QUOTA = {"amc23": 6, "aime": 8, "math500": 8, "mathqa": 8}  # math datasets: errors are checkable
 if per_model == 0:  # full oracle: every wrong first attempt on every dataset
     QUOTA = {ds: 10**9 for ds in ("amc23", "aime", "math500", "csqa", "gpqa", "mathqa")}
@@ -50,7 +51,7 @@ def loose(a):  # formatting-insensitive answer form
 
 
 items, sources = [], {}
-for model in ("qwen32b", "gptoss20b", "gptoss120b"):
+for model in MODELS_:
     pool = []
     for ds, q in QUOTA.items():
         runs = glob.glob(str(full / f"{model}_{ds}*_shared_fbattempt_*/thought_results.jsonl"))
@@ -90,4 +91,4 @@ for b in range(n_batches):
 (out / "manifest.json").write_text(json.dumps({
     "per_model_quota": QUOTA, "seed": 0, "n_batches": n_batches, "sources": sources,
     "batches": {f"batch_{b}": [x["id"] for x in assign[b]] for b in range(n_batches)}}, indent=1))
-print("total", len(items), {m: sum(x['model'] == m for x in items) for m in ("qwen32b", "gptoss20b", "gptoss120b")})
+print("total", len(items), {m: sum(x['model'] == m for x in items) for m in MODELS_})

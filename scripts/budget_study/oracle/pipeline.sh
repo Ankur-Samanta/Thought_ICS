@@ -15,7 +15,7 @@ ODIR=${ODIR:-$REPO/experiments_budget_study/oracle}
 PY=${PY:-/home/$USER/miniconda3/envs/scpo/bin/python}
 export HF_HUB_OFFLINE=${HF_HUB_OFFLINE:-1} HF_DATASETS_OFFLINE=${HF_DATASETS_OFFLINE:-1}
 case "${1:-}" in
-    build)   "$PY" "$HERE/build.py" "$FULL" "$ODIR" "${2:-30}" "${3:-3}" ;;
+    build)   "$PY" "$HERE/build.py" "$FULL" "$ODIR" "${2:-30}" "${3:-3}" ${4:+"$4"} ;;   # [per_model] [n_batches] [models,comma,list]
     task)    python3 "$HERE/task.py" "$ODIR" "${2:?judge}" "${3:?batch}" ;;
     status)  python3 "$HERE/validate.py" "$ODIR" || true ;;
     analyze) python3 "$HERE/validate.py" "$ODIR" && python3 "$HERE/analyze.py" "$FULL" "$ODIR" ;;
