@@ -282,7 +282,7 @@ def parse_verdict(response: str) -> Optional[bool]:
     """True = model says correct, False = says incorrect, None = unparseable."""
     b = _last_boxed(response)
     if b is not None:
-        u = b.strip().upper()
+        u = re.sub(r"\\(text|mathrm|textbf|mathbf|textsf)\s*\{([^{}]*)\}", r"\2", b).strip().strip("$ ").upper()
         if u.startswith("YES"):
             return True
         if u.startswith("NO"):

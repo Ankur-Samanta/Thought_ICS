@@ -37,7 +37,10 @@ logger = logging.getLogger("budget_study")
 # smallest context allows. qwen32b has a 32k context, so every model gets a 32k window,
 # 16k generation (whole solution / chain, incl. resamples) and an 8k localizer (a 16k chain
 # in the localizer prompt + 8k output fits). Every run logs budget hits to verify.
-UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192}
+UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192,
+           # L3 verifier: models re-solve to check (median ~6.5k tokens for gpt-oss); 12k still fits a
+           # 16k solution + prompt + output in the 32k window
+           "verify_max_tokens": 12288}
 MODELS = {
     "qwen32b": {"hf": "Qwen/Qwen2.5-32B-Instruct", "tp": 4, **UNIFORM,
                 "final_prefill": False},
@@ -225,16 +228,17 @@ def gen_token_solutions(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
 def verify(eng: Engine, cfg, prompt_texts: List[str]) -> List[dict]:
     """L3 self-verification call (paper's verifier prompt), same budget/temperature/template as
     the localizer. Unparseable verdicts count as NO (paper default: assume needs correction)."""
-    outs = localize(eng, cfg, prompt_texts)
+    outs = localize(eng, cfg, prompt_texts, max_tokens=cfg.verify_max_tokens)
     for o in outs:
         o["verdict"] = P.parse_verdict(o["response"])
     return outs
 
 
-def localize(eng: Engine, cfg, prompt_texts: List[str]) -> List[dict]:
+def localize(eng: Engine, cfg, prompt_texts: List[str], max_tokens: Optional[int] = None) -> List[dict]:
     """Chat-templated localization call, no stop tokens (SRPO ``_localize_error``)."""
+    budget = max_tokens if max_tokens is not None else cfg.localization_max_tokens
     ids = [eng.chat_ids(t) for t in prompt_texts]
-    params = [sp(cfg, max_tokens=max(1, min(cfg.localization_max_tokens, eng.max_model_len - len(i))),
+    params = [sp(cfg, max_tokens=max(1, min(budget, eng.max_model_len - len(i))),
                  temperature=cfg.localization_temp, skip_special_tokens=False) for i in ids]
     outs = eng.generate(ids, params)
     return [{"response": o["text"], "finish_reason": o["finish_reason"],
@@ -520,6 +524,7 @@ def main():
                     help="default: per-model value in MODELS")
     ap.add_argument("--localization-max-tokens", type=int, default=None,
                     help="default: per-model value in MODELS")
+    ap.add_argument("--verify-max-tokens", type=int, default=None, help="default: per-model value in MODELS")
     ap.add_argument("--localization-temp", type=float, default=P.LOCALIZATION_TEMP)
     ap.add_argument("--generation-temp", type=float, default=P.GENERATION_TEMP)
     ap.add_argument("--top-p", type=float, default=P.TOP_P)
@@ -540,6 +545,8 @@ def main():
         cfg.response_length = m["response_length"]
     if cfg.localization_max_tokens is None:
         cfg.localization_max_tokens = m["localization_max_tokens"]
+    if cfg.verify_max_tokens is None:
+        cfg.verify_max_tokens = m["verify_max_tokens"]
     tp = cfg.tp or m["tp"]
     max_model_len = cfg.max_model_len or m["max_model_len"]
     problems = load_dataset_by_name(cfg.dataset, n_problems=cfg.n_problems, level=cfg.level, seed=cfg.seed)

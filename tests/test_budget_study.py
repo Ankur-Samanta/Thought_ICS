@@ -80,7 +80,8 @@ def _cfg(**kw):
                 localization_temp=P.LOCALIZATION_TEMP, generation_temp=P.GENERATION_TEMP,
                 top_p=P.TOP_P, top_k=P.TOP_K, max_ics_iterations=3,
                 max_empty_retries=P.MAX_EMPTY_RETRIES, autonomy_level=2,
-                token_prompt="token", token_init_from=None, fallback="scratch")
+                token_prompt="token", token_init_from=None, fallback="scratch",
+                verify_max_tokens=12288)
     base.update(kw)
     return types.SimpleNamespace(**base)
 
@@ -385,3 +386,10 @@ def test_l3_initially_verified_never_resamples():
     assert r["exit"] == "verified" and len([i for i in r["iterations"] if "gen_status" in i]) == 1
     s = R.summarize("token", [r])
     assert s["exits"] == {"verified": 1} and s["final_accuracy_A"] == 1.0
+
+
+def test_parse_verdict_latex_wrapped():
+    assert P.parse_verdict("\\boxed{\\text{NO}}") is False
+    assert P.parse_verdict("\\boxed{\\textbf{YES}}") is True
+    assert P.parse_verdict("\\boxed{ $YES$ }") is True
+    assert P.parse_verdict("no box") is None
