@@ -33,12 +33,17 @@ logger = logging.getLogger("budget_study")
 # prefix_caching: off for gpt-oss. With vLLM 0.11.2 on A100, gpt-oss with TP>1 AND prefix
 # caching degenerates to token 0 ("!!!!") on continuation calls (25/30 at TP=2); TP=2 without
 # caching and TP=1 either way are clean (0/30) -- scripts/budget_study/diag_gptoss_continuation.py.
+# Budgets are uniform across models AND methods (scaling analysis): the largest the
+# smallest context allows. qwen32b has a 32k context, so every model gets a 32k window,
+# 16k generation (whole solution / chain, incl. resamples) and an 8k localizer (a 16k chain
+# in the localizer prompt + 8k output fits). Every run logs budget hits to verify.
+UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192}
 MODELS = {
-    "qwen32b": {"hf": "Qwen/Qwen2.5-32B-Instruct", "tp": 4, "max_model_len": 32768,
+    "qwen32b": {"hf": "Qwen/Qwen2.5-32B-Instruct", "tp": 4, **UNIFORM,
                 "final_prefill": False},
-    "gptoss20b": {"hf": "openai/gpt-oss-20b", "tp": 1, "max_model_len": 32768,
+    "gptoss20b": {"hf": "openai/gpt-oss-20b", "tp": 1, **UNIFORM,
                   "final_prefill": True, "prefix_caching": False},
-    "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, "max_model_len": 32768,
+    "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, **UNIFORM,
                    "final_prefill": True, "prefix_caching": False},
 }
 HARMONY_FINAL_HEADER = "<|channel|>final<|message|>"
@@ -358,8 +363,10 @@ def main():
     ap.add_argument("--autonomy-level", type=int, choices=[1, 2], default=P.AUTONOMY_LEVEL)
     ap.add_argument("--max-thoughts", type=int, default=P.MAX_THOUGHTS)
     ap.add_argument("--max-tokens-per-thought", type=int, default=P.MAX_TOKENS_PER_THOUGHT)
-    ap.add_argument("--response-length", type=int, default=P.RESPONSE_LENGTH)
-    ap.add_argument("--localization-max-tokens", type=int, default=P.LOCALIZATION_MAX_TOKENS)
+    ap.add_argument("--response-length", type=int, default=None,
+                    help="default: per-model value in MODELS")
+    ap.add_argument("--localization-max-tokens", type=int, default=None,
+                    help="default: per-model value in MODELS")
     ap.add_argument("--localization-temp", type=float, default=P.LOCALIZATION_TEMP)
     ap.add_argument("--generation-temp", type=float, default=P.GENERATION_TEMP)
     ap.add_argument("--top-p", type=float, default=P.TOP_P)
@@ -374,6 +381,10 @@ def main():
     cfg = ap.parse_args()
 
     m = MODELS[cfg.model]
+    if cfg.response_length is None:
+        cfg.response_length = m["response_length"]
+    if cfg.localization_max_tokens is None:
+        cfg.localization_max_tokens = m["localization_max_tokens"]
     tp = cfg.tp or m["tp"]
     max_model_len = cfg.max_model_len or m["max_model_len"]
     problems = load_dataset_by_name(cfg.dataset, n_problems=cfg.n_problems, level=cfg.level, seed=cfg.seed)

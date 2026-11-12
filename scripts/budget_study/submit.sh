@@ -3,7 +3,7 @@
 # Token-ICS). Each job runs BOTH methods on one model/dataset from a single model load.
 #
 # Usage:
-#   scripts/budget_study/submit.sh smoke                 # 1 tiny job: gptoss20b, aime, 5 problems, 2 iters
+#   scripts/budget_study/submit.sh smoke [model]         # 1 tiny job: aime, 5 problems, 2 iters
 #   scripts/budget_study/submit.sh <model> <dataset>     # one job
 #   scripts/budget_study/submit.sh <model> all           # 6 jobs
 #   scripts/budget_study/submit.sh all all               # 18 jobs (3 models x 6 datasets)
@@ -51,9 +51,9 @@ submit() {  # model dataset_args job_name time extra...
 }
 
 case "${1:-}" in
-    smoke)
-        shift
-        submit gptoss20b "--dataset aime --n-problems 5" bs_smoke_gptoss20b_aime 02:00:00 --max-ics-iterations 2 "$@"
+    smoke)  # smoke [model] : 5 AIME problems, 2 ICS iterations
+        shift; m=${1:-gptoss20b}; [ $# -gt 0 ] && shift
+        submit "$m" "--dataset aime --n-problems 5" "bs_smoke_${m}_aime" 02:00:00 --max-ics-iterations 2 "$@"
         ;;
     list)
         DRY_RUN=true

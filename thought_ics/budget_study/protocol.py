@@ -32,8 +32,10 @@ LOCALIZATION_MAX_TOKENS = 4096
 LOCALIZATION_TEMP = 0.5
 MAX_ICS_ITERATIONS = 10
 AUTONOMY_LEVEL = 2
-# SRPO caps a whole thought chain at the rollout `response_length`. Most SCPO/SRPO eval
-# configs use 5120. Token-ICS gets the same total budget for the whole solution.
+# SRPO caps a whole thought chain at the rollout `response_length` (5120 in most SCPO/SRPO
+# eval configs). Token-ICS gets the same total budget for the whole solution. The study
+# overrides both budgets per model (run_study.MODELS) because SRPO's values bind for these
+# larger models; these SRPO values remain the fallbacks.
 RESPONSE_LENGTH = 5120
 # Paper sampling settings (appendix "Inference"): temperature 0.5, top-p 0.9, top-k 50.
 GENERATION_TEMP = 0.5
