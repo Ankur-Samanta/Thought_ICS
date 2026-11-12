@@ -48,7 +48,7 @@ MODELS = {
     # remaining paper models, same protocol (prefix caching is only disabled for gpt-oss)
     "llama3b": {"hf": "meta-llama/Llama-3.2-3B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
     "llama8b": {"hf": "meta-llama/Llama-3.1-8B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
-    "llama70b": {"hf": "meta-llama/Llama-3.3-70B-Instruct", "tp": 4, **UNIFORM, "final_prefill": False},
+    "llama70b": {"hf": "meta-llama/Llama-3.3-70B-Instruct", "tp": 8, **UNIFORM, "final_prefill": False},
     "qwen7b": {"hf": "Qwen/Qwen2.5-7B-Instruct", "tp": 1, **UNIFORM, "final_prefill": False},
     "qwen14b": {"hf": "Qwen/Qwen2.5-14B-Instruct", "tp": 2, **UNIFORM, "final_prefill": False},
 }
