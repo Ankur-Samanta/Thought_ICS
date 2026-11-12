@@ -60,10 +60,14 @@ Therefore d = 10, so the answer is \\boxed{{10}}.
 
 """
 V2 = V1.replace("Q: {question}\n", EXAMPLES + "Q: {question}\n")
-VARIANTS = {"V0_current": P.THOUGHT_TEMPLATE, "V1_tight": V1, "V2_tight_examples": V2}
+VARIANTS = {"V0_current": P.THOUGHT_TEMPLATE, "V1_tight": V1, "V2_tight_examples": V2,
+            "V1_hardbreak": V1}
+# extra step boundary for a variant (default: P.THOUGHT_STOPS)
+STOPS = {"V1_hardbreak": ["\n\n", "  \n"]}
 
 model, out_dir = sys.argv[1], Path(sys.argv[2])
 n = int(sys.argv[3]) if len(sys.argv) > 3 else 5
+only = sys.argv[4].split(",") if len(sys.argv) > 4 else list(VARIANTS)
 m = R.MODELS[model]
 eng = R.Engine(m["hf"], m["tp"], m["max_model_len"], 42, 0.85, m["final_prefill"], m.get("prefix_caching", True))
 probs = []
@@ -72,7 +76,11 @@ for ds, lvl in (("amc23", None), ("aime", None), ("math500", 5), ("csqa", None),
 cfg = types.SimpleNamespace(max_thoughts=P.MAX_THOUGHTS, max_tokens_per_thought=P.MAX_TOKENS_PER_THOUGHT,
                             response_length=m["response_length"], generation_temp=P.GENERATION_TEMP,
                             top_p=P.TOP_P, top_k=P.TOP_K)
+default_stops = list(P.THOUGHT_STOPS)
 for name, tmpl in VARIANTS.items():
+    if name not in only:
+        continue
+    P.THOUGHT_STOPS = STOPS.get(name, default_stops)
     jobs = [{"prompt_ids": eng.gen_prompt_ids(tmpl.format(question=p["problem"]))} for p in probs]
     chains = R.gen_thought_chains(eng, cfg, jobs)
     (out_dir / name).mkdir(parents=True, exist_ok=True)
