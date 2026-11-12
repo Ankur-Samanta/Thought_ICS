@@ -305,3 +305,20 @@ def test_quote_not_found_uses_up_attempt():
     r = R.run_method(eng, _cfg(response_length=5000, fallback="attempt", max_ics_iterations=2),
                      "token", PROBLEMS[:1])[0]
     assert all(it.get("failed_localization") for it in r["iterations"][1:]) and not r["final_correct"]
+
+
+def test_boundary_rules():
+    assert P.is_display_math("\\[\nS_n = 2S_{n-1}\n\\]\n\n---\n\n")
+    assert P.opens_next("Now count ordered pairs:\n\n") and P.opens_next("Thus\n\n")
+    assert not P.opens_next("Thus the answer is 4.\n\n")
+    class LeadEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            text = self.tok.decode(prompt_ids[0]).split("Q:")[-1]
+            seq = ["Count the pairs:\n\n", "- (1,2) and (2,1), 2 pairs\n\n",
+                   "Thus\n\n", "there are 2 pairs, \\boxed{2}"]
+            k = sum(x in text for x in ("Count", "(1,2)", "Thus"))
+            return [{"ids": self.tok.encode(seq[k]), "text": seq[k], "finish_reason": "stop",
+                     "stop_reason": "\n\n" if k < 3 else None}]
+    eng = LeadEngine()
+    g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
+    assert len(g["thoughts"]) == 2 and g["thoughts"][1].startswith("Thus") and g["status"] == "answer"

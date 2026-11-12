@@ -98,11 +98,23 @@ _DISPLAY_MATH = re.compile(r"\s*(\\\[.*\\\]|\$\$.*\$\$|\\begin\{[a-zA-Z*]+\}.*\\
                            re.DOTALL)
 
 
+_TRAILING_SEPARATORS = re.compile(r"(\s*^[ \t]*([-*_])\2{2,}[ \t]*$)+\s*\Z", re.MULTILINE)
+_CONNECTIVES = {"thus", "hence", "so", "therefore", "then", "now", "next", "finally", "consequently"}
+
+
 def is_display_math(unit: str) -> bool:
-    """A paragraph that is only a displayed equation (\\[...\\], $$...$$, \\begin{..}..\\end{..}).
-    gpt-oss puts display math in its own paragraph ("... gives" / "\\[ b+3c=11 \\]"); such a
-    unit completes the previous thought rather than being a reasoning step of its own."""
-    return _DISPLAY_MATH.fullmatch(unit) is not None
+    """A paragraph that is only a displayed equation (\\[...\\], $$...$$, \\begin{..}..\\end{..}),
+    ignoring trailing separator lines. gpt-oss puts display math in its own paragraph
+    ("... gives" / "\\[ b+3c=11 \\]"); such a unit completes the previous thought rather than
+    being a reasoning step of its own."""
+    return _DISPLAY_MATH.fullmatch(_TRAILING_SEPARATORS.sub("", unit)) is not None
+
+
+def opens_next(thought: str) -> bool:
+    """A thought that only introduces what follows (ends with ':' or is a bare connective such
+    as 'Thus') is unfinished: the next paragraph is attached to it."""
+    t = _TRAILING_SEPARATORS.sub("", thought).strip()
+    return t.endswith(":") or t.rstrip(".,").lower() in _CONNECTIVES
 
 
 def chain_text(thoughts: List[str]) -> str:

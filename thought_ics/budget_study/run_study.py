@@ -151,7 +151,11 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
             eos = o["finish_reason"] == "stop" and o["stop_reason"] not in P.THOUGHT_STOPS
             start = len(s["ids"])
             s["ids"].extend(o["ids"])
-            attach = s["thoughts"] and (not P.has_content(o["text"]) or P.is_display_math(o["text"]))
+            # Boundary rules (decided as each paragraph is generated; tokens unchanged): a unit
+            # attaches to the previous thought if it has no content, is only a displayed
+            # equation, or the previous thought only introduced it (ends with ':' / 'Thus').
+            attach = bool(s["thoughts"]) and (not P.has_content(o["text"]) or P.is_display_math(o["text"])
+                                              or P.opens_next(s["thoughts"][-1]))
             if not attach and P.has_content(o["text"]):
                 s["bounds"].append((start, len(s["ids"])))
                 s["thoughts"].append(o["text"])
