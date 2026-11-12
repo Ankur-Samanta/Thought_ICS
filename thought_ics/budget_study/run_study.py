@@ -27,11 +27,21 @@ from thought_ics.datasets import load_dataset_by_name, normalize_answer
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("budget_study")
 
+# final_prefill: gpt-oss (harmony format) starts its reply directly in the final channel, so
+# all solution reasoning is visible and in the format under study for both methods; the
+# localizer keeps the model's normal analysis channel.
+# prefix_caching: off for gpt-oss. With vLLM 0.11.2 on A100, gpt-oss with TP>1 AND prefix
+# caching degenerates to token 0 ("!!!!") on continuation calls (25/30 at TP=2); TP=2 without
+# caching and TP=1 either way are clean (0/30) -- scripts/budget_study/diag_gptoss_continuation.py.
 MODELS = {
-    "qwen32b": {"hf": "Qwen/Qwen2.5-32B-Instruct", "tp": 4, "max_model_len": 32768},
-    "gptoss20b": {"hf": "openai/gpt-oss-20b", "tp": 2, "max_model_len": 32768},
-    "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, "max_model_len": 32768},
+    "qwen32b": {"hf": "Qwen/Qwen2.5-32B-Instruct", "tp": 4, "max_model_len": 32768,
+                "final_prefill": False},
+    "gptoss20b": {"hf": "openai/gpt-oss-20b", "tp": 1, "max_model_len": 32768,
+                  "final_prefill": True, "prefix_caching": False},
+    "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, "max_model_len": 32768,
+                   "final_prefill": True, "prefix_caching": False},
 }
+HARMONY_FINAL_HEADER = "<|channel|>final<|message|>"
 
 
 def boxed_answer(text: str) -> str:
@@ -46,13 +56,15 @@ def is_correct(text: str, gt: str) -> bool:
 
 # --- Engine -------------------------------------------------------------------------
 class Engine:
-    def __init__(self, hf: str, tp: int, max_model_len: int, seed: int, gpu_mem: float):
+    def __init__(self, hf: str, tp: int, max_model_len: int, seed: int, gpu_mem: float,
+                 final_prefill: bool = False, prefix_caching: bool = True):
         from vllm import LLM
         self.llm = LLM(model=hf, tensor_parallel_size=tp, max_model_len=max_model_len,
                        seed=seed, gpu_memory_utilization=gpu_mem,
-                       enable_prefix_caching=True, trust_remote_code=True)
+                       enable_prefix_caching=prefix_caching, trust_remote_code=True)
         self.tok = self.llm.get_tokenizer()
         self.max_model_len = max_model_len
+        self.final_prefill = final_prefill
 
     def generate(self, prompt_ids: List[List[int]], params: list) -> List[dict]:
         from vllm.inputs import TokensPrompt
@@ -61,10 +73,19 @@ class Engine:
         outs = self.llm.generate([TokensPrompt(prompt_token_ids=p) for p in prompt_ids],
                                  params, use_tqdm=False)
         return [{"ids": list(o.outputs[0].token_ids), "text": o.outputs[0].text,
-                 "finish_reason": o.outputs[0].finish_reason} for o in outs]
+                 "finish_reason": o.outputs[0].finish_reason,
+                 "stop_reason": o.outputs[0].stop_reason} for o in outs]
 
-    def encode(self, text: str) -> List[int]:
-        return self.tok.encode(text, add_special_tokens=True)
+    def gen_prompt_ids(self, text: str) -> List[int]:
+        """Chat-templated user turn, open assistant reply (final channel for gpt-oss).
+
+        Thoughts / the CoT solution are generated inside this one assistant reply, and
+        resamples continue it from the kept prefix.
+        """
+        ids = self.chat_ids(text)
+        if self.final_prefill:
+            ids += self.tok.encode(HARMONY_FINAL_HEADER, add_special_tokens=False)
+        return ids
 
     def chat_ids(self, text: str) -> List[int]:
         ids = self.tok.apply_chat_template([{"role": "user", "content": text}],
@@ -74,11 +95,14 @@ class Engine:
         return list(ids)
 
 
-def sp(cfg, *, max_tokens: int, temperature: float, stop: Optional[List[str]] = None):
+def sp(cfg, *, max_tokens: int, temperature: float, stop: Optional[List[str]] = None,
+       skip_special_tokens: bool = True):
+    """Generation text drops special tokens (EOS etc.); token ids are kept verbatim.
+    Localization keeps them (skip_special_tokens=False) so channel structure is logged."""
     from vllm import SamplingParams
     return SamplingParams(temperature=temperature, top_p=cfg.top_p, top_k=cfg.top_k,
                           max_tokens=max_tokens, stop=stop, include_stop_str_in_output=bool(stop),
-                          skip_special_tokens=False)
+                          skip_special_tokens=skip_special_tokens)
 
 
 # --- Generation (batched) ----------------------------------------------------------
@@ -119,6 +143,10 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
             s["thought_cap_hits"] += o["finish_reason"] == "length"
             if "\\boxed{" in o["text"]:
                 s["status"] = "answer"
+            elif o["finish_reason"] == "stop" and o["stop_reason"] is None:
+                # End of the assistant reply without an answer. In chat format the reply
+                # is over, so the chain ends here (same as Token-ICS stopping at EOS).
+                s["status"] = "eos_no_answer"
     for s in states:
         s["text"] = "".join(s["thoughts"])
         s["n_tokens"] = len(s["ids"])
@@ -162,7 +190,7 @@ def localize(eng: Engine, cfg, prompt_texts: List[str]) -> List[dict]:
     """Chat-templated localization call, no stop tokens (SRPO ``_localize_error``)."""
     ids = [eng.chat_ids(t) for t in prompt_texts]
     params = [sp(cfg, max_tokens=max(1, min(cfg.localization_max_tokens, eng.max_model_len - len(i))),
-                 temperature=cfg.localization_temp) for i in ids]
+                 temperature=cfg.localization_temp, skip_special_tokens=False) for i in ids]
     outs = eng.generate(ids, params)
     return [{"response": o["text"], "finish_reason": o["finish_reason"],
              "n_tokens": len(o["ids"]), "prompt_tokens": len(i)} for o, i in zip(outs, ids)]
@@ -188,7 +216,7 @@ def gen_record(method: str, g: dict, gt: str) -> dict:
 def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict]:
     gen = gen_thought_chains if method == "thought" else gen_token_solutions
     template = P.THOUGHT_TEMPLATE if method == "thought" else P.TOKEN_TEMPLATE
-    prompt_ids = [eng.encode(template.format(question=p["problem"])) for p in problems]
+    prompt_ids = [eng.gen_prompt_ids(template.format(question=p["problem"])) for p in problems]
     records = [{"problem_id": p.get("unique_id", str(k)), "ground_truth": p["answer"],
                 "empty_retries": 0, "iterations": []} for k, p in enumerate(problems)]
 
@@ -358,11 +386,14 @@ def main():
     except Exception:
         commit = None
     config = {**vars(cfg), "hf": m["hf"], "tp": tp, "max_model_len": max_model_len,
+              "final_prefill": m["final_prefill"], "chat_template": True,
+              "prefix_caching": m.get("prefix_caching", True),
               "git_commit": commit, "protocol": "SRPO thought-ICS (c99cdbb) + matched Token-ICS"}
     (run_dir / "config.json").write_text(json.dumps(config, indent=2))
     logger.info(f"Config: {json.dumps(config)}")
 
-    eng = Engine(m["hf"], tp, max_model_len, cfg.seed, cfg.gpu_mem)
+    eng = Engine(m["hf"], tp, max_model_len, cfg.seed, cfg.gpu_mem, m["final_prefill"],
+                 m.get("prefix_caching", True))
     methods = ["thought", "token"] if cfg.method == "both" else [cfg.method]
     summaries = {}
     for method in methods:

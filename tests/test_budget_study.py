@@ -30,8 +30,8 @@ class FakeEngine:
         self.empty_served = False
         self.calls = []
 
-    def encode(self, text):
-        return self.tok.encode(text)
+    def gen_prompt_ids(self, text):
+        return self.tok.encode("<gen>" + text)
 
     def chat_ids(self, text):
         return self.tok.encode("<chat>" + text)
@@ -64,7 +64,8 @@ class FakeEngine:
                 else:
                     out = "good part wrong part so \\boxed{7}"
             outs.append({"ids": self.tok.encode(out), "text": out,
-                         "finish_reason": "stop"})
+                         "finish_reason": "stop",
+                         "stop_reason": P.THOUGHT_DELIMITER if out.endswith(P.THOUGHT_DELIMITER) else None})
         return outs
 
 
@@ -132,7 +133,7 @@ def test_thought_budget_rule():
     """SRPO rule: stop before a thought that cannot fit in response_length."""
     eng = FakeEngine()
     cfg = _cfg(response_length=P.MAX_TOKENS_PER_THOUGHT + 10, max_ics_iterations=0)
-    g = R.gen_thought_chains(eng, cfg, [{"prompt_ids": eng.encode("Q: p_main")}])[0]
+    g = R.gen_thought_chains(eng, cfg, [{"prompt_ids": eng.gen_prompt_ids("Q: p_main")}])[0]
     assert g["status"] == "budget" and len(g["thoughts"]) == 1
 
 
@@ -145,3 +146,14 @@ def test_parsers():
     assert P.parse_error_quote("\\boxed{NO_ERROR}") == ("", "boxed")
     assert P.parse_error_quote('so ERROR_QUOTE: "x y" maybe') == ("x y", "prose")
     assert P.parse_error_quote("nothing") == (None, "default")
+
+
+def test_thought_eos_ends_chain():
+    """A reply that ends (EOS, no stop string) without \\boxed ends the chain."""
+    class EosEngine(FakeEngine):
+        def generate(self, prompt_ids, params):
+            return [{"ids": [1, 2], "text": "no answer here", "finish_reason": "stop",
+                     "stop_reason": None} for _ in prompt_ids]
+    eng = EosEngine()
+    g = R.gen_thought_chains(eng, _cfg(), [{"prompt_ids": eng.gen_prompt_ids("Q: x")}])[0]
+    assert g["status"] == "eos_no_answer" and len(g["thoughts"]) == 1

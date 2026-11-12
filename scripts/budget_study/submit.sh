@@ -25,7 +25,7 @@ OUT_DIR="${REPO}/experiments_budget_study"
 LOG_DIR="${OUT_DIR}/logs"
 mkdir -p "${LOG_DIR}"
 
-declare -A GPUS=([qwen32b]=4 [gptoss20b]=2 [gptoss120b]=4)
+declare -A GPUS=([qwen32b]=4 [gptoss20b]=1 [gptoss120b]=4)  # gpt-oss: prefix caching off (see run_study.MODELS)
 MODELS=(qwen32b gptoss20b gptoss120b)
 DATASETS=(amc23 aime math500 csqa gpqa mathqa)
 

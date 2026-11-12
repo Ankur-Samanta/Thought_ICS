@@ -13,6 +13,12 @@ Token-ICS mirrors each Thought-ICS choice. Same generation budget, same localiza
 budget, temperature, chat-template handling and prompt wording, and the same parse
 fallback order. The only difference is the unit of localization: a quoted span instead
 of a step number.
+
+Deviation from SRPO: SRPO encodes the generation prompt as raw text (its models, OLMo
+and Qwen, were trained that way). Here every generation call is a chat-templated user
+turn for both methods, which is the correct input format for Instruct and harmony
+(gpt-oss) models. Thoughts / the CoT are generated inside one assistant reply, and a
+reply that ends (EOS) without \\boxed{} ends the chain for both methods.
 """
 
 import re
