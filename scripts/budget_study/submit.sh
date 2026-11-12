@@ -39,10 +39,12 @@ dataset_args() {
 
 DRY_RUN=false
 
+RUN_SUBDIR="full"   # full runs -> experiments_budget_study/full, smoke runs -> .../dev
+
 submit() {  # model dataset_args job_name time extra...
     local model=$1 dargs=$2 name=$3 time=$4; shift 4
     local gpus=${GPUS[$model]}
-    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method both --autonomy-level 2 --out-dir ${OUT_DIR} $*"
+    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method both --autonomy-level 2 --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
     if $DRY_RUN; then echo "[${gpus} GPU] ${name}: ${cmd}"; return; fi
     sbatch --partition=${PARTITION} --nodes=1 --gpus-per-node=${gpus} --cpus-per-gpu=10 \
            --time=${time} --job-name=${name} \
@@ -53,6 +55,7 @@ submit() {  # model dataset_args job_name time extra...
 case "${1:-}" in
     smoke)  # smoke [model] : 5 AIME problems, 2 ICS iterations
         shift; m=${1:-gptoss20b}; [ $# -gt 0 ] && shift
+        RUN_SUBDIR="dev"
         submit "$m" "--dataset aime --n-problems 5" "bs_smoke_${m}_aime" 02:00:00 --max-ics-iterations 2 "$@"
         ;;
     list)
