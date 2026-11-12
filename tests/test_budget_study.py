@@ -52,12 +52,12 @@ class FakeEngine:
                     self.empty_served = True
                     out = ""
                 elif n_done == 0:
-                    out = "step 0 ok</thought>"
+                    out = "step 0 ok\n\n"
                 elif n_done == 1:
-                    out = "step 1 fixed</thought>" if "RESAMPLED" in text else "step 1 bad</thought>"
+                    out = "step 1 fixed\n\n" if "RESAMPLED" in text else "step 1 bad\n\n"
                 else:
                     ans = 42 if "step 1 fixed" in text else 7
-                    out = f"so \\boxed{{{ans}}}</thought>"
+                    out = f"so \\boxed{{{ans}}}\n\n"
             else:  # token generation
                 if text.rstrip().endswith("good part"):
                     out = " then fixed so \\boxed{42}"
@@ -111,6 +111,8 @@ def test_thought_ics_flow(monkeypatch):
     # every thought call uses the per-thought cap and only the delimiter as stop
     assert all(m == P.MAX_TOKENS_PER_THOUGHT and s == P.THOUGHT_STOPS
                for _, m, s in eng.calls if s)
+    # resample continues from the exact kept token ids (inference-time structure)
+    assert a["iterations"][1]["chain"][0] == a["iterations"][0]["chain"][0]
     s = R.summarize("thought", recs)
     assert s["init_accuracy"] == 0 and s["final_accuracy"] == 1
 

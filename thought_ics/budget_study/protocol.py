@@ -1,10 +1,12 @@
 """Matched Thought-ICS / Token-ICS protocol for the budget-controlled study.
 
-Thought-ICS is copied from SRPO (``SIERA/SRPO``, commit c99cdbb):
+Thought-ICS follows SRPO (``SIERA/SRPO``, commit c99cdbb), with the thought delimiter
+changed to a blank line (see THOUGHT_DELIMITER):
 
 - budgets and temperatures: ``training/config/thought_agent_config_ics_eval.yaml``
 - thought prompt:           ``training/prompt_templates.py::prompt_template_no_examples``
-  (the ICS eval config uses ``use_examples: false``)
+  (the ICS eval config uses ``use_examples: false``); the step criteria are kept verbatim,
+  the delimiter instruction now asks for one step per paragraph
 - generation loop rules:    ``training/thought_agent_loop.py::_generate_thoughts_core``
 - localization prompt:      ``training/thought_ics_agent_loop.py::_localize_error``
 - step parser:              ``training/thought_ics_agent_loop.py::_parse_error_step``
@@ -25,14 +27,17 @@ import re
 from typing import List, Optional, Tuple
 
 # --- Budgets / sampling (SRPO thought_agent_config_ics_eval.yaml unless noted) -------
-# Depth: the paper's 100 (SRPO uses 20, which cuts off paragraph-level chains before an answer).
-MAX_THOUGHTS = 100
+# Depth: high enough that the 16k total token budget, not the step count, is what binds
+# (paragraph steps can be ~20-30 tokens; at 100 steps 15% of gpt-oss-120b AIME chains hit the cap).
+MAX_THOUGHTS = 500
 MAX_TOKENS_PER_THOUGHT = 512
-THOUGHT_DELIMITER = "</thought>"
-# Paper stop set: a thought ends at </thought> or a paragraph break. gpt-oss ignores the
-# delimiter (5-32% compliance across prompt/format variants) and writes whole solutions as one
-# thought; with "\n\n" its chains have ~14 steps of ~30 tokens (diag_thought_format.py).
-THOUGHT_STOPS = [THOUGHT_DELIMITER, "\n\n"]
+# A thought is one paragraph: generation of each thought stops at a blank line, and the next
+# thought is generated conditioned on the exact tokens so far (inference-time structure; no
+# retroactive splitting). </thought> is not used: gpt-oss ignores it (5-32% compliance across
+# prompt/format variants) and Qwen ends its chat reply after it (diag_thought_*.py), whereas
+# blank-line paragraph breaks are produced reliably by all models.
+THOUGHT_DELIMITER = "\n\n"
+THOUGHT_STOPS = [THOUGHT_DELIMITER]
 LOCALIZATION_MAX_TOKENS = 4096
 LOCALIZATION_TEMP = 0.5
 MAX_ICS_ITERATIONS = 10
@@ -52,16 +57,14 @@ MAX_EMPTY_RETRIES = 3
 
 
 # --- Generation prompts -------------------------------------------------------------
-THOUGHT_TEMPLATE = """You are solving a problem by producing one reasoning step at a time.
-
-Do not try to solve the entire problem at once. Given the previously taken steps, think about what the single next step should be, then articulate it clearly and conclude just that step with </thought>.
+THOUGHT_TEMPLATE = """Solve the problem step by step. Write your reasoning as a sequence of steps, one step per paragraph, with a blank line between steps.
 
 Each step should be a complete, self-contained thought — one observation, calculation, or deduction that:
 - Makes forward progress toward the solution
 - Contains substantive reasoning (not filler like "let me think" or restating the problem)
 - Coheres logically with the previous steps
 
-When your next step arrives at the final answer, include \\boxed{{answer}} and end with </thought>.
+Keep each step to a single paragraph (no blank lines inside a step). When a step arrives at the final answer, include \\boxed{{answer}}.
 
 Q: {question}
 """
