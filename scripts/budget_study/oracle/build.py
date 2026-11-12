@@ -24,7 +24,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 from thought_ics.datasets import load_dataset_by_name  # noqa: E402
 
 
-def loose(a):  # formatting-insensitive answer form, to skip grader false negatives
+def equivalent(answer, gt, dataset):
+    """True if the answer is actually right: math_verify equivalence for math datasets
+    (catches 5.5 vs \\frac{11}{2}, x=5 vs 5, 120^\\circ vs 120), formatting-insensitive match
+    otherwise. Used to skip grader false negatives."""
+    if dataset in ("amc23", "aime", "math500"):
+        try:
+            from math_verify import parse, verify
+            A, G = parse("$" + answer + "$"), parse("$" + gt + "$")
+            if A and G and verify(G, A):
+                return True
+        except Exception:  # noqa: BLE001
+            pass
+    return loose(answer) == loose(gt)
+
+
+def loose(a):  # formatting-insensitive answer form
     a = a or ""
     a = re.sub(r"\^\s*\{?\\circ\}?|°|\\%|%|\\\$|\$|\\,|\\!|\\;|\s", "", a)
     a = re.sub(r"\\text\{([^}]*)\}", r"\1", a)
@@ -48,7 +63,7 @@ for model in ("qwen32b", "gptoss20b", "gptoss120b"):
         for line in open(runs[0]):
             r = json.loads(line)
             it0 = r["iterations"][0]
-            if it0["correct"] or it0["answer"] == "NO ANSWER" or loose(it0["answer"]) == loose(r["ground_truth"]):
+            if it0["correct"] or it0["answer"] == "NO ANSWER" or equivalent(it0["answer"], r["ground_truth"], ds):
                 continue
             if len(r["iterations"]) < 2:
                 continue
