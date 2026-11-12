@@ -25,9 +25,14 @@ import re
 from typing import List, Optional, Tuple
 
 # --- Budgets / sampling (SRPO thought_agent_config_ics_eval.yaml unless noted) -------
-MAX_THOUGHTS = 20
+# Depth: the paper's 100 (SRPO uses 20, which cuts off paragraph-level chains before an answer).
+MAX_THOUGHTS = 100
 MAX_TOKENS_PER_THOUGHT = 512
 THOUGHT_DELIMITER = "</thought>"
+# Paper stop set: a thought ends at </thought> or a paragraph break. gpt-oss ignores the
+# delimiter (5-32% compliance across prompt/format variants) and writes whole solutions as one
+# thought; with "\n\n" its chains have ~14 steps of ~30 tokens (diag_thought_format.py).
+THOUGHT_STOPS = [THOUGHT_DELIMITER, "\n\n"]
 LOCALIZATION_MAX_TOKENS = 4096
 LOCALIZATION_TEMP = 0.5
 MAX_ICS_ITERATIONS = 10

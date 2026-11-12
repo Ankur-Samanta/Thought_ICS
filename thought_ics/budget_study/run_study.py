@@ -135,7 +135,7 @@ def gen_thought_chains(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
         if not active:
             break
         params = sp(cfg, max_tokens=cfg.max_tokens_per_thought, temperature=cfg.generation_temp,
-                    stop=[P.THOUGHT_DELIMITER])
+                    stop=P.THOUGHT_STOPS)
         outs = eng.generate([s["prompt_ids"] + s["ids"] for s in active], [params] * len(active))
         for s, o in zip(active, outs):
             if not o["ids"]:

@@ -109,7 +109,7 @@ def test_thought_ics_flow(monkeypatch):
     assert c["iterations"][1]["localization"]["parse_status"] == "prose"
     assert c["iterations"][1]["localization"]["error_step"] == 1
     # every thought call uses the per-thought cap and only the delimiter as stop
-    assert all(m == P.MAX_TOKENS_PER_THOUGHT and s == [P.THOUGHT_DELIMITER]
+    assert all(m == P.MAX_TOKENS_PER_THOUGHT and s == P.THOUGHT_STOPS
                for _, m, s in eng.calls if s)
     s = R.summarize("thought", recs)
     assert s["init_accuracy"] == 0 and s["final_accuracy"] == 1
