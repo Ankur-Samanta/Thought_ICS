@@ -1,5 +1,6 @@
 """CPU smoke test for thought_ics.budget_study with a scripted fake engine (no vLLM)."""
 
+import json
 import types
 
 from thought_ics.budget_study import protocol as P
@@ -38,8 +39,10 @@ class FakeEngine:
 
     def generate(self, prompt_ids, params):
         outs = []
+        self.last_prompts = getattr(self, "last_prompts", [])
         for ids, prm in zip(prompt_ids, params):
             text = self.tok.decode(ids)
+            self.last_prompts.append(text)
             self.calls.append((text.startswith("<chat>"), prm.max_tokens, prm.stop))
             if text.startswith("<chat>"):
                 if "first erroneous thought" in text:
@@ -76,7 +79,8 @@ def _cfg(**kw):
                 response_length=10**5, localization_max_tokens=P.LOCALIZATION_MAX_TOKENS,
                 localization_temp=P.LOCALIZATION_TEMP, generation_temp=P.GENERATION_TEMP,
                 top_p=P.TOP_P, top_k=P.TOP_K, max_ics_iterations=3,
-                max_empty_retries=P.MAX_EMPTY_RETRIES, autonomy_level=2)
+                max_empty_retries=P.MAX_EMPTY_RETRIES, autonomy_level=2,
+                token_prompt="token", token_init_from=None)
     base.update(kw)
     return types.SimpleNamespace(**base)
 
@@ -236,3 +240,18 @@ def test_quote_parser_format_leniency():
     assert P.parse_error_quote('end \\boxed{ERROR_QUOTE: "\\frac{a"}') == ("\\frac{a", "prose")
     assert P.parse_error_quote('\\boxed{ERROR_QUOTE: "he said "hi" here"}') == ('he said "hi" here', "boxed")
     assert P.parse_error_quote("\\boxed{42}") == (None, "default")
+
+
+def test_token_shared_initial_cache(tmp_path):
+    """Token-ICS starts from the joined Thought-ICS chain and resamples with the same prompt."""
+    chain = ["good part ", "wrong part so \\boxed{7}"]
+    rec = {"problem_id": "a", "empty_retries": 0,
+           "iterations": [{"iteration": 0, "chain": chain, "gen_status": "answer"}]}
+    (tmp_path / "thought_results.jsonl").write_text(json.dumps(rec) + "\n")
+    eng = FakeEngine()
+    cfg = _cfg(response_length=5000, token_prompt="thought", token_init_from=str(tmp_path))
+    r = R.run_method(eng, cfg, "token", PROBLEMS[:1])[0]
+    assert r["iterations"][0]["solution"] == "".join(chain) and not r["iterations"][0]["correct"]
+    gen_prompts = [eng.last_prompts[k] for k in range(len(eng.last_prompts)) if not eng.last_prompts[k].startswith("<chat>")]
+    assert all("one step per paragraph" in p for p in gen_prompts)   # Thought-ICS prompt
+    assert r["final_correct"]

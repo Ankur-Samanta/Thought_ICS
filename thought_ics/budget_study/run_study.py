@@ -237,9 +237,33 @@ def gen_record(method: str, g: dict, gt: str) -> dict:
     return rec
 
 
+def load_shared_init(eng: Engine, path: str, problems: List[dict]) -> Dict[int, dict]:
+    """Token-ICS initial solutions = the Thought-ICS initial chains, joined into one reply.
+
+    Thought chains are generated with the exact tokens so far at every step, so a joined
+    chain is distributed exactly as one uninterrupted generation under the same prompt;
+    both methods then start from the identical first attempt on every problem.
+    """
+    by_id = {}
+    for line in open(Path(path) / "thought_results.jsonl"):
+        r = json.loads(line)
+        by_id[r["problem_id"]] = r
+    out = {}
+    for k, p in enumerate(problems):
+        r = by_id[p.get("unique_id", str(k))]
+        it0 = r["iterations"][0]
+        text = "".join(it0["chain"])
+        ids = eng.tok.encode(text, add_special_tokens=False) if text else []
+        out[k] = {"text": text, "ids": ids, "n_tokens": len(ids), "n_new_tokens": len(ids),
+                  "status": it0["gen_status"], "finish_reason": None,
+                  "empty_retries": r.get("empty_retries", 0)}
+    return out
+
+
 def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict]:
     gen = gen_thought_chains if method == "thought" else gen_token_solutions
-    template = P.THOUGHT_TEMPLATE if method == "thought" else P.TOKEN_TEMPLATE
+    shared_prompt = method == "token" and cfg.token_prompt == "thought"
+    template = P.THOUGHT_TEMPLATE if (method == "thought" or shared_prompt) else P.TOKEN_TEMPLATE
     prompt_ids = [eng.gen_prompt_ids(template.format(question=p["problem"])) for p in problems]
     records = [{"problem_id": p.get("unique_id", str(k)), "ground_truth": p["answer"],
                 "empty_retries": 0, "iterations": []} for k, p in enumerate(problems)]
@@ -247,7 +271,14 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict]) -> List[dict
     # Initial generation; SRPO regenerates zero-thought chains (bounded retries, both methods).
     current: Dict[int, dict] = {}
     pending = list(range(len(problems)))
+    if method == "token" and cfg.token_init_from:
+        current = load_shared_init(eng, cfg.token_init_from, problems)
+        for i, r in enumerate(records):
+            r["empty_retries"] = current[i]["empty_retries"]
+        pending = []
     for attempt in range(cfg.max_empty_retries + 1):
+        if not pending:
+            break
         outs = gen(eng, cfg, [{"prompt_ids": prompt_ids[i]} for i in pending])
         still = []
         for i, g in zip(pending, outs):
@@ -383,6 +414,11 @@ def main():
     ap.add_argument("--level", type=int, default=None)
     ap.add_argument("--n-problems", type=int, default=100)
     ap.add_argument("--method", choices=["thought", "token", "both"], default="both")
+    ap.add_argument("--token-prompt", choices=["token", "thought"], default="token",
+                    help="generation prompt for Token-ICS; 'thought' = same prompt as Thought-ICS")
+    ap.add_argument("--token-init-from", default=None,
+                    help="run dir whose Thought-ICS initial chains (joined) are the Token-ICS "
+                         "initial solutions; implies --token-prompt thought")
     ap.add_argument("--autonomy-level", type=int, choices=[1, 2], default=P.AUTONOMY_LEVEL)
     ap.add_argument("--max-thoughts", type=int, default=P.MAX_THOUGHTS)
     ap.add_argument("--max-tokens-per-thought", type=int, default=P.MAX_TOKENS_PER_THOUGHT)
@@ -404,6 +440,8 @@ def main():
     cfg = ap.parse_args()
 
     m = MODELS[cfg.model]
+    if cfg.token_init_from:
+        cfg.token_prompt = "thought"
     if cfg.response_length is None:
         cfg.response_length = m["response_length"]
     if cfg.localization_max_tokens is None:
@@ -412,7 +450,8 @@ def main():
     max_model_len = cfg.max_model_len or m["max_model_len"]
     problems = load_dataset_by_name(cfg.dataset, n_problems=cfg.n_problems, level=cfg.level, seed=cfg.seed)
     ds_tag = f"{cfg.dataset}_L{cfg.level}" if cfg.level else cfg.dataset
-    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_L{cfg.autonomy_level}_{datetime.now():%Y%m%d_%H%M%S}"
+    tag = "_sharedinit" if cfg.token_init_from else ("_sharedprompt" if cfg.token_prompt == "thought" else "")
+    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_L{cfg.autonomy_level}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
     run_dir.mkdir(parents=True, exist_ok=True)
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent,

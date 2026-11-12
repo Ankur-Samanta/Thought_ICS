@@ -8,6 +8,8 @@
 #   scripts/budget_study/submit.sh <model> all           # 6 jobs
 #   scripts/budget_study/submit.sh all all               # 18 jobs (3 models x 6 datasets)
 #   scripts/budget_study/submit.sh list                  # print jobs without submitting
+#   scripts/budget_study/submit.sh token_shared          # Token-ICS only, starting from each full
+#                                                        # run's Thought-ICS initial chains (joined)
 #
 # Jobs run with the HF hub offline (weights must already be in ~/.cache/huggingface);
 # proxy variables from the submitting shell are cleared on the compute node.
@@ -44,7 +46,8 @@ RUN_SUBDIR="full"   # full runs -> experiments_budget_study/full, smoke runs -> 
 submit() {  # model dataset_args job_name time extra...
     local model=$1 dargs=$2 name=$3 time=$4; shift 4
     local gpus=${GPUS[$model]}
-    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method both --autonomy-level 2 --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
+    local method="both"; [[ "$*" == *--token-init-from* ]] && method="token"
+    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method ${method} --autonomy-level 2 --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
     if $DRY_RUN; then echo "[${gpus} GPU] ${name}: ${cmd}"; return; fi
     sbatch --partition=${PARTITION} --nodes=1 --gpus-per-node=${gpus} --cpus-per-gpu=10 \
            --time=${time} --job-name=${name} \
@@ -57,6 +60,20 @@ case "${1:-}" in
         shift; m=${1:-gptoss20b}; [ $# -gt 0 ] && shift
         RUN_SUBDIR="dev"
         submit "$m" "--dataset aime --n-problems 5" "bs_smoke_${m}_aime" 02:00:00 --max-ics-iterations 2 "$@"
+        ;;
+    token_shared|token_shared_list)  # Token-ICS only, initial solutions = joined Thought-ICS chains
+        [ "$1" = token_shared_list ] && DRY_RUN=true
+        shift
+        for d in "${OUT_DIR}"/full/*_L2_2*/; do
+            [[ "$d" == *_sharedinit_* || "$d" == *_sharedprompt_* ]] && continue
+            [ -f "$d/thought_results.jsonl" ] || continue
+            read -r m dargs <<< "$(python3 -c "
+import json; c=json.load(open('$d/config.json'))
+a=f\"--dataset {c['dataset']} --n-problems {c['n_problems']}\" + (f\" --level {c['level']}\" if c.get('level') else '')
+print(c['model'], a)")"
+            name="bs_tokshared_${m}_$(basename "$d" | cut -d_ -f2)"
+            submit "$m" "$dargs" "$name" 12:00:00 --token-init-from "$d" "$@"
+        done
         ;;
     list)
         DRY_RUN=true
