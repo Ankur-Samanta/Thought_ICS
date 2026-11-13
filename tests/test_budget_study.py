@@ -510,3 +510,49 @@ def test_cove_overflow_does_not_crash():
     eng.generate = gen
     r = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
     assert r["tokens_cut_to_fit"] > 0 and r["final_correct"]
+
+
+class CritiqueEngine(L3Engine):
+    """Verifier NO comes with a gpt-oss style critique (analysis + final message)."""
+    def generate(self, prompt_ids, params):
+        outs = super().generate(prompt_ids, params)
+        for o, ids in zip(outs, prompt_ids):
+            if self.tok.decode(ids).startswith("<chat>You are reviewing") and "NO" in o["text"]:
+                o["text"] = ("<|channel|>analysis<|message|>hidden scratch<|end|><|start|>assistant"
+                             "<|channel|>final<|message|>CRITIQUE: step 2 is wrong. \\boxed{NO}<|return|>")
+                o["ids"] = self.tok.encode(o["text"])
+        return outs
+
+
+def test_carry_feedback_reaches_localizer_and_resample(monkeypatch):
+    _patch_resample_marker(monkeypatch)
+    eng = CritiqueEngine()
+    seen = []
+    orig = eng.generate
+    eng.generate = lambda ids, prm: (seen.extend(eng.tok.decode(i) for i in ids), orig(ids, prm))[1]
+    for method in ("thought", "token"):
+        seen.clear()
+        r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", carry_feedback=True, response_length=5000),
+                         method, PROBLEMS[:1])[0]
+        loc = r["iterations"][1]["localization"]
+        assert loc["critique"] == "CRITIQUE: step 2 is wrong. \\boxed{NO}"        # final message only
+        assert "Your check of it:\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
+        assert "hidden scratch" not in loc["loc_prompt"]
+        resample = [t for t in seen if not t.startswith("<chat>") and "Feedback on a previous attempt" in t]
+        assert resample and "CRITIQUE: step 2 is wrong." in resample[0]
+
+
+def test_no_carry_feedback_unchanged():
+    eng = CritiqueEngine()
+    r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", response_length=5000), "token", PROBLEMS[:1])[0]
+    loc = r["iterations"][1]["localization"]
+    assert "critique" not in loc and "Your check of it" not in loc["loc_prompt"]
+
+
+def test_fit_critique_cuts_tail():
+    eng = FakeEngine()
+    cfg = _cfg()
+    c, cut = R.fit_critique(eng, cfg, "x" * 1000, [(lambda c: len(c) + 100, 600)])
+    assert cut > 0 and len(c) + 100 <= 600 and c == "x" * len(c)
+    c, cut = R.fit_critique(eng, cfg, "short", [(lambda c: len(c), 600)])
+    assert cut == 0 and c == "short"

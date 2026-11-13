@@ -141,7 +141,7 @@ def chain_text(thoughts: List[str]) -> str:
 
 
 def thought_localization_prompt(question: str, thoughts: List[str], ground_truth: str,
-                                autonomy_level: int = AUTONOMY_LEVEL) -> str:
+                                autonomy_level: int = AUTONOMY_LEVEL, critique: Optional[str] = None) -> str:
     """Verbatim copy of SRPO ``_localize_error`` prompt text (L1/L2).
 
     L3 (self-verified): the same L2 text, with the "is incorrect" premise replaced by the
@@ -152,7 +152,7 @@ def thought_localization_prompt(question: str, thoughts: List[str], ground_truth
         return (thought_localization_prompt(question, thoughts, ground_truth, 2)
                 .replace("Your incorrect reasoning chain:", "Your reasoning chain:")
                 .replace("The final answer this chain produces is incorrect — therefore at least one step contains an error.",
-                         "Your own check of this chain concluded that its final answer is likely incorrect — if so, at least one step contains an error.")
+                         "Your own check of this chain concluded that its final answer is likely incorrect — if so, at least one step contains an error." + (CRITIQUE_SECTION.format(critique=critique) if critique is not None else ""))
                 .replace(f"- Commit to exactly ONE step number (1 to {n}).\n",
                          f"- Commit to exactly ONE step number (1 to {n}).\n"
                          "- If, after careful checking, no step is erroneous, the final line must instead be \\boxed{0}.\n"))
@@ -203,14 +203,14 @@ def thought_localization_prompt(question: str, thoughts: List[str], ground_truth
 
 
 def token_localization_prompt(question: str, solution: str, ground_truth: str,
-                              autonomy_level: int = AUTONOMY_LEVEL) -> str:
+                              autonomy_level: int = AUTONOMY_LEVEL, critique: Optional[str] = None) -> str:
     """Token-ICS version of the SRPO prompt: same wording, localized by quote.
     L3: same transformation as thought_localization_prompt, with \\boxed{NO_ERROR}."""
     if autonomy_level == 3:
         return (token_localization_prompt(question, solution, ground_truth, 2)
                 .replace("Your incorrect solution:", "Your solution:")
                 .replace("The final answer this solution produces is incorrect — therefore at least one part of it contains an error.",
-                         "Your own check of this solution concluded that its final answer is likely incorrect — if so, at least one part of it contains an error.")
+                         "Your own check of this solution concluded that its final answer is likely incorrect — if so, at least one part of it contains an error." + (CRITIQUE_SECTION.format(critique=critique) if critique is not None else ""))
                 .replace("originating error begins.\n- Stop at the first claim",
                          "originating error begins.\n"
                          "- If, after careful checking, nothing is erroneous, the final line must instead be \\boxed{NO_ERROR}.\n"
@@ -261,6 +261,18 @@ def token_localization_prompt(question: str, solution: str, ground_truth: str,
 
 
 # --- Self-verification (L3) -----------------------------------------------------------
+# --self-verify --carry-feedback: the latest verifier critique (its final message) is shown to the
+# localizer and to the resample. Only the current iteration's critique is used (no accumulation).
+CRITIQUE_SECTION = "\n\nYour check of it:\n{critique}"
+FEEDBACK_GEN_SUFFIX = "\n\nFeedback on a previous attempt at this problem:\n{critique}"
+
+
+def feedback_gen_prompt(gen_prompt_text: str, critique: str) -> str:
+    """Resample prompt with the critique appended to the original generation prompt; the kept
+    prefix of the previous attempt is then continued as the assistant reply."""
+    return gen_prompt_text + FEEDBACK_GEN_SUFFIX.format(critique=critique)
+
+
 def verify_prompt(question: str, solution: str, answer: str) -> str:
     """The paper's self-verification prompt (TREE iterative_self_correction.verify_solution_correctness),
     verbatim, plus one formatting line (the mandatory final line, as in the localizer prompts) so the

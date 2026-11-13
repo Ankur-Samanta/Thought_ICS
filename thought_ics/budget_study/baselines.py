@@ -31,23 +31,11 @@ from pathlib import Path
 from thought_ics.baselines.third_party import chain_of_verification as CV
 from thought_ics.baselines.third_party import self_refine as SR
 from thought_ics.budget_study import protocol as P
-from thought_ics.budget_study.run_study import MODELS, Engine, boxed_answer, is_correct, sp
+from thought_ics.budget_study.run_study import MODELS, Engine, boxed_answer, final_message, is_correct, sp
 from thought_ics.datasets import load_dataset_by_name
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-FINAL_MARK = "<|channel|>final<|message|>"
-
-
-def final_message(text: str) -> str:
-    """gpt-oss: the final-channel message (analysis reasoning dropped). Others: unchanged."""
-    if FINAL_MARK in text:
-        text = text.rsplit(FINAL_MARK, 1)[1]
-        for end in ("<|return|>", "<|end|>"):
-            text = text.split(end, 1)[0]
-    return text
-
 
 def feedback_verdict(text: str):
     """The paper's Self-Refine parser (SR.parse_feedback, verbatim), applied after removing the

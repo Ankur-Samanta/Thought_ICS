@@ -19,7 +19,7 @@ import time
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from thought_ics.budget_study import protocol as P
 from thought_ics.datasets import load_dataset_by_name, normalize_answer
@@ -38,7 +38,7 @@ logger = logging.getLogger("budget_study")
 # 16k generation (whole solution / chain, incl. resamples) and an 8k localizer (a 16k chain
 # in the localizer prompt + 8k output fits). Every run logs budget hits to verify.
 # run-dir tag per verification mode (oracle-verified runs keep the original "L2" name)
-RUN_TAG = {"answer": "L1", "oracle": "L2", "self": "selfverify"}
+RUN_TAG = {"answer": "L1", "oracle": "L2", "self": "selfverify", "selffb": "selfverifyfb"}
 UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192,
            # L3 verifier: same budget as generation (models often re-solve to check; at 12k, 14% of
            # gpt-oss AIME verifications were cut off mid-re-solve, none were loops). Clamped to the
@@ -61,6 +61,19 @@ MODELS = {
 # gpt-oss: an explicitly empty analysis block, then the final channel, so the turn has the
 # harmony structure the model was trained on while all solution reasoning stays visible.
 HARMONY_FINAL_HEADER = "<|channel|>analysis<|message|><|end|><|start|>assistant<|channel|>final<|message|>"
+
+
+FINAL_MARK = "<|channel|>final<|message|>"
+
+
+def final_message(text: str) -> str:
+    """gpt-oss: the final-channel message (analysis reasoning dropped); others unchanged.
+    Special tokens are removed (verifier/localizer outputs keep them for logging)."""
+    if FINAL_MARK in text:
+        text = text.rsplit(FINAL_MARK, 1)[1]
+    for t in ("<|return|>", "<|end|>", "<|eot_id|>", "<|im_end|>", "<|endoftext|>"):
+        text = text.split(t, 1)[0]
+    return text
 
 
 def boxed_answer(text: str) -> str:
@@ -291,6 +304,38 @@ def load_shared_init(eng: Engine, path, problems: List[dict]) -> Dict[int, dict]
     return out
 
 
+def load_thought_init(eng: Engine, path, problems: List[dict]) -> Dict[int, dict]:
+    """Thought-ICS first attempts from a previous run (its iteration-0 chains), so a new variant
+    starts from exactly the same first attempts as the runs it is compared with. Thought texts are
+    identical; token ids are re-encoded per thought (the stored record keeps text, not ids)."""
+    by_id = {json.loads(l)["problem_id"]: json.loads(l) for l in open(Path(path) / "thought_results.jsonl")}
+    out = {}
+    for k, p in enumerate(problems):
+        r = by_id[p.get("unique_id", str(k))]
+        it0 = r["iterations"][0]
+        ids, bounds = [], []
+        for t in it0["chain"]:
+            t_ids = eng.tok.encode(t, add_special_tokens=False)
+            bounds.append((len(ids), len(ids) + len(t_ids)))
+            ids += t_ids
+        out[k] = {"thoughts": list(it0["chain"]), "bounds": bounds, "ids": ids, "text": "".join(it0["chain"]),
+                  "n_tokens": len(ids), "n_new_tokens": len(ids), "prefix_n": 0, "status": it0["gen_status"],
+                  "thought_cap_hits": it0.get("thought_cap_hits", 0), "empty_retries": r.get("empty_retries", 0)}
+    return out
+
+
+def fit_critique(eng: Engine, cfg, critique: str, builds) -> Tuple[str, int]:
+    """Cut the critique from the end until every prompt built from it fits: builds is a list of
+    (fn(critique) -> prompt token count, max allowed). Returns (critique, tokens_cut)."""
+    toks = eng.tok.encode(critique, add_special_tokens=False)
+    cut = 0
+    while toks and any(f(eng.tok.decode(toks)) > lim for f, lim in builds):
+        over = max(f(eng.tok.decode(toks)) - lim for f, lim in builds)
+        n = min(len(toks), max(over, 64))
+        toks, cut = toks[:-n], cut + n
+    return (eng.tok.decode(toks) if cut else critique), cut
+
+
 def run_method(eng: Engine, cfg, method: str, problems: List[dict],
                shared_init=None) -> List[dict]:
     gen = gen_thought_chains if method == "thought" else gen_token_solutions
@@ -303,6 +348,11 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
     # Initial generation; SRPO regenerates zero-thought chains (bounded retries, both methods).
     current: Dict[int, dict] = {}
     pending = list(range(len(problems)))
+    if method == "thought" and getattr(cfg, "init_from", None):
+        current = load_thought_init(eng, cfg.init_from, problems)
+        for i, r in enumerate(records):
+            r["empty_retries"] = current[i]["empty_retries"]
+        pending = []
     if method == "token" and (shared_init is not None or cfg.token_init_from):
         current = load_shared_init(eng, shared_init if shared_init is not None else cfg.token_init_from,
                                    problems)
@@ -333,6 +383,10 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
     logger.info(f"[{method}] init accuracy {sum(done.values())}/{len(records)}")
 
     L3 = cfg.autonomy_level == 3
+    CARRY = L3 and getattr(cfg, "carry_feedback", False)
+    critique: Dict[int, str] = {}  # latest verifier critique per problem (replaced each iteration)
+    crit_cut: Dict[int, int] = {}
+    gen_text = [template.format(question=p["problem"]) for p in problems]
     exit_reason = {}
     for it in range(1, cfg.max_ics_iterations + 1):
         # L1/L2: the oracle stops correct problems. L3: no oracle -- the model self-verifies.
@@ -353,23 +407,35 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
                 else:
                     still.append(i)
                     records[i].setdefault("_pending_verification", {})[it] = vinfo
+                    if CARRY:
+                        critique[i] = final_message(v["response"]).strip()
             active = still
             if not active:
                 break
-        if method == "thought":
-            texts = [P.thought_localization_prompt(problems[i]["problem"], current[i]["thoughts"],
-                                                   records[i]["ground_truth"], cfg.autonomy_level)
-                     for i in active]
-        else:
-            texts = [P.token_localization_prompt(problems[i]["problem"], current[i]["text"],
-                                                 records[i]["ground_truth"], cfg.autonomy_level)
-                     for i in active]
+        def loc_text(i, c=None):
+            if method == "thought":
+                return P.thought_localization_prompt(problems[i]["problem"], current[i]["thoughts"],
+                                                     records[i]["ground_truth"], cfg.autonomy_level, critique=c)
+            return P.token_localization_prompt(problems[i]["problem"], current[i]["text"],
+                                               records[i]["ground_truth"], cfg.autonomy_level, critique=c)
+        if CARRY:
+            for i in active:
+                # localizer keeps its full budget; the resample prompt leaves the full generation budget
+                critique[i], crit_cut[i] = fit_critique(eng, cfg, critique[i], [
+                    (lambda c, i=i: len(eng.chat_ids(loc_text(i, c))), eng.max_model_len - cfg.localization_max_tokens),
+                    (lambda c, i=i: len(eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], c))),
+                     eng.max_model_len - cfg.response_length)])
+        texts = [loc_text(i, critique[i] if CARRY else None) for i in active]
         locs = localize(eng, cfg, texts)
 
         jobs, job_idx, loc_info, failed = [], [], {}, {}
+        resample_ids = (lambda i: eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], critique[i]))) if CARRY \
+            else (lambda i: prompt_ids[i])
         for i, text, loc in zip(active, texts, locs):
             g = current[i]
             info = {"loc_prompt": text, **loc}
+            if CARRY:
+                info.update(critique=critique[i], critique_tokens_cut=crit_cut.get(i, 0))
             if method == "thought":
                 n = len(g["thoughts"])
                 if loc["n_tokens"] == 0:
@@ -386,7 +452,7 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
                     continue
                 keep = step - 1
                 cut = g["bounds"][keep - 1][1] if keep > 0 else 0
-                job = {"prompt_ids": prompt_ids[i], "prefix_ids": g["ids"][:cut],
+                job = {"prompt_ids": resample_ids(i), "prefix_ids": g["ids"][:cut],
                        "prefix_thoughts": g["thoughts"][:keep], "prefix_bounds": g["bounds"][:keep]}
                 info["prefix_len"] = keep
             else:
@@ -407,7 +473,7 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
                     failed[i] = info  # no usable localization (unparseable / not found)
                     continue
                 prefix_text = g["text"][:idx].rstrip() if idx else ""
-                job = {"prompt_ids": prompt_ids[i], "prefix_text": prefix_text,
+                job = {"prompt_ids": resample_ids(i), "prefix_text": prefix_text,
                        "prefix_ids": eng.tok.encode(prefix_text, add_special_tokens=False)
                        if prefix_text else []}
                 info.update(truncation_idx=idx, prefix_len=len(job["prefix_ids"]))
@@ -526,6 +592,12 @@ def main():
     v.add_argument("--self-verify", dest="verify", action="store_const", const="self",
                    help="no oracle: the model verifies its own answer and stops when it says YES "
                         "(paper's L3; final-A = the Thought-ICS-A reset, applied post hoc)")
+    ap.add_argument("--carry-feedback", action="store_true",
+                    help="with --self-verify: the latest verifier critique (final message) is shown to the "
+                         "localizer and appended to the resample prompt; replaced each iteration")
+    ap.add_argument("--init-from", default=None,
+                    help="run dir whose Thought-ICS iteration-0 chains are this run's first attempts "
+                         "(Token-ICS then starts from them too, with --shared-init)")
     v.add_argument("--oracle-answer", dest="verify", action="store_const", const="answer",
                    help="as --oracle-verify, and the localizer prompt also gives the correct answer "
                         "(paper's L1; unused in this study)")
@@ -549,7 +621,9 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out-dir", default="experiments_budget_study")
     cfg = ap.parse_args()
-    cfg.autonomy_level = {"answer": 1, "oracle": 2, "self": 3}[cfg.verify]  # paper level, used internally
+    cfg.autonomy_level = {"answer": 1, "oracle": 2, "self": 3}[cfg.verify]
+    if cfg.carry_feedback and cfg.verify != "self":
+        ap.error("--carry-feedback requires --self-verify")  # paper level, used internally
 
     m = MODELS[cfg.model]
     if cfg.token_init_from:
@@ -567,7 +641,7 @@ def main():
     tag = ("_shared" if cfg.shared_init else "_sharedinit" if cfg.token_init_from
            else "_sharedprompt" if cfg.token_prompt == "thought" else "")
     tag += "_fbattempt" if cfg.fallback == "attempt" else ""
-    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_{RUN_TAG[cfg.verify]}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
+    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_{RUN_TAG['selffb' if cfg.carry_feedback else cfg.verify]}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
     run_dir.mkdir(parents=True, exist_ok=True)
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent,
