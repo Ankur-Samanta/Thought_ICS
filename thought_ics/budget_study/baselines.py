@@ -11,7 +11,8 @@ what the study fixes for every method:
   - Self-Refine runs up to 10 iterations (= Thought-ICS's 10 attempts). Every iteration is logged,
     so any shorter cap (e.g. the original 4) is read off the same trajectory exactly.
   - CoVe: one pass, as designed.
-Calls that evaluate (Self-Refine feedback, CoVe planning and verification answers) are issued like
+Self-Refine's YES/NO is read by the paper's parser after stripping markdown around the leading
+verdict (see feedback_verdict). Calls that evaluate (Self-Refine feedback, CoVe planning and verification answers) are issued like
 the study's verifier (plain chat turn; gpt-oss may reason in its analysis channel, and only the
 final-channel message is used downstream). Calls that write a solution (refine, CoVe final) are
 issued like the study's generations (final-channel prefill for gpt-oss).
@@ -21,6 +22,7 @@ issued like the study's generations (final-channel prefill for gpt-oss).
 import argparse
 import json
 import logging
+import re
 import subprocess
 import time
 from datetime import datetime
@@ -45,6 +47,17 @@ def final_message(text: str) -> str:
         for end in ("<|return|>", "<|end|>"):
             text = text.split(end, 1)[0]
     return text
+
+
+def feedback_verdict(text: str):
+    """The paper's Self-Refine parser (SR.parse_feedback, verbatim), applied after removing the
+    formatting around the leading YES/NO that the prompt asks for: markdown emphasis/headers
+    ("**NO**", "### YES") and a leading "Answer:" / "1." label. Without this, "**Answer: NO** ...
+    fundamental mistakes" never hits the startswith check and falls through to the phrase list
+    (which matched "correct solution" -> YES)."""
+    t = re.sub(r"[*_#`>]+", "", text).strip()
+    t = re.sub(r"^(?:\d+[.):]\s*|answer\s*[:\-]\s*|feedback\s*[:\-]\s*)+", "", t, flags=re.I).strip()
+    return SR.parse_feedback(t)
 
 
 def call(eng, cfg, texts, solution: bool):
@@ -86,7 +99,7 @@ def run_self_refine(eng, cfg, problems, init):
                               for i in active], solution=False)
         refine = []
         for i, fb in zip(active, fbs):
-            ok, why = SR.parse_feedback(fb["text"])
+            ok, why = feedback_verdict(fb["text"])
             recs[i]["iterations"][-1]["feedback"] = {**fb, "says_correct": ok, "parse": why}
             if ok:
                 recs[i]["stopped_early"] = True

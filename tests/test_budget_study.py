@@ -469,3 +469,13 @@ def test_cove_single_pass():
     assert len(r["verifications"]) == 2 and len(r["iterations"]) == 2 and r["final_correct"]
     # factored: verification questions are answered without the baseline solution in context
     assert sum(1 for c, _ in eng.calls if c == "<chat>") == 3
+
+
+def test_feedback_verdict_markdown():
+    from thought_ics.budget_study.baselines import feedback_verdict as F
+    assert F("**Answer: NO**\n\nThe solution contains several fundamental mistakes that invalidate the correct solution")[0] is False
+    assert F("**YES** – the final answer \\(m+n=26\\) is correct.")[0] is True
+    assert F("**1.** YES – the solution is correct.")[0] is True
+    assert F("### NO\nwrong")[0] is False
+    assert F("NO\n\n**Why the solution is incorrect**")[0] is False
+    assert F("Yes, correct.")[0] is True
