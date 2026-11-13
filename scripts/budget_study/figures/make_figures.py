@@ -334,3 +334,58 @@ ax.set_ylim(0, 110)
 ax.set_yticks(range(0, 101, 20))
 ax.grid(axis="x", visible=False)
 save(fig, "self_verification_by_model")
+
+
+# ---- Fig: accuracy over correction iterations, with vs without carried feedback (Thought-ICS) ----
+# (file name kept from the paper's confidence-safeguard figure). Accuracy over ALL problems after n
+# correction iterations: each problem counts with its current answer (a stopped problem keeps its
+# final answer). Only (model, dataset) pairs where every plotted run exists are used.
+FEEDBACK_VARIANT = "all"          # which carried-feedback variant the paper presents
+NOFB, WITHFB = "#86b6ef", "#256abf"
+
+
+def trajectories(pattern):
+    """{(model, dataset_tag): {pid: [correct after n=0..10]}} for the Thought-ICS runs matching pattern."""
+    out = {}
+    for d in sorted(glob.glob(str(EXP / "full" / pattern))):
+        d = Path(d)
+        if not (d / "thought_results.jsonl").exists():
+            continue
+        c = json.load(open(d / "config.json"))
+        key = (c["model"], d.name.split("_selfverify")[0])
+        T = {}
+        for line in open(d / "thought_results.jsonl"):
+            r = json.loads(line)
+            gens = {it["iteration"]: ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
+                    for it in r["iterations"] if "gen_status" in it}
+            cur, traj = gens[0], []
+            for n in range(11):
+                cur = gens.get(n, cur)
+                traj.append(cur)
+            T[r["problem_id"]] = traj
+        out[key] = T  # latest run per (model, dataset) wins (sorted by timestamp)
+    return out
+
+
+S = trajectories("*_selfverify_shared_fbattempt_*/")
+FB = trajectories(f"*_selfverifyfb{FEEDBACK_VARIANT}_shared_fbattempt_*/")
+keys = sorted(set(S) & set(FB)) if FB else sorted(S)
+print(f"\naccuracy over correction iterations: {len(keys)} (model, dataset) pairs"
+      f"{'' if FB else ' -- no ' + FEEDBACK_VARIANT + ' runs yet, plotting without-feedback only'}")
+acc = lambda T: [100 * np.mean([T[k][p][n] for k in keys for p in T[k]]) for n in range(11)]
+s_curve = acc(S)
+fig, ax = plt.subplots(figsize=(6, 4))
+xs = list(range(11))
+ax.plot(xs, [s_curve[0]] * 11, color=MUTED, lw=1.4, ls=(0, (4, 2.5)), label="Initial", zorder=1)
+ax.plot(xs, s_curve, color=NOFB, lw=2, marker="o", ms=6.5, mec=SURFACE, mew=1.2, label="Without feedback", zorder=2)
+if FB:
+    f_curve = acc(FB)
+    ax.plot(xs, f_curve, color=WITHFB, lw=2, marker="^", ms=7, mec=SURFACE, mew=1.2, label="With feedback", zorder=3)
+    print("  with feedback   :", " ".join(f"{v:5.1f}" for v in f_curve))
+print("  without feedback:", " ".join(f"{v:5.1f}" for v in s_curve))
+ax.set_xlabel("Correction iteration")
+ax.set_ylabel("Accuracy (%)")
+ax.set_xticks(xs)
+ax.grid(axis="x", visible=False)
+ax.legend(loc="lower right", fontsize=11)
+save(fig, "self_verification_by_terminal_iteration_part1b")
