@@ -124,7 +124,7 @@ Verification mode (`run_study.py`): `--oracle-verify` (default; an oracle says w
 right, the model localizes the error), `--self-verify` (no oracle; the model checks its own answer
 with the paper's verifier prompt plus a mandatory final-line instruction, and stops on YES; the
 Thought-ICS-A reset to the first attempt on V/L disagreement or MaxIter is computed post hoc as
-`final_correct_A`), `--oracle-localize` (the oracle also gives the error location; unused here).
+`final_correct_A`), `--oracle-answer` (as oracle-verify, and the localizer is also given the correct answer; paper L1, unused here).
 
 Each run directory contains `config.json` (all knobs + git commit), `{thought,token}_results.jsonl`
 (every generation, localization prompt/response, parse status, cut, budget status) and

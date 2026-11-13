@@ -38,7 +38,7 @@ logger = logging.getLogger("budget_study")
 # 16k generation (whole solution / chain, incl. resamples) and an 8k localizer (a 16k chain
 # in the localizer prompt + 8k output fits). Every run logs budget hits to verify.
 # run-dir tag per verification mode (oracle-verified runs keep the original "L2" name)
-RUN_TAG = {"localize": "L1", "oracle": "L2", "self": "selfverify"}
+RUN_TAG = {"answer": "L1", "oracle": "L2", "self": "selfverify"}
 UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192,
            # L3 verifier: same budget as generation (models often re-solve to check; at 12k, 14% of
            # gpt-oss AIME verifications were cut off mid-re-solve, none were loops). Clamped to the
@@ -526,8 +526,9 @@ def main():
     v.add_argument("--self-verify", dest="verify", action="store_const", const="self",
                    help="no oracle: the model verifies its own answer and stops when it says YES "
                         "(paper's L3; final-A = the Thought-ICS-A reset, applied post hoc)")
-    v.add_argument("--oracle-localize", dest="verify", action="store_const", const="localize",
-                   help="the oracle also gives the error location (paper's L1)")
+    v.add_argument("--oracle-answer", dest="verify", action="store_const", const="answer",
+                   help="as --oracle-verify, and the localizer prompt also gives the correct answer "
+                        "(paper's L1; unused in this study)")
     ap.set_defaults(verify="oracle")
     ap.add_argument("--max-thoughts", type=int, default=P.MAX_THOUGHTS)
     ap.add_argument("--max-tokens-per-thought", type=int, default=P.MAX_TOKENS_PER_THOUGHT)
@@ -548,7 +549,7 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out-dir", default="experiments_budget_study")
     cfg = ap.parse_args()
-    cfg.autonomy_level = {"localize": 1, "oracle": 2, "self": 3}[cfg.verify]  # paper level, used internally
+    cfg.autonomy_level = {"answer": 1, "oracle": 2, "self": 3}[cfg.verify]  # paper level, used internally
 
     m = MODELS[cfg.model]
     if cfg.token_init_from:
