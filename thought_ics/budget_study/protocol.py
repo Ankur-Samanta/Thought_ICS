@@ -261,16 +261,24 @@ def token_localization_prompt(question: str, solution: str, ground_truth: str,
 
 
 # --- Self-verification (L3) -----------------------------------------------------------
-# --self-verify --carry-feedback: the latest verifier critique (its final message) is shown to the
-# localizer and to the resample. Only the current iteration's critique is used (no accumulation).
+# --self-verify --carry-feedback {loc,all}: the latest verifier critique (its final message) is shown
+# to the localizer (loc, all); with "all" the critique and the localizer's reply are also appended to
+# the resample prompt. Only the current iteration's feedback is used (no accumulation).
 CRITIQUE_SECTION = "\n\nYour check of it:\n{critique}"
 FEEDBACK_GEN_SUFFIX = "\n\nFeedback on a previous attempt at this problem:\n{critique}"
 
 
-def feedback_gen_prompt(gen_prompt_text: str, critique: str) -> str:
-    """Resample prompt with the critique appended to the original generation prompt; the kept
-    prefix of the previous attempt is then continued as the assistant reply."""
-    return gen_prompt_text + FEEDBACK_GEN_SUFFIX.format(critique=critique)
+LOCALIZATION_GEN_SUFFIX = "\n\nWhere the previous attempt first went wrong:\n{localization}"
+
+
+def feedback_gen_prompt(gen_prompt_text: str, critique: str, localization: Optional[str] = None) -> str:
+    """Resample prompt (--carry-feedback all): the original generation prompt + the verifier's
+    critique + the localizer's reply; the kept prefix of the previous attempt is then continued
+    as the assistant reply."""
+    out = gen_prompt_text + FEEDBACK_GEN_SUFFIX.format(critique=critique)
+    if localization is not None:
+        out += LOCALIZATION_GEN_SUFFIX.format(localization=localization)
+    return out
 
 
 def verify_prompt(question: str, solution: str, answer: str) -> str:

@@ -524,22 +524,28 @@ class CritiqueEngine(L3Engine):
         return outs
 
 
-def test_carry_feedback_reaches_localizer_and_resample(monkeypatch):
+def test_carry_feedback_modes(monkeypatch):
     _patch_resample_marker(monkeypatch)
-    eng = CritiqueEngine()
-    seen = []
-    orig = eng.generate
-    eng.generate = lambda ids, prm: (seen.extend(eng.tok.decode(i) for i in ids), orig(ids, prm))[1]
-    for method in ("thought", "token"):
-        seen.clear()
-        r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", carry_feedback=True, response_length=5000),
-                         method, PROBLEMS[:1])[0]
-        loc = r["iterations"][1]["localization"]
-        assert loc["critique"] == "CRITIQUE: step 2 is wrong. \\boxed{NO}"        # final message only
-        assert "Your check of it:\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
-        assert "hidden scratch" not in loc["loc_prompt"]
-        resample = [t for t in seen if not t.startswith("<chat>") and "Feedback on a previous attempt" in t]
-        assert resample and "CRITIQUE: step 2 is wrong." in resample[0]
+    for mode in ("loc", "all"):
+        for method in ("thought", "token"):
+            eng = CritiqueEngine()
+            seen = []
+            orig = eng.generate
+            eng.generate = lambda ids, prm, orig=orig, seen=seen, eng=eng: (seen.extend(eng.tok.decode(i) for i in ids), orig(ids, prm))[1]
+            r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", carry_feedback=mode, response_length=5000),
+                             method, PROBLEMS[:1])[0]
+            loc = r["iterations"][1]["localization"]
+            assert loc["critique"] == "CRITIQUE: step 2 is wrong. \\boxed{NO}"      # final message only
+            assert "Your check of it:\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
+            assert "hidden scratch" not in loc["loc_prompt"]
+            gens = [t for t in seen if not t.startswith("<chat>")]
+            fb = [t for t in gens if "Feedback on a previous attempt" in t]
+            if mode == "loc":
+                assert not fb and "resample_localization" not in loc
+            else:
+                assert fb and "CRITIQUE: step 2 is wrong." in fb[0]
+                assert "Where the previous attempt first went wrong:\n" + loc["resample_localization"] in fb[0]
+                assert loc["resample_localization"] == R.final_message(loc["response"]).strip()
 
 
 def test_no_carry_feedback_unchanged():

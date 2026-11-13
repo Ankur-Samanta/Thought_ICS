@@ -38,7 +38,7 @@ logger = logging.getLogger("budget_study")
 # 16k generation (whole solution / chain, incl. resamples) and an 8k localizer (a 16k chain
 # in the localizer prompt + 8k output fits). Every run logs budget hits to verify.
 # run-dir tag per verification mode (oracle-verified runs keep the original "L2" name)
-RUN_TAG = {"answer": "L1", "oracle": "L2", "self": "selfverify", "selffb": "selfverifyfb"}
+RUN_TAG = {"answer": "L1", "oracle": "L2", "self": "selfverify", "loc": "selfverifyfbloc", "all": "selfverifyfball"}
 UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192,
            # L3 verifier: same budget as generation (models often re-solve to check; at 12k, 14% of
            # gpt-oss AIME verifications were cut off mid-re-solve, none were loops). Clamped to the
@@ -383,7 +383,8 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
     logger.info(f"[{method}] init accuracy {sum(done.values())}/{len(records)}")
 
     L3 = cfg.autonomy_level == 3
-    CARRY = L3 and getattr(cfg, "carry_feedback", False)
+    MODE = getattr(cfg, "carry_feedback", None) if L3 else None
+    CARRY = MODE is not None
     critique: Dict[int, str] = {}  # latest verifier critique per problem (replaced each iteration)
     crit_cut: Dict[int, int] = {}
     gen_text = [template.format(question=p["problem"]) for p in problems]
@@ -421,19 +422,31 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
         if CARRY:
             for i in active:
                 # localizer keeps its full budget; the resample prompt leaves the full generation budget
-                critique[i], crit_cut[i] = fit_critique(eng, cfg, critique[i], [
-                    (lambda c, i=i: len(eng.chat_ids(loc_text(i, c))), eng.max_model_len - cfg.localization_max_tokens),
-                    (lambda c, i=i: len(eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], c))),
-                     eng.max_model_len - cfg.response_length)])
+                fits = [(lambda c, i=i: len(eng.chat_ids(loc_text(i, c))), eng.max_model_len - cfg.localization_max_tokens)]
+                if MODE == "all":
+                    fits.append((lambda c, i=i: len(eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], c))),
+                                 eng.max_model_len - cfg.response_length))
+                critique[i], crit_cut[i] = fit_critique(eng, cfg, critique[i], fits)
         texts = [loc_text(i, critique[i] if CARRY else None) for i in active]
         locs = localize(eng, cfg, texts)
 
         jobs, job_idx, loc_info, failed = [], [], {}, {}
-        resample_ids = (lambda i: eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], critique[i]))) if CARRY \
-            else (lambda i: prompt_ids[i])
+        loc_msg: Dict[int, str] = {}
+
+        def resample_ids(i):
+            if MODE != "all":
+                return prompt_ids[i]
+            # the localizer's reply goes in after the (already fitted) critique; cut its tail if needed
+            m, c = fit_critique(eng, cfg, loc_msg[i], [(lambda x: len(eng.gen_prompt_ids(
+                P.feedback_gen_prompt(gen_text[i], critique[i], x))), eng.max_model_len - cfg.response_length)])
+            loc_info[i]["resample_localization"], loc_info[i]["localization_tokens_cut"] = m, c
+            return eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], critique[i], m))
         for i, text, loc in zip(active, texts, locs):
             g = current[i]
             info = {"loc_prompt": text, **loc}
+            loc_info[i] = info
+            if MODE == "all":
+                loc_msg[i] = final_message(loc["response"]).strip()
             if CARRY:
                 info.update(critique=critique[i], critique_tokens_cut=crit_cut.get(i, 0))
             if method == "thought":
@@ -592,9 +605,10 @@ def main():
     v.add_argument("--self-verify", dest="verify", action="store_const", const="self",
                    help="no oracle: the model verifies its own answer and stops when it says YES "
                         "(paper's L3; final-A = the Thought-ICS-A reset, applied post hoc)")
-    ap.add_argument("--carry-feedback", action="store_true",
-                    help="with --self-verify: the latest verifier critique (final message) is shown to the "
-                         "localizer and appended to the resample prompt; replaced each iteration")
+    ap.add_argument("--carry-feedback", choices=["loc", "all"], default=None,
+                    help="with --self-verify: loc = the latest verifier critique (final message) is shown to "
+                         "the localizer; all = also append the critique and the localizer's reply to the "
+                         "resample prompt. Replaced each iteration (no accumulation)")
     ap.add_argument("--init-from", default=None,
                     help="run dir whose Thought-ICS iteration-0 chains are this run's first attempts "
                          "(Token-ICS then starts from them too, with --shared-init)")
@@ -641,7 +655,7 @@ def main():
     tag = ("_shared" if cfg.shared_init else "_sharedinit" if cfg.token_init_from
            else "_sharedprompt" if cfg.token_prompt == "thought" else "")
     tag += "_fbattempt" if cfg.fallback == "attempt" else ""
-    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_{RUN_TAG['selffb' if cfg.carry_feedback else cfg.verify]}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
+    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_{RUN_TAG[cfg.carry_feedback or cfg.verify]}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
     run_dir.mkdir(parents=True, exist_ok=True)
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent,
