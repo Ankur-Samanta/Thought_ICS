@@ -492,3 +492,69 @@ ax.set_ylim(0, 100)
 ax.grid(axis="x", visible=False)
 ax.legend(loc="upper right", fontsize=11, ncol=2)
 save(fig, "confusion_matrix_by_iteration")
+
+
+# ---- Fig (appendix): chain and thought length distributions (Thought-ICS first attempts) ------
+import os  # noqa: E402
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+from transformers import AutoTokenizer  # noqa: E402
+sys.path.insert(0, str(REPO))
+from thought_ics.budget_study.run_study import MODELS as _M  # noqa: E402
+
+chain_len, thought_tok, by_correct = defaultdict(list), defaultdict(list), {True: [], False: []}
+for m in FAM_ORDER:
+    tok = AutoTokenizer.from_pretrained(_M[m]["hf"])
+    for d in sorted(glob.glob(str(EXP / "full" / f"{m}_*_L2_shared_fbattempt_*/"))):
+        d = Path(d)
+        c = json.load(open(d / "config.json"))
+        for line in open(d / "thought_results.jsonl"):
+            r = json.loads(line)
+            it0 = r["iterations"][0]
+            ch = it0["chain"]
+            if not ch:
+                continue
+            chain_len[m].append(len(ch))
+            thought_tok[m] += [len(t) for t in tok(ch, add_special_tokens=False)["input_ids"]]
+            by_correct[ok(it0["answer"], r["ground_truth"], c["dataset"], it0["correct"])].append(len(ch))
+
+
+def kde(vals, xs, bw):
+    v = np.asarray(vals, float)
+    return np.exp(-0.5 * ((xs[:, None] - v[None, :]) / bw) ** 2).sum(1) / (len(v) * bw * math.sqrt(2 * math.pi))
+
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+xc, xt = np.linspace(0, 60, 601), np.linspace(0, 250, 626)
+print("\nchain / thought lengths (Thought-ICS first attempts)")
+for _, fam, ms in FAMILIES:
+    for m, col in zip(ms, FAMILY[fam]):
+        cl, tl = chain_len[m], thought_tok[m]
+        axes[0].plot(xc, kde(cl, xc, 2.0), color=col, lw=2, label=f"{LONG[m]} (median {np.median(cl):.0f})")
+        axes[1].plot(xt, kde(tl, xt, 8.0), color=col, lw=2, label=f"{LONG[m]} (median {np.median(tl):.0f})")
+        print(f"  {m:11s} chains {len(cl):4d}  median steps {np.median(cl):5.0f} (mean {np.mean(cl):5.1f})  median tokens/thought {np.median(tl):4.0f} (mean {np.mean(tl):4.0f})")
+for ax, xl, title in ((axes[0], "Number of thought steps", "Chain length by model"),
+                      (axes[1], "Tokens per thought", "Thought length by model")):
+    ax.set_xlabel(xl)
+    ax.set_ylabel("Density")
+    ax.set_title(title, fontsize=13, loc="left", color=INK)
+    ax.set_ylim(0, None)
+    ax.grid(axis="x", visible=False)
+    ax.legend(loc="upper right", fontsize=9.5)
+axes[0].set_xlim(0, 60)
+axes[1].set_xlim(0, 250)
+fig.tight_layout(w_pad=2)
+save(fig, "chain_thought_length_by_model")
+
+fig, ax = plt.subplots(figsize=(8, 5))
+for k, col, nm in ((True, EXACT, "Correct"), (False, ERRONEOUS, "Incorrect")):
+    y = kde(by_correct[k], xc, 2.0)
+    ax.fill_between(xc, y, color=col, alpha=0.15, lw=0)
+    ax.plot(xc, y, color=col, lw=2.2, label=f"{nm} (median {np.median(by_correct[k]):.0f})")
+    print(f"  {nm:9s} chains {len(by_correct[k]):5d}  median steps {np.median(by_correct[k]):.0f} (mean {np.mean(by_correct[k]):.1f})")
+ax.set_xlabel("Number of thought steps")
+ax.set_ylabel("Density")
+ax.set_xlim(0, 60)
+ax.set_ylim(0, None)
+ax.grid(axis="x", visible=False)
+ax.legend(loc="upper right", fontsize=12)
+save(fig, "chain_length_distribution")
