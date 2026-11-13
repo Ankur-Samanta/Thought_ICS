@@ -315,8 +315,9 @@ for i, m in enumerate(FAM_ORDER):
     R = bym[m]
     vals = (100 * sum(not s for s, a in R if not a) / max(1, sum(not a for _, a in R)),
             100 * sum(s for s, a in R if a) / max(1, sum(a for _, a in R)),
-            100 * sum(s == a for s, a in R) / len(R))
-    print(f"  {m:11s} calls {len(R):5d}  recall {vals[0]:5.1f}  specificity {vals[1]:5.1f}  accuracy {vals[2]:5.1f}")
+            0)
+    vals = (vals[0], vals[1], (vals[0] + vals[1]) / 2)   # balanced accuracy = mean of recall and specificity
+    print(f"  {m:11s} calls {len(R):5d}  recall {vals[0]:5.1f}  specificity {vals[1]:5.1f}  balanced accuracy {vals[2]:5.1f}")
     for j, (val, col) in enumerate(zip(vals, (RECALL, SPEC, ACC))):
         x = i + (j - 1) * w
         ax.bar(x, val, w * 0.92, color=col, zorder=2)
@@ -327,7 +328,7 @@ for xc, name in ((1, "Llama"), (4, "Qwen"), (6.5, "gpt-oss")):
     ax.text(xc, 104, name, ha="center", va="bottom", fontsize=12, color=INK2)
 from matplotlib.patches import Patch  # noqa: E402
 ax.legend(handles=[Patch(color=RECALL, label="Recall"), Patch(color=SPEC, label="Specificity"),
-                   Patch(color=ACC, label="Accuracy")], loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3, fontsize=12)
+                   Patch(color=ACC, label="Balanced accuracy")], loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3, fontsize=12)
 ax.set_xticks(range(len(FAM_ORDER)), [LONG[m] for m in FAM_ORDER], fontsize=11)
 ax.set_ylabel("Self-verification metric (%)")
 ax.set_ylim(0, 110)
