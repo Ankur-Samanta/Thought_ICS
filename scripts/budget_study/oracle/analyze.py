@@ -80,7 +80,8 @@ for i, k in consensus.items():
         cat = "exact" if s == k else ("earlier" if s < k else "later")
         R[(model, meth)][cat].append(it1["correct"])
         ROWS.append({"id": i, "model": model, "dataset": ds, "method": meth, "cat": cat, "step": s,
-                     "oracle": k, "n_steps": len(its[0].get("chain") or []) or None, "fixed": it1["correct"]})
+                     "oracle": k, "n_steps": len(its[0].get("chain") or []) or None, "fixed": it1["correct"],
+                     "answer": it1.get("answer"), "ground_truth": rec["ground_truth"]})
 
 print(f"\n{'model':11s}{'method':8s}{'n':>4s} | {'exact':>6s}{'earlier':>8s}{'later':>7s}{'failed':>7s} | {'clean':>6s} | fix rate: clean vs erroneous")
 for (model, meth), c in sorted(R.items()):
