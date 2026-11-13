@@ -263,7 +263,8 @@ def token_localization_prompt(question: str, solution: str, ground_truth: str,
 # --- Self-verification (L3) -----------------------------------------------------------
 def verify_prompt(question: str, solution: str, answer: str) -> str:
     """The paper's self-verification prompt (TREE iterative_self_correction.verify_solution_correctness),
-    verbatim. Both methods see the same plain-text solution."""
+    verbatim, plus one formatting line (the mandatory final line, as in the localizer prompts) so the
+    verdict is always parseable. Both methods see the same plain-text solution."""
     return f"""You are reviewing a solution to a problem. Analyze it carefully to see if they arrived at the right answer.
 
 Problem: {question}
@@ -275,7 +276,8 @@ Final answer: {answer}
 
 Verify the reasoning step by step and determine whether the final answer is correct or not.
 
-Conclude with \\boxed{{YES}} if the solution is correct, or \\boxed{{NO}} if it contains errors."""
+Conclude with \\boxed{{YES}} if the solution is correct, or \\boxed{{NO}} if it contains errors.
+MANDATORY final line: your response MUST end with \\boxed{{YES}} or \\boxed{{NO}} on its own line."""
 
 
 def parse_verdict(response: str) -> Optional[bool]:

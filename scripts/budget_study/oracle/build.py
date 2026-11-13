@@ -54,7 +54,7 @@ items, sources = [], {}
 for model in MODELS_:
     pool = []
     for ds, q in QUOTA.items():
-        runs = glob.glob(str(full / f"{model}_{ds}*_shared_fbattempt_*/thought_results.jsonl"))
+        runs = glob.glob(str(full / f"{model}_{ds}*_L2_shared_fbattempt_*/thought_results.jsonl"))
         if not runs:
             print(f"missing {model} {ds}")
             continue

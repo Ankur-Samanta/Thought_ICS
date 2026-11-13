@@ -17,6 +17,7 @@ Both methods run in the same job on the same problems and the same vLLM engine
 | context window | 32,768 (qwen32b's limit; uniform for scaling) |
 | generation budget per solution/chain (incl. kept prefix on resample) | 16,384 |
 | localizer budget | 8,192 |
+| verifier budget (`--self-verify`) | 16,384 (same as generation; clamped to the remaining context) |
 | per-thought cap (safety only) | 2,048, and never more than the remaining budget |
 | max thoughts | 500 (the token budget binds first) |
 | sampling | temperature 0.5, top-p 0.9, top-k 50; localizer temperature 0.5 |
@@ -112,8 +113,18 @@ Known, disclosed asymmetries (both make the comparison harder for Thought-ICS, n
 
 ```bash
 scripts/budget_study/submit.sh smoke <model> [--n-problems 20 --max-ics-iterations 1]  # -> experiments_budget_study/dev
-scripts/budget_study/submit.sh all all                                                 # 18 jobs -> experiments_budget_study/full
+scripts/budget_study/submit.sh all all --shared-init                                   # oracle-verified (paper L2), dirs *_L2_*
+MODELS_OVERRIDE="llama3b llama8b qwen7b qwen14b qwen32b llama70b gptoss20b gptoss120b" JOB_PREFIX=bsSV \
+  scripts/budget_study/submit.sh all all --shared-init --self-verify                    # self-verified (paper L3), dirs *_selfverify_*
+python scripts/budget_study/report.py experiments_budget_study/full             # oracle-verified runs
+python scripts/budget_study/report_selfverify.py experiments_budget_study/full  # self-verified runs
 ```
+
+Verification mode (`run_study.py`): `--oracle-verify` (default; an oracle says whether the answer is
+right, the model localizes the error), `--self-verify` (no oracle; the model checks its own answer
+with the paper's verifier prompt plus a mandatory final-line instruction, and stops on YES; the
+Thought-ICS-A reset to the first attempt on V/L disagreement or MaxIter is computed post hoc as
+`final_correct_A`), `--oracle-localize` (the oracle also gives the error location; unused here).
 
 Each run directory contains `config.json` (all knobs + git commit), `{thought,token}_results.jsonl`
 (every generation, localization prompt/response, parse status, cut, budget status) and

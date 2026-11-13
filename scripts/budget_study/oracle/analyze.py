@@ -36,7 +36,7 @@ for i, v in votes.items():
 print(f"judges={judges} items={agree['n']} unanimous={agree['unanimous']} within±1={agree['within1']}")
 
 runs = {}
-for d in glob.glob(str(full / "*_shared_fbattempt_*/")):
+for d in glob.glob(str(full / "*_L2_shared_fbattempt_*/")):
     c = json.load(open(Path(d) / "config.json"))
     runs[(c["model"], c["dataset"])] = Path(d)
 

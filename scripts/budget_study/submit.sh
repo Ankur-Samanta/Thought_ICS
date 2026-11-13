@@ -14,7 +14,8 @@
 # Jobs run with the HF hub offline (weights must already be in ~/.cache/huggingface);
 # proxy variables from the submitting shell are cleared on the compute node.
 # Extra args after the dataset are forwarded to run_study.py
-# (e.g. --response-length 8192).
+# (e.g. --shared-init --self-verify). Default is --oracle-verify.
+# MODELS_OVERRIDE="a b" picks models for "all"; JOB_PREFIX sets the job-name prefix (default bs).
 
 set -euo pipefail
 
@@ -28,7 +29,7 @@ LOG_DIR="${OUT_DIR}/logs"
 mkdir -p "${LOG_DIR}"
 
 declare -A GPUS=([qwen32b]=4 [gptoss20b]=1 [gptoss120b]=4 [llama3b]=1 [llama8b]=1 [llama70b]=8 [qwen7b]=1 [qwen14b]=2)  # gpt-oss: prefix caching off (see run_study.MODELS)
-MODELS=(qwen32b gptoss20b gptoss120b)
+MODELS=(${MODELS_OVERRIDE:-qwen32b gptoss20b gptoss120b})
 DATASETS=(amc23 aime math500 csqa gpqa mathqa)
 
 dataset_args() {
@@ -47,7 +48,7 @@ submit() {  # model dataset_args job_name time extra...
     local model=$1 dargs=$2 name=$3 time=$4; shift 4
     local gpus=${GPUS[$model]}
     local method="both"; [[ "$*" == *--token-init-from* ]] && method="token"
-    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method ${method} --autonomy-level 2 --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
+    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method ${method} --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
     if $DRY_RUN; then echo "[${gpus} GPU] ${name}: ${cmd}"; return; fi
     sbatch --partition=${PARTITION} --nodes=1 --gpus-per-node=${gpus} --cpus-per-gpu=10 \
            --time=${time} --job-name=${name} \
@@ -85,7 +86,7 @@ print(c['model'], a)")"
         dsets=("$ds");     [ "$ds" = all ] && dsets=("${DATASETS[@]}")
         for m in "${models[@]}"; do
             [ -n "${GPUS[$m]:-}" ] || { echo "unknown model $m"; exit 1; }
-            for d in "${dsets[@]}"; do submit "$m" "$(dataset_args "$d")" "bs_${m}_${d}" "$TIME" "$@"; done
+            for d in "${dsets[@]}"; do submit "$m" "$(dataset_args "$d")" "${JOB_PREFIX:-bs}_${m}_${d}" "$TIME" "$@"; done
         done
         ;;
 esac

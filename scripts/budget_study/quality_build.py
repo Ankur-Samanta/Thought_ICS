@@ -20,7 +20,7 @@ full, out = Path(sys.argv[1]), Path(sys.argv[2])
 k = int(sys.argv[3]) if len(sys.argv) > 3 else 5
 rnd = random.Random(0)
 rows = defaultdict(list)
-for d in sorted(glob.glob(str(full / "*_shared_fbattempt_*/"))):
+for d in sorted(glob.glob(str(full / "*_L2_shared_fbattempt_*/"))):
     d = Path(d)
     if not (d / "thought_results.jsonl").exists():
         continue

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Budget-controlled Thought-ICS vs Token-ICS study (oracle-verified ICS, L1/L2).
+"""Budget-controlled Thought-ICS vs Token-ICS study (oracle-verified or self-verified ICS).
 
 Thought-ICS follows the SRPO protocol (see ``protocol.py``). Token-ICS mirrors every
 knob: same total generation budget, same localization budget, temperature and
@@ -37,10 +37,13 @@ logger = logging.getLogger("budget_study")
 # smallest context allows. qwen32b has a 32k context, so every model gets a 32k window,
 # 16k generation (whole solution / chain, incl. resamples) and an 8k localizer (a 16k chain
 # in the localizer prompt + 8k output fits). Every run logs budget hits to verify.
+# run-dir tag per verification mode (oracle-verified runs keep the original "L2" name)
+RUN_TAG = {"localize": "L1", "oracle": "L2", "self": "selfverify"}
 UNIFORM = {"max_model_len": 32768, "response_length": 16384, "localization_max_tokens": 8192,
-           # L3 verifier: models re-solve to check (median ~6.5k tokens for gpt-oss); 12k still fits a
-           # 16k solution + prompt + output in the 32k window
-           "verify_max_tokens": 12288}
+           # L3 verifier: same budget as generation (models often re-solve to check; at 12k, 14% of
+           # gpt-oss AIME verifications were cut off mid-re-solve, none were loops). Clamped to the
+           # remaining context, so the longest (~16.7k-token) verifier prompts get ~16.0k.
+           "verify_max_tokens": 16384}
 MODELS = {
     "qwen32b": {"hf": "Qwen/Qwen2.5-32B-Instruct", "tp": 4, **UNIFORM,
                 "final_prefill": False},
@@ -516,8 +519,16 @@ def main():
                     help="unusable localization (unparseable/empty/quote not found): 'attempt' = "
                          "the iteration is used up with no resample; 'scratch' = paper behaviour "
                          "(resample from scratch)")
-    ap.add_argument("--autonomy-level", type=int, choices=[1, 2, 3], default=P.AUTONOMY_LEVEL,
-                    help="1 oracle localization, 2 binary oracle (told it is wrong), 3 self-verified")
+    v = ap.add_mutually_exclusive_group()
+    v.add_argument("--oracle-verify", dest="verify", action="store_const", const="oracle",
+                   help="(default) an oracle checks each answer; the model is told a wrong one is wrong "
+                        "and localizes the error (paper's L2)")
+    v.add_argument("--self-verify", dest="verify", action="store_const", const="self",
+                   help="no oracle: the model verifies its own answer and stops when it says YES "
+                        "(paper's L3; final-A = the Thought-ICS-A reset, applied post hoc)")
+    v.add_argument("--oracle-localize", dest="verify", action="store_const", const="localize",
+                   help="the oracle also gives the error location (paper's L1)")
+    ap.set_defaults(verify="oracle")
     ap.add_argument("--max-thoughts", type=int, default=P.MAX_THOUGHTS)
     ap.add_argument("--max-tokens-per-thought", type=int, default=P.MAX_TOKENS_PER_THOUGHT)
     ap.add_argument("--response-length", type=int, default=None,
@@ -537,6 +548,7 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out-dir", default="experiments_budget_study")
     cfg = ap.parse_args()
+    cfg.autonomy_level = {"localize": 1, "oracle": 2, "self": 3}[cfg.verify]  # paper level, used internally
 
     m = MODELS[cfg.model]
     if cfg.token_init_from:
@@ -554,7 +566,7 @@ def main():
     tag = ("_shared" if cfg.shared_init else "_sharedinit" if cfg.token_init_from
            else "_sharedprompt" if cfg.token_prompt == "thought" else "")
     tag += "_fbattempt" if cfg.fallback == "attempt" else ""
-    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_L{cfg.autonomy_level}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
+    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{ds_tag}_{RUN_TAG[cfg.verify]}{tag}_{datetime.now():%Y%m%d_%H%M%S}"
     run_dir.mkdir(parents=True, exist_ok=True)
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent,

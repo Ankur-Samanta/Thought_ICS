@@ -1,6 +1,6 @@
 """Final report for the shared-init budget study (both methods, same first attempts).
 
-    python scripts/budget_study/report.py <full_dir> [--glob '*_shared_fbattempt_*']
+    python scripts/budget_study/report.py <full_dir> [--glob '*_L2_shared_fbattempt_*']
 
 Grading: math datasets (amc23, aime, math500) use math_verify equivalence; letter datasets
 keep exact-letter grading. Each problem's run is truncated at its first correct attempt under
@@ -49,7 +49,7 @@ def regrade(rec, ds):
 
 ap = argparse.ArgumentParser()
 ap.add_argument("full")
-ap.add_argument("--glob", default="*_shared_fbattempt_*")
+ap.add_argument("--glob", default="*_L2_shared_fbattempt_*")
 args = ap.parse_args()
 
 P = defaultdict(list)          # model -> list of per-problem tuples
