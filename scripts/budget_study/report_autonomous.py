@@ -51,6 +51,10 @@ for sv in sorted({d.rsplit("_selfverify", 1)[0] for d in glob.glob(f"{full}/*_se
     load = lambda p: {json.loads(l)["problem_id"]: json.loads(l) for l in open(p)}
     T, K = load(f"{s}/thought_results.jsonl"), load(f"{s}/token_results.jsonl")
     SR, CV = load(f"{b}/self_refine_results.jsonl"), load(f"{b}/cove_results.jsonl")
+    VAR = {}
+    for v in ("loc", "all"):
+        vd = latest(f"{sv}_selfverifyfb{v}_shared_fbattempt_*", ["thought_results.jsonl", "token_results.jsonl"])
+        VAR[v] = (load(f"{vd}/thought_results.jsonl"), load(f"{vd}/token_results.jsonl")) if vd else None
     for pid, t in T.items():
         gt = t["ground_truth"]
         g = lambda it: ok(it["answer"], gt, ds, it["correct"])
@@ -58,8 +62,15 @@ for sv in sorted({d.rsplit("_selfverify", 1)[0] for d in glob.glob(f"{full}/*_se
         def final_a(r):
             gens = [it for it in r["iterations"] if "gen_status" in it]
             return g(gens[0]) if r["exit"] in ("vl_disagreement", "max_iter") else g(gens[-1])
-        rows[m].append({"ds": ds, "init": g(t["iterations"][0]), "thought": final_a(t), "token": final_a(K[pid]),
-                        "self_refine": g(SR[pid]["iterations"][-1]), "cove": g(CV[pid]["iterations"][-1])})
+        def final_s(r):
+            return g([it for it in r["iterations"] if "gen_status" in it][-1])
+        row = {"ds": ds, "init": g(t["iterations"][0]), "thought": final_a(t), "token": final_a(K[pid]),
+               "thought_s": final_s(t), "self_refine": g(SR[pid]["iterations"][-1]), "cove": g(CV[pid]["iterations"][-1])}
+        for v in ("loc", "all"):
+            if VAR[v] is not None:
+                row[f"fb{v}"] = final_s(VAR[v][0][pid])
+                row[f"fb{v}_tok"] = final_s(VAR[v][1][pid])
+        rows[m].append(row)
 
 
 def boot(xs, a, b, B=5000, seed=0):
@@ -80,3 +91,16 @@ for m in [x for x in ORDER if x in rows] + sorted(set(rows) - set(ORDER)):
           f"{fmt(boot(R, 'thought', 'cove')):>22s} {fmt(boot(R, 'thought', 'token')):>22s}")
 if missing:
     print("\nnot finished:", ", ".join(missing))
+
+print("\nFeedback variants (Thought-ICS / Token-ICS, last solution; only datasets where the variant finished)")
+print(f"{'model':11s}{'var':5s}{'n':>5s} {'ds':>3s} | {'first':>5s} {'Th-S':>5s} {'SR':>5s} {'Th-fb':>5s} {'Tok-fb':>6s} | "
+      f"{'Th-fb - SR':>22s} {'Th-fb - Th-S':>22s} {'Th-fb - Tok-fb':>22s}")
+for m in [x for x in ORDER if x in rows]:
+    for v in ("loc", "all"):
+        R = [r for r in rows[m] if f"fb{v}" in r]
+        if not R:
+            continue
+        p = lambda k: 100 * sum(r[k] for r in R) / len(R)
+        print(f"{m:11s}{v:5s}{len(R):5d} {len({r['ds'] for r in R}):3d} | {p('init'):5.1f} {p('thought_s'):5.1f} {p('self_refine'):5.1f} "
+              f"{p(f'fb{v}'):5.1f} {p(f'fb{v}_tok'):6.1f} | {fmt(boot(R, f'fb{v}', 'self_refine')):>22s} "
+              f"{fmt(boot(R, f'fb{v}', 'thought_s')):>22s} {fmt(boot(R, f'fb{v}', f'fb{v}_tok')):>22s}")

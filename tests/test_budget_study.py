@@ -544,7 +544,8 @@ def test_carry_feedback_modes(monkeypatch):
                 assert not fb and "resample_localization" not in loc
             else:
                 assert fb and "CRITIQUE: step 2 is wrong." in fb[0]
-                assert "Where the previous attempt first went wrong:\n" + loc["resample_localization"] in fb[0]
+                assert "Where the previous attempt first went wrong:\n" + P.unbox(loc["resample_localization"]) in fb[0]
+                assert P.FEEDBACK_GEN_CLOSE in fb[0] and "\\boxed{NO}" not in fb[0].split("Feedback on a previous attempt")[1].split("Taking this feedback")[0]
                 assert loc["resample_localization"] == R.response_text(loc["response"]).strip()
 
 
@@ -585,3 +586,9 @@ def test_cove_overflow_from_question_does_not_crash():
     eng.generate = gen
     r = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
     assert r["tokens_cut_to_fit"] > 0
+
+
+def test_unbox():
+    assert P.unbox("x \\boxed{NO} y \\boxed{\\frac{1}{2}} z") == "x NO y \\frac{1}{2} z"
+    assert P.unbox("no box") == "no box"
+    assert P.unbox("open \\boxed{3") == "open 3"

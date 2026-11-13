@@ -271,14 +271,36 @@ FEEDBACK_GEN_SUFFIX = "\n\nFeedback on a previous attempt at this problem:\n{cri
 LOCALIZATION_GEN_SUFFIX = "\n\nWhere the previous attempt first went wrong:\n{localization}"
 
 
+FEEDBACK_GEN_CLOSE = ("\n\nTaking this feedback into account, continue the solution: keep writing the next "
+                      "steps of the solution (not a review of it), and end with the final answer as \\boxed{answer}.")
+
+
+def unbox(text: str) -> str:
+    """Drop \\boxed{...} wrappers (keep their content) so verdicts / step numbers in carried
+    feedback are not imitated as, or graded as, the resample's answer."""
+    out, i = [], 0
+    while True:
+        j = text.find("\\boxed{", i)
+        if j < 0:
+            return "".join(out) + text[i:]
+        out.append(text[i:j])
+        k, depth = j + len("\\boxed{"), 1
+        while k < len(text) and depth:
+            depth += {"{": 1, "}": -1}.get(text[k], 0)
+            k += 1
+        out.append(text[j + len("\\boxed{"):k - 1] if depth == 0 else text[j + len("\\boxed{"):])
+        i = k
+
+
 def feedback_gen_prompt(gen_prompt_text: str, critique: str, localization: Optional[str] = None) -> str:
     """Resample prompt (--carry-feedback all): the original generation prompt + the verifier's
-    critique + the localizer's reply; the kept prefix of the previous attempt is then continued
-    as the assistant reply."""
-    out = gen_prompt_text + FEEDBACK_GEN_SUFFIX.format(critique=critique)
+    critique + the localizer's reply (both unboxed) + an instruction to continue the solution; the
+    kept prefix of the previous attempt is then continued as the assistant reply. (Without the
+    closing instruction the model continues in the reviewer's voice and boxes a verdict.)"""
+    out = gen_prompt_text + FEEDBACK_GEN_SUFFIX.format(critique=unbox(critique))
     if localization is not None:
-        out += LOCALIZATION_GEN_SUFFIX.format(localization=localization)
-    return out
+        out += LOCALIZATION_GEN_SUFFIX.format(localization=unbox(localization))
+    return out + FEEDBACK_GEN_CLOSE
 
 
 def verify_prompt(question: str, solution: str, answer: str) -> str:
