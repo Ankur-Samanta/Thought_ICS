@@ -469,3 +469,26 @@ ax.set_xlabel("Model")
 ax.set_ylabel("Correction accuracy (%)")
 ax.set_ylim(0, math.ceil((top + 8) / 10) * 10)
 save(fig, "edit_accuracy_clean_vs_erroneous_token")
+
+
+# ---- Fig (appendix): confusion-matrix components by correction iteration (Thought-ICS) -------
+# share of verifications at iteration n that are TP / FP / TN / FN (positive = flagged incorrect);
+# amber = incorrect responses (TP, FN; recall), violet = correct responses (TN, FP; specificity);
+# solid = right verdict, dashed = wrong verdict
+CM = [("TP (caught error)", lambda s, a: not s and not a, "#a86f00", "-", "o"),
+      ("FP (false alarm)", lambda s, a: not s and a, "#8f83ea", (0, (4, 2.5)), "s"),
+      ("TN (correctly left alone)", lambda s, a: s and a, "#4a3aa7", "-", "^"),
+      ("FN (missed error)", lambda s, a: s and not a, "#d9a031", (0, (4, 2.5)), "D")]
+fig, ax = plt.subplots(figsize=(8, 5))
+print("\nconfusion matrix by correction iteration (% of verifications at n)")
+for name, f, col, ls, mk in CM:
+    ys = [100 * sum(f(s, a) for s, a in calls[n]) / len(calls[n]) for n in ns]
+    ax.plot(ns, ys, color=col, lw=2, ls=ls, marker=mk, ms=6.5, mec=SURFACE, mew=1.2, label=name, zorder=3)
+    print(f"  {name:28s}", " ".join(f"{y:5.1f}" for y in ys))
+ax.set_xlabel("Correction iteration")
+ax.set_ylabel("Rate (%)")
+ax.set_xticks(ns)
+ax.set_ylim(0, 100)
+ax.grid(axis="x", visible=False)
+ax.legend(loc="upper right", fontsize=11, ncol=2)
+save(fig, "confusion_matrix_by_iteration")
