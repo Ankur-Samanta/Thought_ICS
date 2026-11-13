@@ -290,3 +290,47 @@ ax.set_ylim(0, 100)
 ax.grid(axis="x", visible=False)
 ax.legend(loc="center right", fontsize=11)
 save(fig, "self_verification_by_terminal_iteration_part1a")
+
+
+# ---- Fig: self-verification metrics by model (appendix; Thought-ICS, all verification calls) ----
+bym = defaultdict(list)
+for d in sorted(glob.glob(str(EXP / "full" / "*_selfverify_shared_fbattempt_*/"))):
+    d = Path(d)
+    c = json.load(open(d / "config.json"))
+    for line in open(d / "thought_results.jsonl"):
+        r = json.loads(line)
+        its = r["iterations"]
+        cur = ok(its[0]["answer"], r["ground_truth"], c["dataset"], its[0]["correct"])
+        for it in its[1:]:
+            v = it.get("verification") or it.get("localization", {}).get("verification")
+            if v is not None:
+                bym[c["model"]].append((v["verdict"] is True, cur))
+            if "gen_status" in it:
+                cur = ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
+FAM_ORDER = [m for _, _, ms in FAMILIES for m in ms]
+fig, ax = plt.subplots(figsize=(12, 6))
+w = 0.26
+print("\nself-verification by model (Thought-ICS, all calls)")
+for i, m in enumerate(FAM_ORDER):
+    R = bym[m]
+    vals = (100 * sum(not s for s, a in R if not a) / max(1, sum(not a for _, a in R)),
+            100 * sum(s for s, a in R if a) / max(1, sum(a for _, a in R)),
+            100 * sum(s == a for s, a in R) / len(R))
+    print(f"  {m:11s} calls {len(R):5d}  recall {vals[0]:5.1f}  specificity {vals[1]:5.1f}  accuracy {vals[2]:5.1f}")
+    for j, (val, col) in enumerate(zip(vals, (RECALL, SPEC, ACC))):
+        x = i + (j - 1) * w
+        ax.bar(x, val, w * 0.92, color=col, zorder=2)
+        ax.text(x, val + 1.2, f"{val:.0f}", ha="center", va="bottom", fontsize=9, color=INK2)
+for b in (2.5, 5.5):
+    ax.axvline(b, color=AXIS, lw=1, zorder=1)
+for xc, name in ((1, "Llama"), (4, "Qwen"), (6.5, "gpt-oss")):
+    ax.text(xc, 104, name, ha="center", va="bottom", fontsize=12, color=INK2)
+from matplotlib.patches import Patch  # noqa: E402
+ax.legend(handles=[Patch(color=RECALL, label="Recall"), Patch(color=SPEC, label="Specificity"),
+                   Patch(color=ACC, label="Accuracy")], loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3, fontsize=12)
+ax.set_xticks(range(len(FAM_ORDER)), [LONG[m] for m in FAM_ORDER], fontsize=11)
+ax.set_ylabel("Self-verification metric (%)")
+ax.set_ylim(0, 110)
+ax.set_yticks(range(0, 101, 20))
+ax.grid(axis="x", visible=False)
+save(fig, "self_verification_by_model")
