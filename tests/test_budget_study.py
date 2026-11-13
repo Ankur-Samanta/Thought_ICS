@@ -592,3 +592,11 @@ def test_unbox():
     assert P.unbox("x \\boxed{NO} y \\boxed{\\frac{1}{2}} z") == "x NO y \\frac{1}{2} z"
     assert P.unbox("no box") == "no box"
     assert P.unbox("open \\boxed{3") == "open 3"
+
+
+def test_majority_vote():
+    from thought_ics.budget_study.majority_vote import vote
+    assert vote(["5.5", "\\frac{11}{2}", "3", "3"], "math500") == ("5.5", 2)        # equivalent forms pool; tie -> earliest
+    assert vote(["A", "B", "B", "NO ANSWER"], "csqa") == ("B", 2)
+    assert vote(["NO ANSWER"] * 3, "aime") == ("NO ANSWER", 0)
+    assert vote(["x=5", "5", "7"], "amc23")[1] in (1, 2)

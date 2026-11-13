@@ -389,3 +389,83 @@ ax.set_xticks(xs)
 ax.grid(axis="x", visible=False)
 ax.legend(loc="lower right", fontsize=11)
 save(fig, "self_verification_by_terminal_iteration_part1b")
+
+
+# ---- Fig (appendix): oracle localization agreement across the three judges ----------------
+JUDGES = [("opus", "Claude Opus"), ("sonnet", "Claude Sonnet"), ("haiku", "Claude Haiku")]
+AGREE = [("Unanimous", "#184f95"), ("Within ±1", "#3987e5"), ("Within ±2", "#86b6ef"), ("Further apart", FAILED)]
+items, labels = {}, defaultdict(dict)
+for o in ("oracle_full", "oracle_slm"):
+    for f in glob.glob(str(EXP / o / "batch_*.json")):
+        for x in json.load(open(f)):
+            items[x["id"]] = len(x["steps"])
+    for f in glob.glob(str(EXP / o / "labels_*_*.json")):
+        j = Path(f).name.split("_")[1]
+        for x in json.load(open(f)):
+            labels[x["id"]][j] = int(x["first_error_step"])
+cat = {}
+for i, v in labels.items():
+    s = list(v.values())
+    spread = max(s) - min(s)
+    cat[i] = 0 if spread == 0 else 1 if spread <= 1 else 2 if spread <= 2 else 3
+n_items = len(cat)
+shares = [100 * sum(c <= k for c in cat.values()) / n_items for k in range(3)]
+print(f"\noracle agreement: {n_items} items; unanimous {shares[0]:.0f}%  within±1 {shares[1]:.0f}%  within±2 {shares[2]:.0f}%")
+fig, ax = plt.subplots(figsize=(8, 5))
+rnd = np.random.default_rng(0)
+for k, (j, name) in enumerate(JUDGES):
+    pos = [((labels[i][j] - 1) / max(1, items[i] - 1), cat[i]) for i in labels if labels[i].get(j, 0) > 0 and i in items]
+    ys = np.array([p for p, _ in pos])
+    vp = ax.violinplot([ys], positions=[k], widths=0.8, showextrema=False, showmedians=False)
+    for b in vp["bodies"]:
+        b.set_facecolor("#e1e0d9")
+        b.set_edgecolor(AXIS)
+        b.set_alpha(1)
+    for ci in (3, 2, 1, 0):  # draw the most-agreed points last (on top)
+        sel = np.array([c == ci for _, c in pos])
+        if sel.any():
+            ax.scatter(k + rnd.uniform(-0.18, 0.18, sel.sum()), ys[sel], s=7, color=AGREE[ci][1], alpha=0.55,
+                       lw=0, zorder=3)
+    ax.hlines(np.median(ys), k - 0.3, k + 0.3, color=INK, lw=1.4, zorder=4)
+from matplotlib.lines import Line2D  # noqa: E402
+ax.legend(handles=[Line2D([], [], ls="", marker="o", ms=6, color=c, label=f"{n} ({sh:.0f}%)" if idx < 3 else n)
+                   for idx, ((n, c), sh) in enumerate(zip(AGREE, shares + [0]))] +
+          [Line2D([], [], color=INK, lw=1.4, label="Median")], loc="upper right", fontsize=10)
+ax.set_xticks(range(len(JUDGES)), [n for _, n in JUDGES])
+ax.set_xlabel("Oracle model")
+ax.set_ylabel("Normalized error position")
+ax.set_ylim(-0.04, 1.04)
+ax.set_xlim(-0.6, len(JUDGES) - 0.4 + 0.9)
+ax.grid(axis="x", visible=False)
+save(fig, "oracle_localization_agreement")
+
+# ---- Fig (appendix): Token-ICS fix rate after clean vs erroneous prefix ---------------------
+fig, ax = plt.subplots(figsize=(6, 4.5))
+x = np.arange(len(ORDER))
+w = 0.38
+top = 0
+print("\nedit_accuracy_clean_vs_erroneous_token: fix rate of the first resample (Token-ICS, regraded)")
+pool = {"clean": [0, 0], "erroneous": [0, 0]}
+for i, m in enumerate(ORDER):
+    R = [v["token"] for v in paired if v["token"]["model"] == m and v["token"]["cat"] != "failed"]
+    fixed = lambda r: ok(r.get("answer"), r.get("ground_truth"), r["dataset"], r["fixed"])
+    for off, sel, col, nm in ((-w / 2, ("exact", "earlier"), EXACT, "clean"), (w / 2, ("later",), ERRONEOUS, "erroneous")):
+        S = [r for r in R if r["cat"] in sel]
+        k = sum(fixed(r) for r in S)
+        pool[nm][0] += k
+        pool[nm][1] += len(S)
+        rate = 100 * k / max(1, len(S))
+        lo, hi = wilson(k, len(S))
+        top = max(top, hi)
+        ax.bar(i + off, rate, w * 0.94, color=col, zorder=2)
+        ax.errorbar(i + off, rate, yerr=[[rate - lo], [hi - rate]], fmt="none", ecolor=INK2, elinewidth=1, capsize=2.5, zorder=3)
+        if k == 0:
+            ax.text(i + off, 0.4, "0", ha="center", va="bottom", fontsize=8, color=INK2)
+print("  pooled:", {k: f"{100*a/max(1,b):.1f}% ({a}/{b})" for k, (a, b) in pool.items()})
+ax.legend(handles=[Patch(color=EXACT, label="Clean prefix (self ≤ oracle)"),
+                   Patch(color=ERRONEOUS, label="Erroneous prefix (self > oracle)")], loc="upper left", fontsize=10)
+ax.set_xticks(x, [SHORT[m] for m in ORDER], fontsize=11)
+ax.set_xlabel("Model")
+ax.set_ylabel("Correction accuracy (%)")
+ax.set_ylim(0, math.ceil((top + 8) / 10) * 10)
+save(fig, "edit_accuracy_clean_vs_erroneous_token")
