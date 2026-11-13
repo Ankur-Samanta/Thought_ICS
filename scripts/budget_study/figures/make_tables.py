@@ -124,3 +124,97 @@ for gi, (label, ms) in enumerate(groups):
 (OUT / "localization_paired.tex").write_text("\n".join(out) + "\n")
 print("wrote", OUT / "localization_paired.tex")
 print("\n".join(out))
+
+
+# ---- compute_analysis.tex and correction_diversity.tex (oracle-verified runs) --------------
+def truncated(rec, ds):
+    """Iterations up to and including the first correct generation (math_verify), as report.py."""
+    its = rec["iterations"]
+    for k, it in enumerate(its):
+        if "gen_status" in it and ok(it["answer"], rec["ground_truth"], ds, it["correct"]):
+            return its[:k + 1], True
+    return its, False
+
+
+comp = defaultdict(lambda: defaultdict(lambda: {"new": 0, "kept": 0, "resampled": 0, "n": 0, "ok": 0}))
+div = defaultdict(lambda: defaultdict(list))
+for d in sorted(glob.glob(str(EXP / "full" / "*_L2_shared_fbattempt_*/"))):
+    d = Path(d)
+    if not (d / "token_results.jsonl").exists():
+        continue
+    c = json.load(open(d / "config.json"))
+    for meth in ("token", "thought"):
+        C = comp[c["model"]][meth]
+        for line in open(d / f"{meth}_results.jsonl"):
+            r = json.loads(line)
+            its, fin = truncated(r, c["dataset"])
+            C["n"] += 1
+            C["ok"] += fin
+            gens = []
+            for it in its:
+                loc = it.get("localization")
+                if loc:
+                    C["new"] += loc.get("n_tokens", 0)
+                if "gen_status" in it:
+                    gens.append((it["answer"] or "").strip())
+                    if it["iteration"] > 0:
+                        C["new"] += it["n_new_tokens"]
+                        C["kept"] += it["n_tokens"] - it["n_new_tokens"]
+                        C["resampled"] += it["n_tokens"]
+            if len(gens) - 1 > 1:  # more than one correction iteration
+                div[c["model"]][meth].append(gens)
+
+# Thought-ICS only (descriptive): initial tokens, correction tokens, correction iterations, saved, accuracy
+ini = defaultdict(lambda: {"tok": 0, "iters": 0, "n": 0})
+for d in sorted(glob.glob(str(EXP / "full" / "*_L2_shared_fbattempt_*/"))):
+    d = Path(d)
+    if not (d / "token_results.jsonl").exists():
+        continue
+    c = json.load(open(d / "config.json"))
+    for line in open(d / "thought_results.jsonl"):
+        r = json.loads(line)
+        its, _ = truncated(r, c["dataset"])
+        I = ini[c["model"]]
+        I["tok"] += its[0]["n_tokens"]
+        I["iters"] += sum(1 for it in its[1:] if "localization" in it)
+        I["n"] += 1
+lines = []
+T = defaultdict(float)
+for m in ORDER:
+    C, I = comp[m]["thought"], ini[m]
+    row = (I["tok"] / I["n"], C["new"] / C["n"], I["iters"] / I["n"], 100 * C["kept"] / max(1, C["resampled"]), 100 * C["ok"] / C["n"])
+    for k, v in zip(("i", "n", "it", "s", "a"), row):
+        T[k] += v / len(ORDER)
+    f = lambda v: f"{v:,.0f}".replace(",", "{,}")
+    lines.append(f"{NAME[m]} & {f(row[0])} & {f(row[1])} & {row[2]:.1f} & {row[3]:.0f}\\% & {row[4]:.1f} \\\\")
+lines.append("\\midrule")
+f = lambda v: f"{v:,.0f}".replace(",", "{,}")
+lines.append(f"\\textbf{{Average}} & {f(T['i'])} & {f(T['n'])} & {T['it']:.1f} & {T['s']:.0f}\\% & {T['a']:.1f} \\\\")
+(OUT / "compute_analysis.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote compute_analysis.tex"); print("\n".join(lines))
+
+lines = []
+agg = {m: [] for m in ("token", "thought")}
+for m in ORDER:
+    for j, meth in enumerate(("token", "thought")):
+        G = div[m][meth]
+        agg[meth] += G
+        uniq = sum(len(set(g)) / len(g) for g in G) / max(1, len(G))
+        pairs = [(a, b) for g in G for a, b in zip(g, g[1:])]
+        same = 100 * sum(a == b for a, b in pairs) / max(1, len(pairs))
+        ch = [x != g[0] for g in G for x in g[1:]]
+        changed = 100 * sum(ch) / max(1, len(ch))
+        iters = sum(len(g) for g in G) / max(1, len(G))
+        first = f"\\multirow{{2}}{{*}}{{{NAME[m]}}}" if j == 0 else ""
+        lines.append(f"{first:28s} & {'Token-ICS' if meth == 'token' else 'Thought-ICS'} & {len(G)} & {iters:.1f} & {uniq:.2f} & {same:.1f}\\% & {changed:.1f}\\% \\\\")
+lines.append("\\midrule")
+for j, meth in enumerate(("token", "thought")):
+    G = agg[meth]
+    uniq = sum(len(set(g)) / len(g) for g in G) / len(G)
+    pairs = [(a, b) for g in G for a, b in zip(g, g[1:])]
+    same = 100 * sum(a == b for a, b in pairs) / len(pairs)
+    ch = [x != g[0] for g in G for x in g[1:]]
+    first = "\\multirow{2}{*}{\\textbf{Average}}" if j == 0 else ""
+    lines.append(f"{first:28s} & {'Token-ICS' if meth == 'token' else 'Thought-ICS'} & {len(G):,} & {sum(len(g) for g in G)/len(G):.1f} & {uniq:.2f} & {same:.1f}\\% & {100*sum(ch)/len(ch):.1f}\\% \\\\".replace(",", "{,}"))
+(OUT / "correction_diversity.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote correction_diversity.tex"); print("\n".join(lines))
