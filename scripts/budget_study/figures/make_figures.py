@@ -563,7 +563,7 @@ save(fig, "chain_length_distribution")
 # ---- Fig §5.3: self-correction lift in the fully autonomous setting -------------------------
 # lift over the shared first attempt (final - first), paired 95% bootstrap CI over problems; a model
 # is plotted only when Self-Refine, CoVe and Thought-ICS-F have all finished all six datasets.
-SR_C, COVE_C, F_C = "#bf7f00", "#6250d6", "#c2457e"
+SR_C, COVE_C, F_C = "#4c4cad", "#8cb8e1", "#a64ca6"  # the original figure's colors (Thought-ICS-F takes Thought-ICS-A's)
 
 
 def lift_rows():
