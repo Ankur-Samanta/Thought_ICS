@@ -41,6 +41,7 @@ for d in glob.glob(str(full / "*_L2_shared_fbattempt_*/")):
     runs[(c["model"], c["dataset"])] = Path(d)
 
 R = defaultdict(lambda: defaultdict(list))
+ROWS = []  # per item x method, written to <oracle_dir>/rows.json for paired statistics
 missing = set()
 for i, k in consensus.items():
     if k == 0:
@@ -58,6 +59,8 @@ for i, k in consensus.items():
         it1, loc = its[1], its[1]["localization"]
         if it1.get("failed_localization"):
             R[(model, meth)]["failed"].append(None)
+            ROWS.append({"id": i, "model": model, "dataset": ds, "method": meth, "cat": "failed", "step": None,
+                         "oracle": k, "n_steps": None, "fixed": None})
             continue
         if "gen_status" not in it1:
             continue  # localizer said no error
@@ -76,6 +79,8 @@ for i, k in consensus.items():
                 s = len(thought0)
         cat = "exact" if s == k else ("earlier" if s < k else "later")
         R[(model, meth)][cat].append(it1["correct"])
+        ROWS.append({"id": i, "model": model, "dataset": ds, "method": meth, "cat": cat, "step": s,
+                     "oracle": k, "n_steps": len(its[0].get("chain") or []) or None, "fixed": it1["correct"]})
 
 print(f"\n{'model':11s}{'method':8s}{'n':>4s} | {'exact':>6s}{'earlier':>8s}{'later':>7s}{'failed':>7s} | {'clean':>6s} | fix rate: clean vs erroneous")
 for (model, meth), c in sorted(R.items()):
@@ -87,3 +92,4 @@ for (model, meth), c in sorted(R.items()):
           f"{100 * len(clean) / max(1, n):5.0f}% | {fr(clean)} vs {fr(c['later'])}")
 if missing:
     print("\nnot finished yet (skipped):", ", ".join(sorted(missing)))
+(odir / "rows.json").write_text(json.dumps(ROWS))
