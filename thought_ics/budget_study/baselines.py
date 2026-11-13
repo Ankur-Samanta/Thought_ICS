@@ -60,6 +60,29 @@ def feedback_verdict(text: str):
     return SR.parse_feedback(t)
 
 
+MIN_OUTPUT_ROOM = 4096
+
+
+def fit(eng, build, parts):
+    """build(parts) -> prompt text. If the solution-writing prompt would leave less than
+    MIN_OUTPUT_ROOM tokens of context, cut the fed-back evaluation texts in `parts` (Self-Refine
+    feedback / CoVe verification answers) from the end, longest first, until it fits. Only
+    happens when an evaluation looped to its budget (<3% of calls); the solution and problem
+    are never cut. Returns (prompt, tokens_cut)."""
+    limit = eng.max_model_len - MIN_OUTPUT_ROOM
+    toks = [eng.tok.encode(t, add_special_tokens=False) for t in parts]
+    cut = 0
+    while len(eng.gen_prompt_ids(build([eng.tok.decode(t) for t in toks]))) > limit:
+        j = max(range(len(toks)), key=lambda i: len(toks[i]))
+        if not toks[j]:
+            break
+        over = len(eng.gen_prompt_ids(build([eng.tok.decode(t) for t in toks]))) - limit
+        n = min(len(toks[j]), max(over, 64))
+        toks[j] = toks[j][:-n]
+        cut += n
+    return build([eng.tok.decode(t) for t in toks]) if cut else build(parts), cut
+
+
 def call(eng, cfg, texts, solution: bool):
     """Batched calls. solution=True: written like a generation; False: like the verifier."""
     if not texts:
@@ -105,8 +128,12 @@ def run_self_refine(eng, cfg, problems, init):
                 recs[i]["stopped_early"] = True
             else:
                 refine.append((i, fb["text"]))
-        outs = call(eng, cfg, [SR.REFINE_PROMPT.format(problem=problems[i]["problem"], solution=cur[i],
-                                                       feedback=f) for i, f in refine], solution=True)
+        built = [fit(eng, lambda ps, i=i: SR.REFINE_PROMPT.format(problem=problems[i]["problem"], solution=cur[i],
+                                                                  feedback=ps[0]), [f]) for i, f in refine]
+        for (i, _), (_, c) in zip(refine, built):
+            if c:
+                recs[i]["iterations"][-1]["feedback"]["tokens_cut_to_fit"] = c
+        outs = call(eng, cfg, [b for b, _ in built], solution=True)
         for (i, _), o in zip(refine, outs):
             cur[i] = o["text"]
             recs[i]["iterations"].append(sol_record(o["text"], recs[i]["ground_truth"], iteration=it + 1,
@@ -131,12 +158,16 @@ def run_cove(eng, cfg, problems, init):
     by = [[] for _ in range(n)]
     for (k, q), a in zip(flat, ans):
         by[k].append((q, a))
-    finals = []
+    finals, cut_k = [], {}
     for k, p in enumerate(problems):
-        vt = "".join(f"Q{i}: {q}\nA{i}: {a['text']}\n\n" for i, (q, a) in enumerate(by[k], 1))
-        if not vt.strip():
-            vt = "(No verification questions generated)"
-        finals.append(CV.FINAL_RESPONSE_PROMPT.format(problem=p["problem"], baseline=init[k], verifications=vt))
+        def build(answers, k=k, p=p):
+            vt = "".join(f"Q{i}: {q}\nA{i}: {a}\n\n" for i, ((q, _), a) in enumerate(zip(by[k], answers), 1))
+            if not vt.strip():
+                vt = "(No verification questions generated)"
+            return CV.FINAL_RESPONSE_PROMPT.format(problem=p["problem"], baseline=init[k], verifications=vt)
+        prompt, c = fit(eng, build, [a["text"] for _, a in by[k]])
+        finals.append(prompt)
+        cut_k[k] = c
     outs = call(eng, cfg, finals, solution=True)
     recs = []
     for k, p in enumerate(problems):
@@ -144,7 +175,8 @@ def run_cove(eng, cfg, problems, init):
                      "iterations": [sol_record(init[k], p["answer"], iteration=0),
                                     sol_record(outs[k]["text"], p["answer"], iteration=1,
                                                finish_reason=outs[k]["finish_reason"], n_tokens=outs[k]["n_tokens"])],
-                     "plan": plans[k], "verifications": [{"question": q, **a} for q, a in by[k]]})
+                     "plan": plans[k], "verifications": [{"question": q, **a} for q, a in by[k]],
+                     "tokens_cut_to_fit": cut_k[k]})
         recs[-1]["final_correct"] = recs[-1]["iterations"][-1]["correct"]
     logger.info(f"[cove] accuracy {sum(r['final_correct'] for r in recs)}/{n}")
     return recs

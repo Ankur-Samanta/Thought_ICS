@@ -479,3 +479,34 @@ def test_feedback_verdict_markdown():
     assert F("### NO\nwrong")[0] is False
     assert F("NO\n\n**Why the solution is incorrect**")[0] is False
     assert F("Yes, correct.")[0] is True
+
+
+def test_fit_cuts_only_looping_eval_text():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    eng.max_model_len = B.MIN_OUTPUT_ROOM + 3000
+    build = lambda ps: "SOLUTION" * 100 + "|" + "|".join(ps)
+    # fits: unchanged
+    p, c = B.fit(eng, build, ["short", "also short"])
+    assert c == 0 and p == build(["short", "also short"])
+    # one looping answer: only it is cut, solution intact, prompt fits
+    p, c = B.fit(eng, build, ["ok answer", "loop " * 2000])
+    assert c > 0 and p.startswith("SOLUTION" * 100 + "|ok answer|loop")
+    assert len(eng.gen_prompt_ids(p)) <= eng.max_model_len - B.MIN_OUTPUT_ROOM
+
+
+def test_cove_overflow_does_not_crash():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    eng.max_model_len = B.MIN_OUTPUT_ROOM + 2000
+    orig = eng.generate
+    def gen(ids, params):
+        outs = orig(ids, params)
+        for o, i in zip(outs, ids):
+            if eng.tok.decode(i).startswith("<chat>Answer the following question"):
+                o["text"] = "loop " * 3000
+                o["finish_reason"] = "length"
+        return outs
+    eng.generate = gen
+    r = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
+    assert r["tokens_cut_to_fit"] > 0 and r["final_correct"]
