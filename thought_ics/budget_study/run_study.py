@@ -13,6 +13,7 @@ Usage:
 
 import argparse
 import json
+import re
 import logging
 import subprocess
 import time
@@ -74,6 +75,18 @@ def final_message(text: str) -> str:
     for t in ("<|return|>", "<|end|>", "<|eot_id|>", "<|im_end|>", "<|endoftext|>"):
         text = text.split(t, 1)[0]
     return text
+
+
+def response_text(text: str) -> str:
+    """The whole response as plain text: for gpt-oss the analysis-channel reasoning followed by
+    the final message (channel markup removed); for other models the response itself. Used to
+    carry verifier / localizer feedback forward, whose content gpt-oss writes in its analysis
+    channel (its final message is often only the boxed verdict)."""
+    if "<|channel|>" not in text:
+        return final_message(text)
+    parts = re.findall(r"<\|channel\|>(?:analysis|commentary|final)<\|message\|>(.*?)(?=<\|end\|>|<\|return\|>|<\|start\|>|$)",
+                       text, flags=re.S)
+    return "\n\n".join(p.strip() for p in parts if p.strip())
 
 
 def boxed_answer(text: str) -> str:
@@ -409,7 +422,7 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
                     still.append(i)
                     records[i].setdefault("_pending_verification", {})[it] = vinfo
                     if CARRY:
-                        critique[i] = final_message(v["response"]).strip()
+                        critique[i] = response_text(v["response"]).strip()
             active = still
             if not active:
                 break
@@ -446,7 +459,7 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
             info = {"loc_prompt": text, **loc}
             loc_info[i] = info
             if MODE == "all":
-                loc_msg[i] = final_message(loc["response"]).strip()
+                loc_msg[i] = response_text(loc["response"]).strip()
             if CARRY:
                 info.update(critique=critique[i], critique_tokens_cut=crit_cut.get(i, 0))
             if method == "thought":
@@ -606,7 +619,7 @@ def main():
                    help="no oracle: the model verifies its own answer and stops when it says YES "
                         "(paper's L3; final-A = the Thought-ICS-A reset, applied post hoc)")
     ap.add_argument("--carry-feedback", choices=["loc", "all"], default=None,
-                    help="with --self-verify: loc = the latest verifier critique (final message) is shown to "
+                    help="with --self-verify: loc = the latest verifier response (gpt-oss: reasoning + final message) is shown to "
                          "the localizer; all = also append the critique and the localizer's reply to the "
                          "resample prompt. Replaced each iteration (no accumulation)")
     ap.add_argument("--init-from", default=None,

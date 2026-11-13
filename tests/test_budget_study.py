@@ -535,9 +535,9 @@ def test_carry_feedback_modes(monkeypatch):
             r = R.run_method(eng, _cfg(autonomy_level=3, fallback="attempt", carry_feedback=mode, response_length=5000),
                              method, PROBLEMS[:1])[0]
             loc = r["iterations"][1]["localization"]
-            assert loc["critique"] == "CRITIQUE: step 2 is wrong. \\boxed{NO}"      # final message only
-            assert "Your check of it:\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
-            assert "hidden scratch" not in loc["loc_prompt"]
+            assert loc["critique"] == "hidden scratch\n\nCRITIQUE: step 2 is wrong. \\boxed{NO}"  # reasoning + final
+            assert "Your check of it:\nhidden scratch\n\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
+            assert "<|channel|>" not in loc["loc_prompt"]
             gens = [t for t in seen if not t.startswith("<chat>")]
             fb = [t for t in gens if "Feedback on a previous attempt" in t]
             if mode == "loc":
@@ -545,7 +545,7 @@ def test_carry_feedback_modes(monkeypatch):
             else:
                 assert fb and "CRITIQUE: step 2 is wrong." in fb[0]
                 assert "Where the previous attempt first went wrong:\n" + loc["resample_localization"] in fb[0]
-                assert loc["resample_localization"] == R.final_message(loc["response"]).strip()
+                assert loc["resample_localization"] == R.response_text(loc["response"]).strip()
 
 
 def test_no_carry_feedback_unchanged():
@@ -562,3 +562,10 @@ def test_fit_critique_cuts_tail():
     assert cut > 0 and len(c) + 100 <= 600 and c == "x" * len(c)
     c, cut = R.fit_critique(eng, cfg, "short", [(lambda c: len(c), 600)])
     assert cut == 0 and c == "short"
+
+
+def test_response_text_harmony():
+    t = ("<|channel|>analysis<|message|>think A<|end|><|start|>assistant<|channel|>final<|message|>"
+         "verdict \\boxed{NO}<|return|>")
+    assert R.response_text(t) == "think A\n\nverdict \\boxed{NO}"
+    assert R.response_text("plain \\boxed{3}<|eot_id|>") == "plain \\boxed{3}"
