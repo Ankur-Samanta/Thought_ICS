@@ -393,3 +393,79 @@ def test_parse_verdict_latex_wrapped():
     assert P.parse_verdict("\\boxed{\\textbf{YES}}") is True
     assert P.parse_verdict("\\boxed{ $YES$ }") is True
     assert P.parse_verdict("no box") is None
+
+
+# --- Self-Refine / CoVe baselines --------------------------------------------------------
+class BaselineEngine:
+    """Self-Refine feedback: NO (as gpt-oss would: analysis then final channel) until the solution
+    boxes 42, then YES. Refine: boxes 42 on the 2nd refinement. CoVe: plans 2 questions."""
+    def __init__(self):
+        self.tok = FakeTok()
+        self.max_model_len = 10**6
+        self.n_refine = {}
+        self.calls = []
+
+    def gen_prompt_ids(self, text):
+        return self.tok.encode("<gen>" + text)
+
+    def chat_ids(self, text):
+        return self.tok.encode("<chat>" + text)
+
+    def generate(self, prompt_ids, params):
+        outs = []
+        for ids, prm in zip(prompt_ids, params):
+            text = self.tok.decode(ids)
+            self.calls.append((text[:6], prm.max_tokens))
+            if "Provide feedback on this solution" in text:
+                sol = text.split("Solution to review:")[1]
+                v = "YES, correct." if "\\boxed{42}" in sol else "NO. The step is wrong."
+                out = "<|channel|>analysis<|message|>thinking no yes<|end|><|start|>assistant<|channel|>final<|message|>" + v + "<|return|>"
+            elif "Corrected Solution:" in text:
+                pid = text.split("Problem:")[1].split("\n")[0].strip()
+                self.n_refine[pid] = self.n_refine.get(pid, 0) + 1
+                out = "fix \\boxed{42}" if self.n_refine[pid] >= 2 else "retry \\boxed{8}"
+            elif "Verification Questions:" in text:
+                out = "1. Is step one right here?\n2. Is the sum computed right?"
+            elif text.startswith("<chat>Answer the following question"):
+                out = "Yes."
+            elif "Final Solution:" in text:
+                out = "final \\boxed{42}"
+            else:
+                raise AssertionError(text[:80])
+            outs.append({"ids": self.tok.encode(out), "text": out, "finish_reason": "stop", "stop_reason": None})
+        return outs
+
+
+def _bcfg(**kw):
+    from types import SimpleNamespace
+    return SimpleNamespace(**{"budget": 16384, "temp": 0.5, "top_p": 0.9, "top_k": 50, "max_iterations": 10, **kw})
+
+
+def test_self_refine_up_to_n_stops_on_yes():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    probs = [{"problem": "pa", "answer": "42", "unique_id": "a"}, {"problem": "pb", "answer": "42", "unique_id": "b"}]
+    recs = B.run_self_refine(eng, _bcfg(), probs, ["x \\boxed{7}", "y \\boxed{42}"])
+    a, b = recs
+    assert b["stopped_early"] and len(b["iterations"]) == 1 and b["final_correct"]   # YES on the first attempt
+    assert a["stopped_early"] and [it["answer"] for it in a["iterations"]] == ["7", "8", "42"] and a["final_correct"]
+    assert a["iterations"][0]["feedback"]["text"] == "NO. The step is wrong."          # final channel only
+    assert all(t == 16384 for _, t in eng.calls)
+
+
+def test_self_refine_cap():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    eng.n_refine = {"pa": -100}  # never reaches 42
+    recs = B.run_self_refine(eng, _bcfg(max_iterations=3), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])
+    assert len(recs[0]["iterations"]) == 4 and not recs[0]["stopped_early"] and not recs[0]["final_correct"]
+
+
+def test_cove_single_pass():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    recs = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])
+    r = recs[0]
+    assert len(r["verifications"]) == 2 and len(r["iterations"]) == 2 and r["final_correct"]
+    # factored: verification questions are answered without the baseline solution in context
+    assert sum(1 for c, _ in eng.calls if c == "<chat>") == 3

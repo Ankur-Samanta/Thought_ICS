@@ -16,6 +16,9 @@
 # Extra args after the dataset are forwarded to run_study.py
 # (e.g. --shared-init --self-verify). Default is --oracle-verify.
 # MODELS_OVERRIDE="a b" picks models for "all"; JOB_PREFIX sets the job-name prefix (default bs).
+# MODULE=thought_ics.budget_study.baselines runs Self-Refine + CoVe instead; DEPEND_ON_PREFIX=bsSV makes
+# each job wait (afterok) for the queued/running job <prefix>_<model>_<dataset>, e.g. the self-verify
+# run whose first attempts it starts from (if that job already finished, no dependency is added).
 
 set -euo pipefail
 
@@ -48,9 +51,10 @@ submit() {  # model dataset_args job_name time extra...
     local model=$1 dargs=$2 name=$3 time=$4; shift 4
     local gpus=${GPUS[$model]}
     local method="both"; [[ "$*" == *--token-init-from* ]] && method="token"
-    local cmd="python -m thought_ics.budget_study.run_study --model ${model} ${dargs} --method ${method} --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
+    local cmd="python -m ${MODULE:-thought_ics.budget_study.run_study} --model ${model} ${dargs} --method ${method} --out-dir ${OUT_DIR}/${RUN_SUBDIR} $*"
     if $DRY_RUN; then echo "[${gpus} GPU] ${name}: ${cmd}"; return; fi
-    sbatch --partition=${PARTITION} --nodes=1 --gpus-per-node=${gpus} --cpus-per-gpu=10 \
+    local dep=""; [ -n "${DEPEND_ON_PREFIX:-}" ] && { local jid; jid=$(squeue -u "$USER" -h -n "${DEPEND_ON_PREFIX}_${name#*_}" -o %i | head -1); [ -n "$jid" ] && dep="--dependency=afterok:${jid}"; }
+    sbatch ${dep} --partition=${PARTITION} --nodes=1 --gpus-per-node=${gpus} --cpus-per-gpu=10 \
            --time=${time} --job-name=${name} \
            --output=${LOG_DIR}/${name}_%j.out --error=${LOG_DIR}/${name}_%j.err \
            --wrap="bash -c 'source ${CONDA_PATH}/etc/profile.d/conda.sh && conda activate ${CONDA_ENV} && cd ${REPO} && unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy ALL_PROXY all_proxy && export HF_HUB_OFFLINE=\${HF_HUB_OFFLINE:-1} VLLM_CACHE_ROOT=/tmp/vllm_cache_\$SLURM_JOB_ID && ${cmd}'"

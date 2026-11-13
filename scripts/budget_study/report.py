@@ -18,7 +18,7 @@ from pathlib import Path
 from math_verify import parse, verify
 
 MATH = {"amc23", "aime", "math500"}
-ORDER = ["qwen32b", "gptoss20b", "gptoss120b"]
+ORDER = ["llama3b", "llama8b", "qwen7b", "qwen14b", "qwen32b", "llama70b", "gptoss20b", "gptoss120b"]
 DS = ["amc23", "aime", "math500", "csqa", "gpqa", "mathqa"]
 _cache = {}
 
