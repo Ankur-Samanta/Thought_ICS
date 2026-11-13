@@ -558,3 +558,59 @@ ax.set_ylim(0, None)
 ax.grid(axis="x", visible=False)
 ax.legend(loc="upper right", fontsize=12)
 save(fig, "chain_length_distribution")
+
+
+# ---- Fig §5.3: self-correction lift in the fully autonomous setting -------------------------
+# lift over the shared first attempt (final - first), paired 95% bootstrap CI over problems; a model
+# is plotted only when Self-Refine, CoVe and Thought-ICS-F have all finished all six datasets.
+SR_C, COVE_C, F_C = "#bf7f00", "#6250d6", "#c2457e"
+
+
+def lift_rows():
+    out = defaultdict(list)
+    for sv in sorted({p.rsplit("_selfverify", 1)[0] for p in glob.glob(str(EXP / "full" / "*_selfverify_shared_fbattempt_*"))}):
+        lat = lambda pat, f: ([d for d in sorted(glob.glob(pat)) if Path(d, f).exists()] or [None])[-1]
+        b = lat(f"{sv}_baselines_*", "cove_results.jsonl")
+        fa = lat(f"{sv}_selfverifyfb{FEEDBACK_VARIANT}_shared_fbattempt_*", "thought_results.jsonl")
+        s = lat(f"{sv}_selfverify_shared_fbattempt_*", "thought_results.jsonl")
+        if not (b and fa and s):
+            continue
+        c = json.load(open(Path(s) / "config.json"))
+        L = lambda p: {json.loads(l)["problem_id"]: json.loads(l) for l in open(p)}
+        SRr, CVr, Fr = L(Path(b) / "self_refine_results.jsonl"), L(Path(b) / "cove_results.jsonl"), L(Path(fa) / "thought_results.jsonl")
+        for pid, r in L(Path(s) / "thought_results.jsonl").items():
+            g = lambda it: ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
+            last = lambda rr: g([it for it in rr["iterations"] if "gen_status" in it][-1])
+            out[c["model"]].append({"ds": c["dataset"], "init": g(r["iterations"][0]), "sr": g(SRr[pid]["iterations"][-1]),
+                                    "cove": g(CVr[pid]["iterations"][-1]), "f": last(Fr[pid])})
+    return out
+
+
+LR = lift_rows()
+fig, ax = plt.subplots(figsize=(9, 6))
+x = np.arange(len(ORDER))
+w = 0.26
+print("\nself_correction_lift_errorbar: lift over the first attempt [95% bootstrap CI]")
+for j, (key, name, col) in enumerate((("sr", "Self-Refine", SR_C), ("cove", "CoVe", COVE_C), ("f", "Thought-ICS-F", F_C))):
+    for i, m in enumerate(ORDER):
+        R = LR.get(m, [])
+        if len({r["ds"] for r in R}) < 6:
+            continue
+        rnd = random.Random(0)
+        f = lambda S: 100 * sum(r[key] - r["init"] for r in S) / len(S)
+        v = sorted(f([R[rnd.randrange(len(R))] for _ in R]) for _ in range(5000))
+        est, lo, hi = f(R), v[125], v[4874]
+        ax.bar(i + (j - 1) * w, est, w * 0.92, color=col, label=name if i == min(k for k, mm in enumerate(ORDER)
+                                                                             if len({r['ds'] for r in LR.get(mm, [])}) == 6) else None, zorder=2)
+        ax.errorbar(i + (j - 1) * w, est, yerr=[[est - lo], [hi - est]], fmt="none", ecolor=INK2, elinewidth=1.1, capsize=2.5, zorder=3)
+        print(f"  {name:14s} {m:11s} {est:+5.1f} [{lo:+5.1f}, {hi:+5.1f}]")
+missing = [m for m in ORDER if len({r["ds"] for r in LR.get(m, [])}) < 6]
+if missing:
+    print("  not yet complete (omitted):", ", ".join(missing))
+ax.axhline(0, color=AXIS, lw=0.9, zorder=1)
+ax.set_xticks(x, [SHORT[m] for m in ORDER])
+ax.set_xlabel("Model")
+ax.set_ylabel("Self-correction lift (%)")
+ax.grid(axis="x", visible=False)
+ax.legend(loc="upper left", fontsize=12)
+save(fig, "self_correction_lift_errorbar")
