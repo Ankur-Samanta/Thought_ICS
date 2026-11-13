@@ -249,3 +249,44 @@ axes[2].text(-0.7, ymax * 0.62, "← earlier\n(clean)", ha="right", va="center",
 axes[2].text(0.7, ymax * 0.62, "later →\n(erroneous)", ha="left", va="center", fontsize=10, color=ERRONEOUS)
 fig.tight_layout(w_pad=1.2)
 save(fig, "localization_error_distribution")
+
+
+# ---- Fig: self-verification by correction iteration (Thought-ICS, self-verified) ---------
+# (file name kept from the paper; grouping is by verification call n, not by terminal iteration:
+#  every response still in the correction loop is verified at iteration n, and recall /
+#  specificity / accuracy are computed over those verifications)
+SPEC, RECALL, ACC = "#6250d6", "#bf7f00", INK2
+calls = defaultdict(list)  # n -> [(says_correct, actually_correct)]
+for d in sorted(glob.glob(str(EXP / "full" / "*_selfverify_shared_fbattempt_*/"))):
+    d = Path(d)
+    c = json.load(open(d / "config.json"))
+    for line in open(d / "thought_results.jsonl"):
+        r = json.loads(line)
+        its = r["iterations"]
+        cur = ok(its[0]["answer"], r["ground_truth"], c["dataset"], its[0]["correct"])
+        n = 0
+        for it in its[1:]:
+            v = it.get("verification") or it.get("localization", {}).get("verification")
+            if v is not None:
+                n += 1
+                calls[min(n, 10)].append((v["verdict"] is True, cur))
+            if "gen_status" in it:
+                cur = ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
+ns = sorted(calls)
+rec = [100 * sum(not s for s, a in calls[n] if not a) / max(1, sum(not a for _, a in calls[n])) for n in ns]
+spe = [100 * sum(s for s, a in calls[n] if a) / max(1, sum(a for _, a in calls[n])) for n in ns]
+acc = [100 * sum(s == a for s, a in calls[n]) / len(calls[n]) for n in ns]
+print("\nself-verification by correction iteration (Thought-ICS, all models)")
+for n, a, b, c_, k in zip(ns, spe, rec, acc, [len(calls[n]) for n in ns]):
+    print(f"  n={n:2d} calls {k:5d}  specificity {a:5.1f}  recall {b:5.1f}  accuracy {c_:5.1f}")
+fig, ax = plt.subplots(figsize=(6, 4))
+ax.plot(ns, spe, color=SPEC, lw=2, marker="o", ms=7, mec=SURFACE, mew=1.2, label="Specificity", zorder=3)
+ax.plot(ns, rec, color=RECALL, lw=2, marker="^", ms=7.5, mec=SURFACE, mew=1.2, label="Recall", zorder=3)
+ax.plot(ns, acc, color=ACC, lw=1.6, ls=(0, (4, 2.5)), marker="s", ms=6, mec=SURFACE, mew=1.2, label="Accuracy", zorder=2)
+ax.set_xlabel("Correction iteration")
+ax.set_ylabel("Percentage (%)")
+ax.set_xticks(ns)
+ax.set_ylim(0, 100)
+ax.grid(axis="x", visible=False)
+ax.legend(loc="center right", fontsize=11)
+save(fig, "self_verification_by_terminal_iteration_part1a")
