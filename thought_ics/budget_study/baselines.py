@@ -31,7 +31,7 @@ from pathlib import Path
 from thought_ics.baselines.third_party import chain_of_verification as CV
 from thought_ics.baselines.third_party import self_refine as SR
 from thought_ics.budget_study import protocol as P
-from thought_ics.budget_study.run_study import MODELS, Engine, boxed_answer, final_message, is_correct, sp
+from thought_ics.budget_study.run_study import MODELS, Engine, boxed_answer, final_message, is_correct, response_text, sp
 from thought_ics.datasets import load_dataset_by_name
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -82,7 +82,11 @@ def call(eng, cfg, texts, solution: bool):
     res = []
     for o, i in zip(outs, ids):
         msg = o["text"] if solution else final_message(o["text"])
-        res.append({"raw": o["text"], "text": msg.strip(), "finish_reason": o["finish_reason"],
+        # "text": the final message (parsed for verdicts / question lists); "full": the whole response
+        # (gpt-oss: analysis reasoning + final message), which is what gets carried into later prompts,
+        # as for Thought-ICS-F. Identical for models without a separate reasoning channel.
+        res.append({"raw": o["text"], "text": msg.strip(), "full": (msg if solution else response_text(o["text"])).strip(),
+                    "finish_reason": o["finish_reason"],
                     "n_tokens": len(o["ids"]), "prompt_tokens": len(i)})
     return res
 
@@ -115,7 +119,7 @@ def run_self_refine(eng, cfg, problems, init):
             if ok:
                 recs[i]["stopped_early"] = True
             else:
-                refine.append((i, fb["text"]))
+                refine.append((i, fb["full"]))
         built = [fit(eng, lambda ps, i=i: SR.REFINE_PROMPT.format(problem=problems[i]["problem"], solution=cur[i],
                                                                   feedback=ps[0]), [f]) for i, f in refine]
         for (i, _), (_, c) in zip(refine, built):
@@ -155,7 +159,7 @@ def run_cove(eng, cfg, problems, init):
             if not vt.strip():
                 vt = "(No verification questions generated)"
             return CV.FINAL_RESPONSE_PROMPT.format(problem=p["problem"], baseline=init[k], verifications=vt)
-        prompt, c = fit(eng, build, [q for q, _ in by[k]] + [a["text"] for _, a in by[k]])
+        prompt, c = fit(eng, build, [q for q, _ in by[k]] + [a["full"] for _, a in by[k]])
         finals.append(prompt)
         cut_k[k] = c
     outs = call(eng, cfg, finals, solution=True)

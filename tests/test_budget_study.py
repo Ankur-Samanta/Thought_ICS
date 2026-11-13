@@ -600,3 +600,15 @@ def test_majority_vote():
     assert vote(["A", "B", "B", "NO ANSWER"], "csqa") == ("B", 2)
     assert vote(["NO ANSWER"] * 3, "aime") == ("NO ANSWER", 0)
     assert vote(["x=5", "5", "7"], "amc23")[1] in (1, 2)
+
+
+def test_self_refine_carries_full_feedback():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    seen = []
+    orig = eng.generate
+    eng.generate = lambda ids, prm: (seen.extend(eng.tok.decode(i) for i in ids), orig(ids, prm))[1]
+    B.run_self_refine(eng, _bcfg(max_iterations=1), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])
+    refine = [t for t in seen if "Corrected Solution:" in t]
+    assert refine and "thinking no yes" in refine[0] and "NO. The step is wrong." in refine[0]   # reasoning + final
+    assert "<|channel|>" not in refine[0]
