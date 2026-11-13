@@ -54,7 +54,7 @@ MIN_OUTPUT_ROOM = 4096
 def fit(eng, build, parts):
     """build(parts) -> prompt text. If the solution-writing prompt would leave less than
     MIN_OUTPUT_ROOM tokens of context, cut the fed-back evaluation texts in `parts` (Self-Refine
-    feedback / CoVe verification answers) from the end, longest first, until it fits. Only
+    feedback / CoVe verification questions and answers) from the end, longest first, until it fits. Only
     happens when an evaluation looped to its budget (<3% of calls); the solution and problem
     are never cut. Returns (prompt, tokens_cut)."""
     limit = eng.max_model_len - MIN_OUTPUT_ROOM
@@ -148,12 +148,14 @@ def run_cove(eng, cfg, problems, init):
         by[k].append((q, a))
     finals, cut_k = [], {}
     for k, p in enumerate(problems):
-        def build(answers, k=k, p=p):
-            vt = "".join(f"Q{i}: {q}\nA{i}: {a}\n\n" for i, ((q, _), a) in enumerate(zip(by[k], answers), 1))
+        nq = len(by[k])
+
+        def build(parts, k=k, p=p, nq=nq):  # parts = questions + answers (both model-written eval text)
+            vt = "".join(f"Q{i}: {q}\nA{i}: {a}\n\n" for i, (q, a) in enumerate(zip(parts[:nq], parts[nq:]), 1))
             if not vt.strip():
                 vt = "(No verification questions generated)"
             return CV.FINAL_RESPONSE_PROMPT.format(problem=p["problem"], baseline=init[k], verifications=vt)
-        prompt, c = fit(eng, build, [a["text"] for _, a in by[k]])
+        prompt, c = fit(eng, build, [q for q, _ in by[k]] + [a["text"] for _, a in by[k]])
         finals.append(prompt)
         cut_k[k] = c
     outs = call(eng, cfg, finals, solution=True)

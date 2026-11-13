@@ -569,3 +569,19 @@ def test_response_text_harmony():
          "verdict \\boxed{NO}<|return|>")
     assert R.response_text(t) == "think A\n\nverdict \\boxed{NO}"
     assert R.response_text("plain \\boxed{3}<|eot_id|>") == "plain \\boxed{3}"
+
+
+def test_cove_overflow_from_question_does_not_crash():
+    from thought_ics.budget_study import baselines as B
+    eng = BaselineEngine()
+    eng.max_model_len = B.MIN_OUTPUT_ROOM + 2000
+    orig = eng.generate
+    def gen(ids, params):
+        outs = orig(ids, params)
+        for o, i in zip(outs, ids):
+            if "Verification Questions:" in eng.tok.decode(i):
+                o["text"] = "1. " + "loop " * 3000 + "?"
+        return outs
+    eng.generate = gen
+    r = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
+    assert r["tokens_cut_to_fit"] > 0
