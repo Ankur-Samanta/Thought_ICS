@@ -178,7 +178,7 @@ def loc_fig(method, name):
     ax.bar(x - width / 2, earlier, width, bottom=exact, color=BLUE, alpha=0.85)
     ax.bar(x + width / 2, later, width, color=RED, alpha=0.85, label="Erroneous Prefix (self > oracle)")
     if any(failed):
-        ax.bar(x + width / 2, failed, width, bottom=later, color=GRAY, alpha=0.85, label="Failed Localization")
+        ax.bar(x + width / 2, failed, width, bottom=later, color="#7f8c8d", alpha=1.0, label="Failed Localization")
     ax.errorbar(x - width / 2, clean, yerr=[[c - S[m][2] for c, m in zip(clean, models)],
                                             [S[m][3] - c for c, m in zip(clean, models)]],
                 fmt="none", ecolor=GREEN_DK, capsize=3, capthick=1.5, elinewidth=1.5)
@@ -430,21 +430,21 @@ print(f"\naccuracy over correction iterations: {len(keys)} (model, dataset) pair
       f"{'' if FB else ' -- no ' + FEEDBACK_VARIANT + ' runs yet, plotting without-feedback only'}")
 curve = lambda T: [100 * np.mean([T[k][p][n] for k in keys for p in T[k]]) for n in range(11)]
 s_curve = curve(S)
-its = list(range(1, 11))
+its = list(range(11))   # n = 0 is the shared first attempt
 fig, ax = plt.subplots(1, 1, figsize=(6, 4))
-ax.plot(its, [s_curve[0]] * 10, marker="o", linewidth=2, markersize=8, label="Initial", color="#1f77b4")
-ax.plot(its, s_curve[1:], marker="s", linewidth=2, markersize=8, label="Final (without feedback)", color="#ff7f0e")
-allv = [s_curve[0]] + s_curve[1:]
+ax.plot(its, [s_curve[0]] * 11, marker="o", linewidth=2, markersize=8, label="Initial", color="#1f77b4")
+ax.plot(its, s_curve, marker="s", linewidth=2, markersize=8, label="Final (without feedback)", color="#ff7f0e")
+allv = list(s_curve)
 if FB:
     f_curve = curve(FB)
-    ax.plot(its, f_curve[1:], marker="^", linewidth=2, markersize=8, label="Final (with feedback)", color="#d62728")
-    allv += f_curve[1:]
+    ax.plot(its, f_curve, marker="^", linewidth=2, markersize=8, label="Final (with feedback)", color="#d62728")
+    allv += f_curve
     print("  with feedback   :", " ".join(f"{v:5.1f}" for v in f_curve))
 print("  without feedback:", " ".join(f"{v:5.1f}" for v in s_curve))
 ax.set_xlabel("Correction Iteration", fontsize=14)
 ax.set_ylabel("Accuracy (%)", fontsize=14)
 ax.legend(loc="upper right", fontsize=11)
-ax.set_xlim(0.5, 10.5)
+ax.set_xlim(-0.5, 10.5)
 ax.set_ylim(max(0, min(allv) - 5), min(100, max(allv) + 5))
 ax.set_xticks(its)
 ax.tick_params(axis="both", labelsize=12)
