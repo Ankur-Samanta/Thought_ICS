@@ -261,6 +261,9 @@ edit_fig("thought", "edit_accuracy_clean_vs_erroneous")
 edit_fig("token", "edit_accuracy_clean_vs_erroneous_token")
 
 # ---- Fig: localization_error_distribution (Thought-ICS; localization_error_distribution.py) -
+# same family hues as MODEL_COLORS, lighter for smaller models
+DEV_COLORS = {"llama3b": "#f1948a", "llama8b": "#e74c3c", "llama70b": "#922b21", "qwen7b": "#85c1e9",
+              "qwen14b": "#3498db", "qwen32b": "#1a5276", "gptoss20b": "#58d68d", "gptoss120b": "#1e8449"}
 print("\nlocalization_error_distribution: self - oracle (Thought-ICS, usable localizations)")
 fig, ax = plt.subplots(figsize=(10, 6))
 bins = np.arange(-5, 12) - 0.5
@@ -272,7 +275,7 @@ for m in FAM_ORDER:
     counts, _ = np.histogram(devs, bins=bins, density=True)
     mean_dev = int(round(np.mean(devs)))
     counts_smooth = np.maximum(make_interp_spline(bin_centers, counts, k=3)(x_smooth), 0)
-    ax.plot(x_smooth, counts_smooth, color=MODEL_COLORS[m], linewidth=2.5, label=f"{LONG[m]} (μ={mean_dev:+d})")
+    ax.plot(x_smooth, counts_smooth, color=DEV_COLORS[m], linewidth=2.5, label=f"{LONG[m]} (μ={mean_dev:+d})")
     print(f"  {m:10s} n={len(devs):3d} exact {100 * np.mean(devs == 0):4.0f}%  mean {devs.mean():+.2f}  "
           f"median {np.median(devs):+.0f}")
 ax.axvline(x=0, color="black", linestyle="--", alpha=0.5, linewidth=1)
