@@ -173,8 +173,8 @@ def loc_fig(method, name):
     later = [S[m][0]["later"] for m in models]
     failed = [S[m][0]["failed"] for m in models]
     clean = [S[m][1] for m in models]
-    ax.bar(x - width / 2, exact, width, color=GREEN, alpha=0.85, label="Clean Prefix (self ≤ oracle)")
-    ax.bar(x - width / 2, earlier, width, bottom=exact, color=BLUE, alpha=0.85)
+    ax.bar(x - width / 2, exact, width, color=GREEN, alpha=0.85, label="Clean Prefix: Exact (self = oracle)")
+    ax.bar(x - width / 2, earlier, width, bottom=exact, color=BLUE, alpha=0.85, label="Clean Prefix: Earlier (self < oracle)")
     ax.bar(x + width / 2, later, width, color=RED, alpha=0.85, label="Erroneous Prefix (self > oracle)")
     if any(failed):
         ax.bar(x + width / 2, failed, width, bottom=later, color=GRAY, alpha=1.0, label="Failed Localization")
@@ -192,8 +192,8 @@ def loc_fig(method, name):
     ax.set_xticks(x)
     ax.set_xticklabels([SHORT[m] for m in models], fontsize=12)
     ax.tick_params(axis="y", labelsize=12)
-    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 1.02), fontsize=11, ncol=1, framealpha=0.9)
-    ax.set_ylim(0, 120)
+    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 1.02), fontsize=10, ncol=1, framealpha=0.9)
+    ax.set_ylim(0, 130)
     ax.set_yticks(range(0, 101, 20))
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
