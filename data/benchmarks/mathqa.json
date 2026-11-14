@@ -1,0 +1,502 @@
+[
+ {
+  "id": "mathqa_2619",
+  "problem": "bag contains 7 green and 8 white balls . if two balls are drawn simultaneously , the probability that both are of the same colour is - .\na ) 7 / 15 , b ) 2 / 8 , c ) 7 / 11 , d ) 13 / 5 , e ) 87\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_456",
+  "problem": "the product of two numbers is 2028 and their h . c . f is 13 . the number of such pairs is :\na ) 1 , b ) 2 , c ) 3 , d ) 4 , e ) 5\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_102",
+  "problem": "there are 28 stations between ernakulam and chennai . how many second class tickets have to be printed , so that a passenger can travel from one station to any other station ?\na ) 800 , b ) 820 , c ) 850 , d ) 870 , e ) 900\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1126",
+  "problem": "the sale price sarees listed for rs . 500 after successive discount is 10 % and 5 % is ?\na ) 427.5 , b ) 277 , c ) 342 , d ) 882 , e ) 212\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1003",
+  "problem": "from below option 48 is divisible by which one ?\na ) a ) 3 , b ) b ) 5 , c ) c ) 9 , d ) d ) 7 , e ) e ) 11\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_914",
+  "problem": "running at the same constant rate , 6 identical machines can produce a total of 270 pens per minute . at this rate , how many pens could 10 such machines produce in 4 minutes ?\na ) 1500 , b ) 1545.6 , c ) 1640.33 , d ) 1800 , e ) none of these\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_571",
+  "problem": "if 20 liters of chemical x are added to 80 liters of a mixture that is 15 % chemical x and 85 % chemical y , then what percentage of the resulting mixture is chemical x ?\na ) 30 % , b ) 32 % , c ) 35 % , d ) 38 % , e ) 40 %\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_419",
+  "problem": "a business executive and his client are charging their dinner tab on the executive ' s expense account . the company will only allow them to spend a total of 60 $ for the meal . assuming that they will pay 7 % in sales tax for the meal and leave a 15 % tip , what is the most their food can cost ?\na ) 39.55 $ , b ) 40.63 $ , c ) 41.63 $ , d ) 42.15 $ , e ) 48.7 $\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_2771",
+  "problem": "a train is 360 meter long is running at a speed of 45 km / hour . in what time will it pass a bridge of 240 meter length ?\na ) 65 seconds , b ) 46 seconds , c ) 40 seconds , d ) 97 seconds , e ) 48 seconds\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_2233",
+  "problem": "in the game of dubblefud , red chips , blue chips and green chips are each worth 2 , 4 and 5 points respectively . in a certain selection of chips , the product of the point values of the chips is 16000 . if the number of blue chips in this selection doubles the number of green chips , how many red chips are in the selection ?\na ) 1 , b ) 2 , c ) 3 , d ) 4 , e ) 5\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_356",
+  "problem": "a man is 30 years older than his son . in two years , his age will be twice the age of his son . the present age of the son is\na ) 14 years , b ) 28 years , c ) 20 years , d ) 22 years , e ) none\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2418",
+  "problem": "what is the total number of integers between 20 and 100 that are divisible by 9 ?\na ) 5 , b ) 15 , c ) 12 , d ) 7 , e ) 9\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_1728",
+  "problem": "a , b , c , d and e are 5 consecutive points on a straight line . if bc = 2 cd , de = 5 , ab = 5 and ac = 11 , what is the length of ae ?\na ) 19 , b ) 21 , c ) 23 , d ) 25 , e ) 27\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_130",
+  "problem": "if 8 men or 12 women can do a piece of work in 25 days , in how many days can the same work be done by 6 men and 11 women ?\na ) 10 days , b ) 11 days , c ) 13 days , d ) 15 days , e ) 17 days\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_122",
+  "problem": "at the faculty of aerospace engineering , 312 students study random - processing methods , 232 students study scramjet rocket engines and 112 students study them both . if every student in the faculty has to study one of the two subjects , how many students are there in the faculty of aerospace engineering ?\na ) 424 . , b ) 428 . , c ) 430 . , d ) 432 . , e ) 436\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_383",
+  "problem": "a can do a piece of work in 5 days and b can do it in 4 days how long will they both work together to complete the work ?\na ) 6 / 11 , b ) 8 / 11 , c ) 7 / 9 , d ) 2 / 9 , e ) 10 / 11\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_895",
+  "problem": "the incomes of two persons a and b are in the ratio 3 : 4 . if each saves rs . 100 per month , the ratio of their expenditures is 1 : 4 . find their incomes ?\na ) 112.5 , 158.5 , b ) 180.5 , 150 , c ) 100 , 200 , d ) 112.5 , 150 , e ) 122.5 , 150\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_952",
+  "problem": "6 people can do work in 80 days how much people they required to complete the work in 16 days ?\na ) 10 , b ) 20 , c ) 30 , d ) 40 , e ) 50\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2069",
+  "problem": "15 lts are taken of from a container full of liquid a and replaced with liquid b . again 15 more lts of the mixture is taken and replaced with liquid b . after this process , if the container contains liquid a and b in the ratio 9 : 16 , what is the capacity of the container h ?\na ) a : 45 , b ) b : 25 , c ) c : 37.5 , d ) d : 36 , e ) e : 42\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2465",
+  "problem": "a man saves a certain portion of his income during a year and spends the remaining portion on his personal expenses . next year his income increases by 40 % but his savings increase by 100 % . if his total expenditure in 2 years is double his expenditure in 1 st year , what % age of his income in the first year did he save ?\na ) 45 % , b ) 40 % , c ) 25 % , d ) 28 % , e ) 33.33 %\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_108",
+  "problem": "if 5 % more is gained by selling an article for rs . 1000 than by selling it for rs . 20 , the cost of the article is ?\na ) 127 , b ) 1600 , c ) 1200 , d ) 1680 , e ) 1800\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2298",
+  "problem": "working together , printer a and printer b would finish the task in 15 minutes . printer a alone would finish the task in 45 minutes . how many pages does the task contain if printer b prints 3 pages a minute more than printer a ?\na ) 125 , b ) 135 , c ) 145 , d ) 155 , e ) 165\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_814",
+  "problem": "the angle between the minute hand and the hour hand of a clock when the time is 4.20 , is\na ) 0 ° , b ) 5 ° , c ) 10 ° , d ) 20 ° , e ) none\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2932",
+  "problem": "mark bought a set of 6 flower pots of different sizes at a total cost of $ 8.00 . each pot cost 0.25 more than the next one below it in size . what was the cost , in dollars , of the largest pot ?\na ) $ 1.75 , b ) $ 1.96 , c ) $ 2.00 , d ) $ 2.15 , e ) $ 2.30\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2661",
+  "problem": "a man covers a certain distance q in a train . if the train moved 4 km / hr faster , it would take 30 min less . if it moved 2 km / hr slower , it would take 20 mins more . find the distance ?\na ) 200 km , b ) 50 km , c ) 20 km , d ) 60 km , e ) 80 km\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_2872",
+  "problem": "the parameter of a square is equal to the perimeter of a rectangle of length 16 cm and breadth 14 cm . find the circumference of a semicircle whose diameter is equal to the side of the square . ( round off your answer to two decimal places\na ) 34 , b ) 35 , c ) 56 , d ) 67 , e ) 23.57\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_2232",
+  "problem": "what is the characteristic of the logarithm of 0.0000134 ?\na ) 5 , b ) - 5 , c ) 6 , d ) - 6 , e ) 7\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1718",
+  "problem": "a group of 55 adults and 70 children go for trekking . if there is meal for either 70 adults or 90 children and if 28 adults have their meal , find the total number of children that can be catered with the remaining food .\na ) 33 , b ) 54 , c ) 18 , d ) 17 , e ) 01\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_902",
+  "problem": "the speeds of three asteroids were compared . asteroids x - 13 and y - 14 were observed for identical durations , while asteroid z - 15 was observed for 2 seconds longer . during its period of observation , asteroid y - 14 traveled three times the distance x - 13 traveled , and therefore y - 14 was found to be faster than x - 13 by 1000 kilometers per second . asteroid z - 15 had an identical speed as that of x - 13 , but because z - 15 was observed for a longer period , it traveled five times the distance x - 13 traveled during x - 13 ' s inspection . asteroid x - 13 traveled how many kilometers during its observation ?\na ) 250 , b ) 1,600 / 3 , c ) 1,000 , d ) 1,500 , e ) 2,500\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1839",
+  "problem": "the l . c . m of two numbers is 48 . the numbers are in the ratio 2 : 3 . the sum of numbers is :\na ) 28 , b ) 30 , c ) 40 , d ) 50 , e ) 60\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2413",
+  "problem": "find the number which is nearest to 3105 and is exactly divisible by 21 .\na ) 1208 , b ) 3108 , c ) 241 , d ) 217 , e ) 3147\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1139",
+  "problem": "the pinedale bus line travels at an average speed of 60 km / h , and has stops every 5 minutes along its route . yahya wants to go from his house to the pinedale mall , which is 7 stops away . how far away , in kilometers , is pinedale mall away from yahya ' s house ?\na ) 20 km , b ) 35 km , c ) 40 km , d ) 50 km , e ) 60 km\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_26",
+  "problem": "john and ingrid pay 30 % and 40 % tax annually , respectively . if john makes $ 60000 and ingrid makes $ 72000 , what is their combined tax rate ?\na ) 32 % , b ) 34.4 % , c ) 35 % , d ) 35.6 % , e ) 36.4 %\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_653",
+  "problem": "jim ’ s taxi service charges an initial fee of $ 2.45 at the beginning of a trip and an additional charge of $ 0.35 for each 2 / 5 of a mile traveled . what is the total charge for a trip of 3.6 miles ?\na ) $ 3.15 , b ) $ 4.45 , c ) $ 4.80 , d ) $ 5.05 , e ) $ 5.6\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_2859",
+  "problem": "the original price of a suit is $ 200 . the price increased 20 % , and after this increase , the store published a 20 % off coupon for a one - day sale . given that the consumers who used the coupon on sale day were getting 20 % off the increased price , how much did these consumers pay for the suit ?\na ) $ 192 , b ) $ 198 , c ) $ 200 , d ) $ 208 , e ) $ 216\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1731",
+  "problem": "if x / y = 7 / 4 , then ( x + y ) / ( x - y ) = ?\na ) 5 , b ) 11 / 3 , c ) - 1 / 6 , d ) - 1 / 5 , e ) - 5\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1393",
+  "problem": "the price of a certain product increased by the same percent from 1960 to 1970 as from 1970 to 1980 . if its price of $ 1.20 in 1970 was 150 percent of its price in 1960 , what was its price in 1980 ?\na ) $ 1.80 , b ) $ 2.00 , c ) $ 2.40 , d ) $ 2.70 , e ) $ 3.00\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1138",
+  "problem": "on a certain transatlantic crossing , 20 percent of a ship ’ s passengers held round - trip tickets and also took their cars abroad the ship . if 50 percent of the passengers with round - trip tickets did not take their cars abroad the ship , what percent of the ship ’ s passengers held round - trip tickets ?\na ) 30 % , b ) 40 % , c ) 50 % , d ) 60 % , e ) 65 %\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_636",
+  "problem": "susan drives from city a to city b . after two hours of driving she noticed that she covered 80 km and calculated that , if she continued driving at the same speed , she would end up been 15 minutes late . so she increased her speed by 10 km / hr and she arrived at city b 36 minutes earlier than she planned . find the distance between cities a and b .\na ) 223 , b ) 376 , c ) 250 , d ) 378 , e ) 271\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_881",
+  "problem": "in what time will a railway train 110 m long moving at the rate of 36 kmph pass a telegraph post on its way ?\na ) 6 sec , b ) 7 sec , c ) 8 sec , d ) 11 sec , e ) 2 sec\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1378",
+  "problem": "a company wants to spend equal amounts of money for the purchase of two types of computer printers costing $ 300 and $ 200 per unit , respectively . what is the fewest number of computer printers that the company can purchase ?\na ) 3 , b ) 5 , c ) 7 , d ) 9 , e ) 11\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_418",
+  "problem": "a sum of money lent out at s . i . amounts to rs . 820 after 2 years and to rs . 1020 after a further period of 5 years . the sum is ?\na ) rs . 440 , b ) rs . 500 , c ) rs . 540 , d ) rs . 740 , e ) rs . 840\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_379",
+  "problem": "when tossed , a certain coin has equal probability of landing on either side . if the coin is tossed 4 times , what is the probability that it will land twice on heads and twice tails ?\na ) 1 / 8 , b ) 1 / 4 , c ) 1 / 16 , d ) 1 / 32 , e ) 1 / 2\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_1556",
+  "problem": "a certain experimental mathematics program was tried out in 2 classes in each of 26 elementary schools and involved 32 teachers . each of the classes had 1 teacher and each of the teachers taught at least 1 , but not more than 3 , of the classes . if the number of teachers who taught 3 classes is n , then the least and greatest possible values of n , respectively , are\na ) 0 and 13 , b ) 0 and 14 , c ) 1 and 10 , d ) 1 and 9 , e ) 2 and 8\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_396",
+  "problem": "two goods trains each 500 m long are running in opposite directions on parallel tracks . their speeds are 60 km / hr and 30 km / hr respectively . find the time taken by the slower train to pass the driver of the faster one ?\na ) 12 sec , b ) 24 sec , c ) 40 sec , d ) 60 sec , e ) 62 sec\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_1470",
+  "problem": "village p ’ s population is 1150 greater than village q ' s population . if village q ’ s population were reduced by 200 people , then village p ’ s population would be 4 times as large as village q ' s population . what is village q ' s current population ?\na ) 600 , b ) 625 , c ) 650 , d ) 675 , e ) 700\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_1408",
+  "problem": "a team of 8 persons joins in a shooting competition . the best marksman scored 85 points . if he had scored 92 points , the average score for the team would have been 84 . the number of points , the team scored was :\na ) 665 , b ) 376 , c ) 998 , d ) 1277 , e ) 1991\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_2472",
+  "problem": "the probability that event a occurs is 0.4 , and the probability that events a and b both occur is 0.45 . if the probability that either event a or event b occurs is 0.6 , what is the probability that event b will occur ?\na ) 0.05 , b ) 0.15 , c ) 0.45 , d ) 0.5 , e ) 0.55\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_1083",
+  "problem": "if 7 a - 3 b = 10 b + 50 = - 12 b - 2 a , what is the value of 9 a + 9 b ?\na ) - 9 , b ) - 6 , c ) 0 , d ) 6 , e ) 9\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_177",
+  "problem": "a man invests some money partly in 9 % stock at 96 and partly in 12 % stock at 120 . to obtain equal dividends from both , he must invest the money in the ratio ?\na ) 16 : 18 , b ) 16 : 13 , c ) 16 : 15 , d ) 16 : 12 , e ) 16 : 11\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_1881",
+  "problem": "sum of the squares of 3 no . is 276 and the sum of their products taken two at a time is 150 . find the sum ?\na ) 22 , b ) 18 , c ) 26 , d ) 24 , e ) 32\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_2196",
+  "problem": "there are 24 students in a seventh grade class . they decided to plant birches and roses at the school ' s backyard . while each girl planted 3 roses , every three boys planted 1 birch . by the end of the day they planted 2424 plants . how many birches were planted ?\na ) 2 , b ) 5 , c ) 8 , d ) 6 , e ) 4\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_511",
+  "problem": "4242 × 9999 = ?\na ) 42415758 , b ) 42415751 , c ) 42415752 , d ) 42415753 , e ) 42415754\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1550",
+  "problem": "the diameter of the driving wheel of a bus in 140 cm . how many revolutions per minute must the wheel make in order to keep a speed of 66 kmph ?\na ) 210 , b ) 220 , c ) 230 , d ) 240 , e ) 250\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_322",
+  "problem": "a certain fraction has the same ratio to 1 / 36 , as 4 / 5 does to 2 / 9 . what is this certain fraction ?\na ) 1 / 5 , b ) 1 / 10 , c ) 1 / 15 , d ) 1 / 20 , e ) 1 / 25\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2261",
+  "problem": "the product of two numbers is 468 and the sum of their squares is 289 . the sum of the number is ?\na ) a ) 23 , b ) b ) 25 , c ) c ) 27 , d ) d ) 31 , e ) e ) 35\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_1200",
+  "problem": "some persons can do a piece of work in 32 days . two times the number of these people will do half of that work in ?\na ) 3 , b ) 4 , c ) 5 , d ) 6 , e ) 8\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_2574",
+  "problem": "a reduction of 40 % in the price of oil enables a house wife to obtain 5 kgs more for rs . 800 , what is the reduced price for kg ?\na ) 80 , b ) 72 , c ) 64 , d ) 56 , e ) 48\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2533",
+  "problem": "if o is the center of the circle in the figure above and the area of the unshaded sector is 5 , what is the area of the shaded region ?\n['a ) 25 / √ π', 'b ) 30 / √ π', 'c ) 20', 'd ) 25', 'e ) 30']\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1481",
+  "problem": "ajay can walk 4 km in 1 hour . in how many hours he can walk 40 km ?\na ) 5 hrs , b ) 10 hrs , c ) 15 hrs , d ) 20 hrs , e ) 30 hrs\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2364",
+  "problem": "a pupil ' s marks were wrongly entered as 35 instead of 23 . due to that the average marks for the class got increased by half . the number of pupils in the class is :\na ) 30 , b ) 80 , c ) 20 , d ) 25 , e ) 24\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_787",
+  "problem": "a bus 75 m long is running with a speed of 21 km / hr . in what time will it pass a woman who is walking at 3 km / hr in the direction opposite to that in which the bus is going ?\na ) 5.75 , b ) 7.62 , c ) 11.25 , d ) 4.25 , e ) 3.25\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2885",
+  "problem": "107 x 107 + 93 x 93 = ?\na ) 19578 , b ) 19418 , c ) 20098 , d ) 21908 , e ) none of them\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_284",
+  "problem": "if an integer n is to be selected at random from 1 to 100 , inclusive , what is probability n ( n + 1 ) will be divisible by 32 ?\na ) 2 / 7 , b ) 3 / 7 , c ) 1 / 16 , d ) 1 / 14 , e ) 1 / 12\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_187",
+  "problem": "a squirrel runs up a cylindrical post , in a perfect spiral path making one circuit for each rise of 3 feet . how many feet does the squirrel travels if the post is 18 feet tall and 3 feet in circumference ?\na ) 10 feet , b ) 12 feet , c ) 13 feet , d ) 15 feet , e ) 18 feet\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_2708",
+  "problem": "shawn invested one half of his savings in a bond that paid simple interest for 2 years and received $ 400 as interest . he invested the remaining in a bond that paid compound interest , interest being compounded annually , for the same 2 years at the same rate of interest and received $ 605 as interest . what was the value of his total savings before investing in these two bonds ?\na ) 3000 , b ) 5000 , c ) 2000 , d ) 4000 , e ) 6000\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_933",
+  "problem": "the original price of a suit is $ 100 . the price increased 20 % , and after this increase , the store published a 20 % off coupon for a one - day sale . given that the consumers who used the coupon on sale day were getting 20 % off the increased price , how much did these consumers pay for the suit ?\na ) $ 88 , b ) $ 96 , c ) $ 100 , d ) $ 106 , e ) $ 110\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1185",
+  "problem": "a train passes a man standing on a platform in 8 seconds and also crosses the platform which is 276 metres long in 20 seconds . the length of the train ( in metres ) is :\na ) 184 , b ) 176 , c ) 175 , d ) 96 , e ) none of these\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_326",
+  "problem": "a group of people participate in some curriculum , 30 of them practice yoga , 20 study cooking , 15 study weaving , 5 of them study cooking only , 8 of them study both the cooking and yoga , 5 of them participate all curriculums . how many people study both cooking and weaving ?\na ) 1 , b ) 2 , c ) 3 , d ) 4 , e ) 5\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_953",
+  "problem": "the average of 10 consecutive integers is 15 . then , 9 is deducted from the first consecutive number , 8 is deducted from the second , 7 is deducted form the third , and so on until the last number which remains unchanged . what is the new average ?\na ) 10 , b ) 10.5 , c ) 11 , d ) 11.5 , e ) 12\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_413",
+  "problem": "light glows for every 15 seconds . how many max . times did it glow between 1 : 57 : 58 and 3 : 20 : 47 am .\na ) 380 times , b ) 381 times , c ) 382 times , d ) 392 times , e ) 331 times\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "e"
+ },
+ {
+  "id": "mathqa_1857",
+  "problem": "what is the median of a set of consecutive integers if the sum of nth number from the beginning and nth number from the end is 150 ?\na ) 10 , b ) 25 , c ) 50 , d ) 75 , e ) 100\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_2603",
+  "problem": "one pipe can fill a tank three times as fast as another pipe . if together the two pipes can fill the tank in 36 minutes , then the slower pipe alone will be able to fill the tank in ?\na ) 144 min , b ) 250 min , c ) 196 min , d ) 100 min , e ) 112 min\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1494",
+  "problem": "a fruit - salad mixture consists of apples , peaches , and grapes in the ratio 9 : 6 : 5 , respectively , by weight . if 40 pounds of the mixture is prepared , the mixture includes how many more pounds of apples than grapes ?\na ) 15 , b ) 12 , c ) 8 , d ) 6 , e ) 4\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_666",
+  "problem": "find how many positive integers less than 10000 are there such thatthe sum of the digits of the no . is divisible by 3 ?\na ) 2468 , b ) 2789 , c ) 2987 , d ) 3334 , e ) 3568\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1516",
+  "problem": "given a + b = 1 , find the value of 2 a + 2 b . two solutions are presented below . only one is correct , even though both yield the correct answer .\na ) 3 , b ) 5 , c ) 4 , d ) 2 , e ) 1\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1455",
+  "problem": "find the volume and surface area of a cuboid 16 m long , 14 m broad and 7 m high .\n['a ) 878 cm ^ 2', 'b ) 858 cm ^ 2', 'c ) 838 cm ^ 2', 'd ) 868 cm ^ 2', 'e ) none of them']\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_858",
+  "problem": "in a division sum , the remainder is 8 and the divisor is 6 times the quotient and is obtained by adding 3 to the thrice of the remainder . the dividend is :\na ) 110.6 , b ) 129.5 , c ) 130.5 , d ) 86 , e ) 88\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2745",
+  "problem": "on sunday , bill ran 4 more miles than he ran on saturday . julia did not run on saturday , but she ran twice the number of miles on sunday that bill ran on sunday . if bill and julia ran a total of 16 miles on saturday and sunday , how many miles did bill run on sunday ?\na ) 5 , b ) 6 , c ) 7 , d ) 8 , e ) 9\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_1093",
+  "problem": "a merchant sells an item at a 20 % discount , but still makes a gross profit of 20 percent of the cost . what percent w of the cost would the gross profit on the item have been if it had been sold without the discount ?\na ) 20 % , b ) 40 % , c ) 50 % , d ) 60 % , e ) 75 %\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2874",
+  "problem": "x can do a piece of work in 4 hours ; y and z together can do it in 3 hours , while x and z together can do it in 2 hours . how long will y alone take to do it ?\na ) 5 hours , b ) 10 hours , c ) 12 hours , d ) 24 hours , e ) 15 hours\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2799",
+  "problem": "a batsman makes a score of 76 runs in the 17 th inning and thus increases his average by 3 . find his average after 17 th inning .\na ) 36 , b ) 28 , c ) 42 , d ) 45 , e ) none of the above\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_2654",
+  "problem": "the number 341 is equal to the sum of the cubes of two integers . what is the product of those integers ?\na ) 8 , b ) 15 , c ) 21 , d ) 30 , e ) 39\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_292",
+  "problem": "if the weight of 12 meters long rod is 13.4 kg . what is the weight of 6 meters long rod ?\na ) 6.7 kg . , b ) 10.8 kg . , c ) 12.4 kg . , d ) 18.0 kg , e ) none\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_2495",
+  "problem": "how many seconds will a 600 meter long train take to cross a man walking with a speed of 3 km / hr in the direction of the moving train if the speed of the train is 63 km / hr ?\na ) 700 , b ) 288 , c ) 500 , d ) 277 , e ) 121\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_2600",
+  "problem": "a rectangular grass field is 70 m * 55 m , it has a path of 2.5 m wide all round it on the outside . find the area of the path and the cost of constructing it at rs . 2 per sq m ?\na ) s . 1350 , b ) s . 1300 , c ) s . 1328 , d ) s . 1397 , e ) s . 1927\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_700",
+  "problem": "reena took a loan of $ . 1200 with simple interest for as many years as the rate of interest . if she paid $ 300 as interest at the end of the loan period , what was the rate of interest ?\na ) 5 , b ) 6 , c ) 18 , d ) can not be determined , e ) none of these\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_2187",
+  "problem": "in a zoo , the ratio of the number of cheetahs to the number 4 then what is the increase in the number of pandas ?\na ) 2 , b ) 12 , c ) 5 , d ) 10 , e ) 15\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1002",
+  "problem": "what will be the compound interest on a sum of rs . 35,000 after 3 years at the rate of 12 % p . a . ?\na ) s : 10123.19 , b ) s : 14172.48 , c ) s : 10123.20 , d ) s : 10123.28 , e ) s : 10123.12\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_669",
+  "problem": "if 12 men and 16 boys can do a piece of work in 7 days and 13 men together will 24 boys can do it in 4 days . compare the daily work done by a man with that of a boy .\na ) 1 : 4 , b ) 1 : 2 , c ) 1 : 3 , d ) 2 : 1 , e ) 4 : 1\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1893",
+  "problem": "the lcm and hcf of two numbers are 8 and 48 respectively . if one of them is 24 , find the other ?\na ) 12 , b ) 14 , c ) 15 , d ) 16 , e ) 20\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1554",
+  "problem": "two trains are moving in opposite directions with speed of 70 km / hr and 90 km / hr respectively . their lengths are 1.10 km and 0.9 km respectively . the slower train cross the faster train in - - - seconds\na ) 56 , b ) 45 , c ) 47 , d ) 26 , e ) 25\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_1105",
+  "problem": "60 boys can complete a work in 24 days . how many men need to complete twice the work in 20 days\na ) 144 , b ) 170 , c ) 180 , d ) 190 , e ) 200\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_2621",
+  "problem": "a marketing survey of anytown found that the ratio of trucks to sedans to motorcycles was 3 : 7 : 2 , respectively . given that there are 11,900 sedans in anytown , how many motorcycles are there ?\na ) 1260 , b ) 2100 , c ) 3400 , d ) 4200 , e ) 5200\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2818",
+  "problem": "two numbers are in the ratio 3 : 5 . if 9 be subtracted from each , they are in the ratio of 5 : 2 . the first number is :\na ) a ) 3 , b ) b ) 98 , c ) c ) 34 , d ) d ) 35 , e ) e ) 62\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "a"
+ },
+ {
+  "id": "mathqa_2281",
+  "problem": "rs . 850 becomes rs . 956 in 3 years at a certain rate of simple interest . if the rate of interest is increased by 4 % , what amount will rs . 850 become in 3 years ?\na ) rs . 1020.80 , b ) rs . 1025 , c ) rs . 1058 , d ) data inadequate , e ) none of these\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_899",
+  "problem": "a group of n students can be divided into equal groups of 4 with 1 student left over or equal groups of 7 with 3 students left over . what is the sum of the two smallest possible values of n ?\na ) 54 , b ) 58 , c ) 62 , d ) 66 , e ) 70\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ },
+ {
+  "id": "mathqa_2804",
+  "problem": "if x is equal to the sum of the integers from 40 to 50 , inclusive , and y is the number of even integers from 40 to 50 , inclusive , what is the value of x + y ?\na ) 171 , b ) 281 , c ) 391 , d ) 501 , e ) 613\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "d"
+ },
+ {
+  "id": "mathqa_1328",
+  "problem": "two trains are running in opposite directions in the same speed . the length of each train is 120 meter . if they cross each other in 12 seconds , the speed of each train ( in km / hr ) is\na ) 30 km / hr , b ) 36 km / hr , c ) 80 km / hr , d ) 90 km / hr , e ) none of these\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "b"
+ },
+ {
+  "id": "mathqa_229",
+  "problem": "3 people candidates contested an election and they received 1136 , 7636 and 11628 votes respectively . what is the percentage of the total votes did the winning candidate get ?\na ) 40 % , b ) 45 % , c ) 57 % , d ) 58 % , e ) 60 %\n\nYour final answer should be a single choice letter in the form \\boxed{answer}, at the end of your response.",
+  "answer": "c"
+ }
+]

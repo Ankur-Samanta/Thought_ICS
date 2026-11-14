@@ -1,12 +1,11 @@
-api_key.json
-*.pyc
 __pycache__/
-.DS_Store
-
-# Local Claude Code config (machine-specific paths)
-.claude/
-# Build / runtime artifacts
+*.pyc
 *.egg-info/
+.DS_Store
 .ipynb_checkpoints/
-experiments/
-experiments_budget_study/
+.claude/
+api_key.json
+
+# run outputs and generated paper assets
+results/
+paper_assets/

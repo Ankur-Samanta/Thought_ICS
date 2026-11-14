@@ -1,0 +1,96 @@
+{
+ "prompts": {
+  "thought_template": "Solve the problem step by step. Write your reasoning as a sequence of steps, one step per paragraph, with a blank line between steps.\n\nEach step must do exactly one thing: a single observation, calculation, or deduction, usually one or two sentences. Whenever you move on to something new (a new calculation, a new case, a new deduction, the next option), start a new paragraph. Each step should:\n- Make forward progress toward the solution\n- Contain substantive reasoning (not filler like \"let me think\" or restating the problem)\n- Cohere logically with the previous steps\n\nKeep each step to a single paragraph (no blank lines inside a step), keep any equation in the same paragraph as the sentence that introduces it, and do not insert headers or separator lines (such as ---) between steps. Continue until you reach the final answer, and include it as \\boxed{answer} in the step that arrives at it.\n\nQ: Compute $\\frac{1}{2}+x$ for x=3.\n",
+  "thought_loc_oracle": "You are tasked with localizing the first erroneous thought in your previous solution to this problem.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour incorrect reasoning chain:\n\nStep 1: First, note x=3.\nStep 2: Then 1/2+3 = 3.5.\nStep 3: So \\boxed{3.5}\n\nThe final answer this chain produces is incorrect \u2014 therefore at least one step contains an error. The error you are looking for is the originating step where a key decision or action derailed the reasoning, not just the step where the failure ultimately becomes visible. A misread of the problem, an unjustified assumption, or a logical flaw can look fine for several follow-on steps before it surfaces in the wrong answer. A step is erroneous if you cannot justify its claims from the problem statement and earlier verified steps alone. Find the originating step, not just the symptom.\n\nDo NOT re-solve the problem. Your ONLY task is to identify the step number of that originating error.\n\nRequirements:\n- Commit to exactly ONE step number (1 to 3).\n- Stop at the first step you cannot justify.\n- MANDATORY final line: your response MUST end with \\boxed{N} on its own line, where N is the step index (1-indexed) of the first erroneous step in the chain above \u2014 NOT the answer to the problem. Do NOT add any text after the \\boxed{N}.\n",
+  "token_loc_oracle": "You are tasked with localizing the first error in your previous solution to this problem.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour incorrect solution:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nThe final answer this solution produces is incorrect \u2014 therefore at least one part of it contains an error. The error you are looking for is the originating point where a key decision or action derailed the reasoning, not just the point where the failure ultimately becomes visible. A misread of the problem, an unjustified assumption, or a logical flaw can look fine for several follow-on steps before it surfaces in the wrong answer. A claim is erroneous if you cannot justify it from the problem statement and earlier verified reasoning alone. Find the originating error, not just the symptom.\n\nDo NOT re-solve the problem. Your ONLY task is to identify where that originating error begins.\n\nRequirements:\n- Commit to exactly ONE location: the EXACT text (word-for-word, a continuous excerpt from the solution above) where the originating error begins.\n- Stop at the first claim you cannot justify.\n- MANDATORY final line: your response MUST end with \\boxed{ERROR_QUOTE: \"exact text from the solution\"} on its own line \u2014 NOT the answer to the problem. Do NOT add any text after the \\boxed{...}.\n",
+  "thought_loc_self": "You are tasked with localizing the first erroneous thought in your previous solution to this problem.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour reasoning chain:\n\nStep 1: First, note x=3.\nStep 2: Then 1/2+3 = 3.5.\nStep 3: So \\boxed{3.5}\n\nYour own check of this chain concluded that its final answer is likely incorrect \u2014 if so, at least one step contains an error. The error you are looking for is the originating step where a key decision or action derailed the reasoning, not just the step where the failure ultimately becomes visible. A misread of the problem, an unjustified assumption, or a logical flaw can look fine for several follow-on steps before it surfaces in the wrong answer. A step is erroneous if you cannot justify its claims from the problem statement and earlier verified steps alone. Find the originating step, not just the symptom.\n\nDo NOT re-solve the problem. Your ONLY task is to identify the step number of that originating error.\n\nRequirements:\n- Commit to exactly ONE step number (1 to 3).\n- If, after careful checking, no step is erroneous, the final line must instead be \\boxed{0}.\n- Stop at the first step you cannot justify.\n- MANDATORY final line: your response MUST end with \\boxed{N} on its own line, where N is the step index (1-indexed) of the first erroneous step in the chain above \u2014 NOT the answer to the problem. Do NOT add any text after the \\boxed{N}.\n",
+  "token_loc_self": "You are tasked with localizing the first error in your previous solution to this problem.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour solution:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nYour own check of this solution concluded that its final answer is likely incorrect \u2014 if so, at least one part of it contains an error. The error you are looking for is the originating point where a key decision or action derailed the reasoning, not just the point where the failure ultimately becomes visible. A misread of the problem, an unjustified assumption, or a logical flaw can look fine for several follow-on steps before it surfaces in the wrong answer. A claim is erroneous if you cannot justify it from the problem statement and earlier verified reasoning alone. Find the originating error, not just the symptom.\n\nDo NOT re-solve the problem. Your ONLY task is to identify where that originating error begins.\n\nRequirements:\n- Commit to exactly ONE location: the EXACT text (word-for-word, a continuous excerpt from the solution above) where the originating error begins.\n- If, after careful checking, nothing is erroneous, the final line must instead be \\boxed{NO_ERROR}.\n- Stop at the first claim you cannot justify.\n- MANDATORY final line: your response MUST end with \\boxed{ERROR_QUOTE: \"exact text from the solution\"} on its own line \u2014 NOT the answer to the problem. Do NOT add any text after the \\boxed{...}.\n",
+  "thought_loc_self_critique": "You are tasked with localizing the first erroneous thought in your previous solution to this problem.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour reasoning chain:\n\nStep 1: First, note x=3.\nStep 2: Then 1/2+3 = 3.5.\nStep 3: So \\boxed{3.5}\n\nYour own check of this chain concluded that its final answer is likely incorrect \u2014 if so, at least one step contains an error.\n\nYour check of it:\ncrit \\boxed{NO} The error you are looking for is the originating step where a key decision or action derailed the reasoning, not just the step where the failure ultimately becomes visible. A misread of the problem, an unjustified assumption, or a logical flaw can look fine for several follow-on steps before it surfaces in the wrong answer. A step is erroneous if you cannot justify its claims from the problem statement and earlier verified steps alone. Find the originating step, not just the symptom.\n\nDo NOT re-solve the problem. Your ONLY task is to identify the step number of that originating error.\n\nRequirements:\n- Commit to exactly ONE step number (1 to 3).\n- If, after careful checking, no step is erroneous, the final line must instead be \\boxed{0}.\n- Stop at the first step you cannot justify.\n- MANDATORY final line: your response MUST end with \\boxed{N} on its own line, where N is the step index (1-indexed) of the first erroneous step in the chain above \u2014 NOT the answer to the problem. Do NOT add any text after the \\boxed{N}.\n",
+  "token_loc_self_critique": "You are tasked with localizing the first error in your previous solution to this problem.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour solution:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nYour own check of this solution concluded that its final answer is likely incorrect \u2014 if so, at least one part of it contains an error.\n\nYour check of it:\ncrit \\boxed{NO} The error you are looking for is the originating point where a key decision or action derailed the reasoning, not just the point where the failure ultimately becomes visible. A misread of the problem, an unjustified assumption, or a logical flaw can look fine for several follow-on steps before it surfaces in the wrong answer. A claim is erroneous if you cannot justify it from the problem statement and earlier verified reasoning alone. Find the originating error, not just the symptom.\n\nDo NOT re-solve the problem. Your ONLY task is to identify where that originating error begins.\n\nRequirements:\n- Commit to exactly ONE location: the EXACT text (word-for-word, a continuous excerpt from the solution above) where the originating error begins.\n- If, after careful checking, nothing is erroneous, the final line must instead be \\boxed{NO_ERROR}.\n- Stop at the first claim you cannot justify.\n- MANDATORY final line: your response MUST end with \\boxed{ERROR_QUOTE: \"exact text from the solution\"} on its own line \u2014 NOT the answer to the problem. Do NOT add any text after the \\boxed{...}.\n",
+  "verify": "You are reviewing a solution to a problem. Analyze it carefully to see if they arrived at the right answer.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nSolution to review:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nFinal answer: 3.5\n\nVerify the reasoning step by step and determine whether the final answer is correct or not.\n\nConclude with \\boxed{YES} if the solution is correct, or \\boxed{NO} if it contains errors.\nMANDATORY final line: your response MUST end with \\boxed{YES} or \\boxed{NO} on its own line.",
+  "feedback_gen": "GEN\n\nFeedback on a previous attempt at this problem:\ncrit NO\n\nWhere the previous attempt first went wrong:\nloc 2\n\nTaking this feedback into account, continue the solution: keep writing the next steps of the solution (not a review of it), and end with the final answer as \\boxed{answer}.",
+  "chain_text": "\nStep 1: First, note x=3.\nStep 2: Then 1/2+3 = 3.5.\nStep 3: So \\boxed{3.5}",
+  "sr_feedback": "You are reviewing a solution to a math problem. Analyze it carefully for errors.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nSolution to review:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nProvide feedback on this solution:\n1. Is the solution correct? Answer YES or NO at the start.\n2. If NO, identify the specific error(s) and explain what went wrong.\n3. If YES, confirm the solution is correct.\n\nFeedback:",
+  "sr_refine": "You previously attempted to solve a problem but received feedback indicating errors. Use the feedback to produce a corrected solution.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour previous solution:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nFeedback on your solution:\nfb\n\nNow provide a corrected solution. Show your reasoning step by step and put your final answer in \\boxed{}.\n\nCorrected Solution:",
+  "cv_plan": "You have provided a solution to a math problem. Now generate verification questions to check if your solution is correct.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour solution:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nGenerate 2-4 specific verification questions that would help verify the correctness of this solution. Each question should check a specific step, calculation, or reasoning in the solution.\n\nFormat your questions as a numbered list:\n1. [First verification question]\n2. [Second verification question]\n...\n\nVerification Questions:",
+  "cv_exec": "Answer the following question carefully and precisely.\n\nQuestion: q?\n\nAnswer:",
+  "cv_final": "You previously solved a problem and generated verification questions with answers. Use this verified information to produce a final, corrected solution.\n\nProblem: Compute $\\frac{1}{2}+x$ for x=3.\n\nYour baseline solution:\nFirst, note x=3.\n\nThen 1/2+3 = 3.5.\n\nSo \\boxed{3.5}\n\nVerification questions and answers:\nQ1: a\nA1: b\n\n\n\nBased on the verification results, provide your final solution. If the verifications revealed any errors, correct them. Show your reasoning step by step and put your final answer in \\boxed{}.\n\nFinal Solution:"
+ },
+ "parse": {
+  "step|reasoning \\boxed{2}": [
+   2,
+   "boxed"
+  ],
+  "step|I think Step 3 is wrong": [
+   3,
+   "prose"
+  ],
+  "step|no number": [
+   1,
+   "default"
+  ],
+  "step|\\boxed{9}": [
+   1,
+   "default"
+  ],
+  "step|\\boxed{0}": [
+   0,
+   "boxed"
+  ],
+  "quote|x \\boxed{ERROR_QUOTE: \"Then 1/2\"}": [
+   "Then 1/2",
+   "boxed"
+  ],
+  "quote|\\boxed{NO_ERROR}": [
+   "",
+   "boxed"
+  ],
+  "quote|ERROR_QUOTE: 'So'": [
+   "So",
+   "prose"
+  ],
+  "quote|nothing": [
+   null,
+   "default"
+  ],
+  "verdict|\\boxed{YES}": true,
+  "verdict|\\boxed{\\text{NO}}": false,
+  "verdict|no box": null,
+  "srfb|**Answer: NO** bad": [
+   false,
+   "Feedback indicates errors in solution"
+  ],
+  "srfb|**YES** good": [
+   true,
+   "Feedback indicates solution is correct"
+  ],
+  "srfb|Yes.": [
+   true,
+   "Feedback indicates solution is correct"
+  ],
+  "srfb|unclear": [
+   false,
+   "Unclear feedback, assuming refinement needed"
+  ],
+  "find_quote": 18,
+  "unbox": "a x b",
+  "final_message": "ans \\boxed{1}",
+  "response_text": "think\n\nans \\boxed{1}",
+  "boxed": "3.5"
+ },
+ "units": {
+  "has_content": [
+   false,
+   true
+  ],
+  "display": [
+   true,
+   false
+  ],
+  "opens": [
+   true,
+   true,
+   false
+  ]
+ }
+}

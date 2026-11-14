@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "thought-ics"
 version = "0.1.0"
-description = "Thought-ICS: self-correction via thought-by-thought generation in a Thought MDP"
+description = "Thought-ICS: self-correction by localizing errors in thought-by-thought reasoning and resampling from the last correct step"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["dependencies"]
 
 [tool.setuptools.dynamic]
@@ -15,3 +15,6 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.setuptools.packages.find]
 include = ["thought_ics*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
