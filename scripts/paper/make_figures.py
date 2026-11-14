@@ -133,9 +133,9 @@ for j, name in ((2, "Token-ICS"), (1, "Thought-ICS")):
         print(f"  {name:11s} {m:10s} {e[0]:5.1f} [{e[1]:5.1f}, {e[2]:5.1f}]  (n={len(rows_l2[m])})")
 fig, ax = plt.subplots(figsize=(9, 6))
 lift_bars(ax, [("Token-ICS", "#2ca02c", 0.7, est[2]), ("Thought-ICS", "#d62728", 0.9, est[1])], 0.28)
-ax.legend(loc="upper left", fontsize=14, title="Under Oracle Verification:", title_fontsize=14,
-          alignment="left")
-ax.set_ylim(0, max(e[2] for j in est for e in est[j]) * 1.3)
+ax.legend(loc="upper right", fontsize=14, title="Under Oracle Verification:", title_fontsize=14,
+          alignment="left", ncol=2)
+ax.set_ylim(0, 35)
 plt.tight_layout()
 save(fig, "l2_errorbar")
 
