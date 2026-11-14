@@ -36,8 +36,7 @@ GREEN, BLUE, RED, GRAY = "#2ecc71", "#3498db", "#e74c3c", "#7f8c8d"
 GREEN_DK, RED_DK = "#27ae60", "#c0392b"
 MODEL_COLORS = {"llama3b": "#e74c3c", "llama8b": "#c0392b", "llama70b": "#922b21", "qwen7b": "#3498db",
                 "qwen14b": "#2980b9", "qwen32b": "#1a5276", "gptoss20b": "#27ae60", "gptoss120b": "#1e8449"}
-ORDER = ["llama3b", "qwen7b", "llama8b", "qwen14b", "gptoss20b", "qwen32b", "llama70b", "gptoss120b"]   # by size
-FAM_ORDER = ["llama3b", "llama8b", "llama70b", "qwen7b", "qwen14b", "qwen32b", "gptoss20b", "gptoss120b"]
+ORDER = ["llama3b", "llama8b", "llama70b", "qwen7b", "qwen14b", "qwen32b", "gptoss20b", "gptoss120b"]   # by family, as in the original paper
 SHORT = {"llama3b": "L3B", "qwen7b": "Q7B", "llama8b": "L8B", "qwen14b": "Q14B", "gptoss20b": "G20B",
          "qwen32b": "Q32B", "llama70b": "L70B", "gptoss120b": "G120B"}
 LONG = {"llama3b": "LLaMA-3B", "llama8b": "LLaMA-8B", "llama70b": "LLaMA-70B", "qwen7b": "Qwen-7B",
@@ -152,7 +151,7 @@ paired = [v for v in pair.values() if "thought" in v and "token" in v]
 def loc_fig(method, name):
     """Original construction (valid_localization_vs_oracle.py); failed localizations, which the
     original runs did not have, are stacked in gray on the erroneous bar."""
-    models = FAM_ORDER
+    models = ORDER
     S = {}
     print(f"\n{name}: first localization vs oracle ({method})")
     for m in models:
@@ -208,7 +207,7 @@ loc_fig("token", "self_localization_vs_oracle_token")
 # ---- Figs: edit_accuracy_clean_vs_erroneous (Thought-ICS) and _token ----------------------
 def edit_fig(method, name):
     """Fix rate of the first resample after a clean vs erroneous prefix (original construction)."""
-    models = FAM_ORDER
+    models = ORDER
     fixed = lambda r: ok(r.get("answer"), r.get("ground_truth"), r["dataset"], r["fixed"])
     acc, lo_, hi_ = {"c": [], "e": []}, {"c": [], "e": []}, {"c": [], "e": []}
     pool = {"c": [0, 0], "e": [0, 0]}
@@ -268,7 +267,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 bins = np.arange(-5, 12) - 0.5
 bin_centers = np.arange(-5, 11)
 x_smooth = np.linspace(bin_centers[0], bin_centers[-1], 300)
-for m in FAM_ORDER:
+for m in ORDER:
     devs = np.array([v["thought"]["step"] - v["thought"]["oracle"] for v in paired
                      if v["thought"]["model"] == m and v["thought"]["cat"] != "failed"])
     counts, _ = np.histogram(devs, bins=bins, density=True)
@@ -345,19 +344,19 @@ fig, ax = plt.subplots(figsize=(12, 6))
 width = 0.25
 for i, metric in enumerate(("recall", "specificity", "accuracy")):
     f = {"recall": recall, "specificity": specificity, "accuracy": accuracy}[metric]
-    values = [f(bym[m]) for m in FAM_ORDER]
-    bars = ax.bar([xi + (i - 1) * width for xi in range(len(FAM_ORDER))], values, width,
+    values = [f(bym[m]) for m in ORDER]
+    bars = ax.bar([xi + (i - 1) * width for xi in range(len(ORDER))], values, width,
                   label=metric.capitalize(), color=METRIC_COLORS[metric], alpha=0.8)
     for bar, val in zip(bars, values):
         ax.annotate(f"{val:.0f}", xy=(bar.get_x() + bar.get_width() / 2, bar.get_height()), xytext=(0, 3),
                     textcoords="offset points", ha="center", va="bottom", fontsize=8)
-for m in FAM_ORDER:
+for m in ORDER:
     print(f"  {m:11s} calls {len(bym[m]):5d}  recall {recall(bym[m]):5.1f}  specificity {specificity(bym[m]):5.1f}"
           f"  accuracy {accuracy(bym[m]):5.1f}")
 ax.set_xlabel("Model", fontsize=18)
 ax.set_ylabel("Self-Verification Metric (%)", fontsize=18)
-ax.set_xticks(range(len(FAM_ORDER)))
-ax.set_xticklabels([LONG[m] for m in FAM_ORDER], fontsize=14)
+ax.set_xticks(range(len(ORDER)))
+ax.set_xticklabels([LONG[m] for m in ORDER], fontsize=14)
 ax.legend(loc="upper center", fontsize=12, ncol=3)
 ax.set_ylim(0, 115)
 ax.set_yticks(range(0, 101, 20))
@@ -507,7 +506,7 @@ sys.path.insert(0, str(REPO))
 from thought_ics.ics import MODELS as _M  # noqa: E402
 
 chain_len, thought_tok = defaultdict(list), defaultdict(list)
-for m in FAM_ORDER:
+for m in ORDER:
     tok = AutoTokenizer.from_pretrained(_M[m]["hf"])
     for d in sorted(glob.glob(str(EXP / f"{m}_*_oracle_2*/"))):
         d = Path(d)
@@ -532,7 +531,7 @@ def kde(vals, lim):
 print("\nchain / thought lengths (Thought-ICS first attempts)")
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 xc, xt = np.linspace(0, 60, 500), np.linspace(0, 250, 500)
-for m in FAM_ORDER:
+for m in ORDER:
     cl, tl = chain_len[m], thought_tok[m]
     axes[0].plot(xc, kde(cl, 60)(xc), color=MODEL_COLORS[m], linewidth=2, label=f"{LONG[m]} (median={np.median(cl):.0f})")
     axes[1].plot(xt, kde(tl, 250)(xt), color=MODEL_COLORS[m], linewidth=2, label=f"{LONG[m]} (median={np.median(tl):.0f})")
