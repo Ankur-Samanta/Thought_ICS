@@ -6,8 +6,7 @@ Main paper: l2_errorbar, self_localization_vs_oracle(_token), edit_accuracy_clea
 localization_error_distribution, self_verification_by_terminal_iteration_part1a (self-verification by
 correction iteration), self_verification_by_terminal_iteration_part1b (with vs without feedback),
 self_correction_lift_errorbar. Appendix: self_verification_by_model, confusion_matrix_by_iteration,
-oracle_localization_agreement, edit_accuracy_clean_vs_erroneous_token, chain_thought_length_by_model,
-chain_length_distribution. File names follow the paper's \\includegraphics paths.
+oracle_localization_agreement, edit_accuracy_clean_vs_erroneous_token, chain_thought_length_by_model. File names follow the paper's \\includegraphics paths.
 
 Math benchmarks are regraded with Math-Verify; oracle-verified runs are truncated at the first correct
 attempt (as in scripts/report_oracle_verified.py). Oracle localization labels: results/oracle/part{1,2}.
@@ -33,7 +32,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 # ---- the original paper's colors, names and model orders ------------------------------------
 # (from the scripts that drew the original figures; matplotlib defaults otherwise)
-GREEN, BLUE, RED, GRAY = "#2ecc71", "#3498db", "#e74c3c", "#95a5a6"
+GREEN, BLUE, RED, GRAY = "#2ecc71", "#3498db", "#e74c3c", "#7f8c8d"
 GREEN_DK, RED_DK = "#27ae60", "#c0392b"
 MODEL_COLORS = {"llama3b": "#e74c3c", "llama8b": "#c0392b", "llama70b": "#922b21", "qwen7b": "#3498db",
                 "qwen14b": "#2980b9", "qwen32b": "#1a5276", "gptoss20b": "#27ae60", "gptoss120b": "#1e8449"}
@@ -178,7 +177,7 @@ def loc_fig(method, name):
     ax.bar(x - width / 2, earlier, width, bottom=exact, color=BLUE, alpha=0.85)
     ax.bar(x + width / 2, later, width, color=RED, alpha=0.85, label="Erroneous Prefix (self > oracle)")
     if any(failed):
-        ax.bar(x + width / 2, failed, width, bottom=later, color="#7f8c8d", alpha=1.0, label="Failed Localization")
+        ax.bar(x + width / 2, failed, width, bottom=later, color=GRAY, alpha=1.0, label="Failed Localization")
     ax.errorbar(x - width / 2, clean, yerr=[[c - S[m][2] for c, m in zip(clean, models)],
                                             [S[m][3] - c for c, m in zip(clean, models)]],
                 fmt="none", ecolor=GREEN_DK, capsize=3, capthick=1.5, elinewidth=1.5)
@@ -500,19 +499,18 @@ plt.tight_layout()
 save(fig, "oracle_localization_agreement")
 
 
-# ---- Figs (appendix): chain and thought length distributions (Thought-ICS first attempts) --
+# ---- Fig (appendix): chain and thought length distributions (Thought-ICS first attempts) --
 import os  # noqa: E402
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 from transformers import AutoTokenizer  # noqa: E402
 sys.path.insert(0, str(REPO))
 from thought_ics.ics import MODELS as _M  # noqa: E402
 
-chain_len, thought_tok, by_correct = defaultdict(list), defaultdict(list), {True: [], False: []}
+chain_len, thought_tok = defaultdict(list), defaultdict(list)
 for m in FAM_ORDER:
     tok = AutoTokenizer.from_pretrained(_M[m]["hf"])
     for d in sorted(glob.glob(str(EXP / f"{m}_*_oracle_2*/"))):
         d = Path(d)
-        c = json.load(open(d / "config.json"))
         for line in open(d / "thought_results.jsonl"):
             r = json.loads(line)
             it0 = r["iterations"][0]
@@ -521,7 +519,6 @@ for m in FAM_ORDER:
                 continue
             chain_len[m].append(len(ch))
             thought_tok[m] += [len(t) for t in tok(ch, add_special_tokens=False)["input_ids"]]
-            by_correct[ok(it0["answer"], r["ground_truth"], c["dataset"], it0["correct"])].append(len(ch))
 
 
 
@@ -551,23 +548,6 @@ for ax, xl, title, lim in ((axes[0], "Number of Thought Steps", "Chain Length by
     ax.legend(loc="upper right", fontsize=9)
 plt.tight_layout()
 save(fig, "chain_thought_length_by_model")
-
-fig, ax = plt.subplots(figsize=(8, 5))
-for k, fill, line, nm in ((True, GREEN, GREEN_DK, "Correct"), (False, RED, RED_DK, "Incorrect")):
-    y = kde(by_correct[k], 60)(xc)
-    ax.fill_between(xc, y, color=fill, alpha=0.4, label=f"{nm} (median={np.median(by_correct[k]):.0f})")
-    ax.plot(xc, y, color=line, linewidth=2.5)
-    print(f"  {nm:9s} chains {len(by_correct[k]):5d}  mean steps {np.mean(by_correct[k]):.1f} "
-          f"(median {np.median(by_correct[k]):.0f})")
-ax.set_xlabel("Number of Thought Steps", fontsize=14)
-ax.set_ylabel("Density", fontsize=14)
-ax.set_title("Chain Length Distribution: Correct vs Incorrect Traces", fontsize=15)
-ax.set_xlim(0, 60)
-ax.tick_params(axis="both", labelsize=11)
-ax.grid(alpha=0.3)
-ax.legend(loc="upper right", fontsize=14)
-plt.tight_layout()
-save(fig, "chain_length_distribution")
 
 
 # ---- Fig §5.3: self_correction_lift_errorbar (fully autonomous) ----------------------------
