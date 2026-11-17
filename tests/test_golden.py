@@ -29,6 +29,12 @@ def test_prompts_identical():
     assert B.PLAN_VERIFICATION_PROMPT.format(problem=Q, baseline=SOL) == g["cv_plan"]
     assert B.EXECUTE_VERIFICATION_PROMPT.format(question="q?") == g["cv_exec"]
     assert B.FINAL_RESPONSE_PROMPT.format(problem=Q, baseline=SOL, verifications="Q1: a\nA1: b\n\n") == g["cv_final"]
+    steps = P.numbered_steps(TH, SOL)
+    assert steps == g["cove_steps"] and P.numbered_steps(None, SOL) == g["cove_steps_unstructured"]
+    assert P.COVE_PLAN_PROMPT.format(question=Q, steps=steps, answer="3.5") == g["cove_plan"]
+    assert P.COVE_ANSWER_PROMPT.format(question=Q, q="What is 1/2+3?") == g["cove_answer"]
+    assert P.cove_judge_prompt(len, 10**6, Q, steps, "3.5", ["Q: a?\nA: b", "Q: c?\nA: d"]) == g["cove_judge"]
+    assert P.cove_judge_prompt(len, 2000 + 4096, Q, steps, "3.5", ["Q: a?\nA: " + "x" * 9000]) == g["cove_judge_short"]
 
 
 def test_parsers_identical():
@@ -43,6 +49,8 @@ def test_parsers_identical():
             assert P.parse_verdict(arg) == v, k
         elif kind == "srfb":
             assert list(B.feedback_verdict(arg)) == v, k
+    for text, qs in G["parse_questions"].items():
+        assert P.parse_questions(text) == qs, text
     assert P.find_quote(SOL, "Then  1/2") == g["find_quote"]
     assert P.unbox("a \\boxed{x} b") == g["unbox"]
     h = ("<|channel|>analysis<|message|>think<|end|><|start|>assistant<|channel|>final<|message|>"

@@ -4,7 +4,7 @@
 
 Main paper: l2_errorbar, self_localization_vs_oracle(_token), edit_accuracy_clean_vs_erroneous,
 localization_error_distribution, self_verification_by_terminal_iteration_part1a (self-verification by
-correction iteration), self_verification_by_terminal_iteration_part1b (with vs without feedback),
+correction iteration), self_verification_by_terminal_iteration_part1b (with vs without feedback, CoVe-style),
 self_correction_lift_errorbar. Appendix: self_verification_by_model, confusion_matrix_by_iteration,
 oracle_localization_agreement, edit_accuracy_clean_vs_erroneous_token, chain_thought_length_by_model. File names follow the paper's \\includegraphics paths.
 
@@ -65,6 +65,24 @@ def wilson(k, n, z=1.96):
     c = (p + z * z / (2 * n)) / d
     h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
     return 100 * (c - h), 100 * (c + h)
+
+
+TAGS = ["amc23", "aime", "math500_L5", "csqa", "gpqa", "mathqa"]   # the paper's dataset order
+
+
+def runs(kind, need="thought_results.jsonl"):
+    """{(model, dataset tag): latest finished run directory} for runs named <model>_<tag>_<kind>_<ts>."""
+    out = {}
+    for m in ORDER:
+        for t in TAGS:
+            ds = [Path(d) for d in sorted(glob.glob(str(EXP / f"{m}_{t}_{kind}_2*"))) if Path(d, need).exists()]
+            if ds:
+                out[(m, t)] = ds[-1]
+    return out
+
+
+def jsonl(path):
+    return {r["problem_id"]: r for r in map(json.loads, open(path))}
 
 
 def save(fig, name):
@@ -131,6 +149,9 @@ est = {j: [boot_lift(rows_l2[m], j) for m in ORDER] for j in (1, 2)}
 for j, name in ((2, "Token-ICS"), (1, "Thought-ICS")):
     for m, e in zip(ORDER, est[j]):
         print(f"  {name:11s} {m:10s} {e[0]:5.1f} [{e[1]:5.1f}, {e[2]:5.1f}]  (n={len(rows_l2[m])})")
+mean_lift = {j: np.mean([e[0] for e in est[j]]) for j in (1, 2)}
+print(f"  mean over models: Thought-ICS {mean_lift[1]:.1f}, Token-ICS {mean_lift[2]:.1f} "
+      f"(Thought-ICS corrects {100 * (mean_lift[1] / mean_lift[2] - 1):.0f}% more incorrect solutions)")
 fig, ax = plt.subplots(figsize=(9, 6))
 lift_bars(ax, [("Token-ICS", "#2ca02c", 0.7, est[2]), ("Thought-ICS", "#d62728", 0.9, est[1])], 0.28)
 ax.legend(loc="upper right", fontsize=14, title="Under Oracle Verification:", title_fontsize=14,
@@ -164,6 +185,9 @@ def loc_fig(method, name):
         S[m] = (p, p["exact"] + p["earlier"], clo, chi, llo, lhi)
         print(f"  {m:10s} n={n:3d} exact {p['exact']:4.0f} earlier {p['earlier']:4.0f} | later {p['later']:4.0f} "
               f"failed {p['failed']:4.0f} | clean {p['exact'] + p['earlier']:4.0f}")
+    R = [v[method] for v in paired]
+    print(f"  pooled n={len(R)}: clean {100 * sum(r['cat'] in ('exact', 'earlier') for r in R) / len(R):.1f}%  "
+          f"failed {100 * sum(r['cat'] == 'failed' for r in R) / len(R):.1f}%")
     x = np.arange(len(models))
     width = 0.38
     fig, ax = plt.subplots(figsize=(6, 4.5))
@@ -226,7 +250,8 @@ def edit_fig(method, name):
             pool[key][1] += len(Sx)
             print(f"  {m:10s} {'clean' if key == 'c' else 'erroneous':9s} {a:5.1f}% ({k}/{len(Sx)})")
     print("  pooled:", {("clean" if k == "c" else "erroneous"): f"{100 * a / max(1, b):.1f}% ({a}/{b})"
-                        for k, (a, b) in pool.items()})
+                        for k, (a, b) in pool.items()},
+          f"ratio {(pool['c'][0] / pool['c'][1]) / (pool['e'][0] / pool['e'][1]):.2f}x")
     fig, ax = plt.subplots(figsize=(6, 4.5))
     bar_width = 0.38
     x = np.arange(len(models))
@@ -296,6 +321,7 @@ save(fig, "localization_error_distribution")
 METRIC_COLORS = {"recall": "#2ecc71", "specificity": "#e74c3c", "accuracy": "#3498db"}
 calls = defaultdict(list)  # n -> [(says_correct, actually_correct)]
 bym = defaultdict(list)    # model -> [(says_correct, actually_correct)]
+fixed_broken = {False: [], True: []}   # initially correct? -> [finally correct]
 for d in sorted(glob.glob(str(EXP / "*_self_2*/"))):
     d = Path(d)
     c = json.load(open(d / "config.json"))
@@ -312,6 +338,9 @@ for d in sorted(glob.glob(str(EXP / "*_self_2*/"))):
                 bym[c["model"]].append((v["verdict"] is True, cur))
             if "gen_status" in it:
                 cur = ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
+        last = [it for it in its if "gen_status" in it][-1]
+        fixed_broken[ok(its[0]["answer"], r["ground_truth"], c["dataset"], its[0]["correct"])].append(
+            ok(last["answer"], r["ground_truth"], c["dataset"], last["correct"]))
 recall = lambda C: 100 * sum(not s for s, a in C if not a) / max(1, sum(not a for _, a in C))
 specificity = lambda C: 100 * sum(s for s, a in C if a) / max(1, sum(a for _, a in C))
 accuracy = lambda C: 100 * sum(s == a for s, a in C) / max(1, len(C))
@@ -322,6 +351,10 @@ spe, rec, acc = ([f(calls[n]) for n in ns] for f in (specificity, recall, accura
 print("\nself-verification by correction iteration (Thought-ICS, all models)")
 for n, a, b, c_ in zip(ns, spe, rec, acc):
     print(f"  n={n:2d} calls {len(calls[n]):5d}  specificity {a:5.1f}  recall {b:5.1f}  accuracy {c_:5.1f}")
+allc = [x for n in ns for x in calls[n]]
+print(f"  all calls: recall {recall(allc):.1f} specificity {specificity(allc):.1f}; "
+      f"initially incorrect fixed {100 * np.mean(fixed_broken[False]):.1f}%, "
+      f"initially correct broken {100 * (1 - np.mean(fixed_broken[True])):.1f}%")
 fig, ax = plt.subplots(1, 1, figsize=(6, 4))
 ax.plot(ns, spe, marker="o", linewidth=2, markersize=8, label="Specificity", color=METRIC_COLORS["specificity"])
 ax.plot(ns, rec, marker="o", linewidth=2, markersize=8, label="Recall", color=METRIC_COLORS["recall"])
@@ -391,59 +424,46 @@ plt.tight_layout()
 save(fig, "confusion_matrix_by_iteration")
 
 
-# ---- Fig: self_verification_by_terminal_iteration_part1b -----------------------------------
-# Accuracy over all problems after n correction iterations, Thought-ICS without vs with feedback carried
-# through correction (each problem counts with its current answer; a stopped problem keeps its final
-# answer). Only (model, dataset) pairs where both runs exist are used.
-FEEDBACK_VARIANT = "all"          # Thought-ICS-F
+# ---- Fig: self_verification_by_terminal_iteration_part1b (Sec. 5.2) ------------------------
+# Accuracy over all problems after n correction iterations, Thought-ICS under CoVe-style
+# self-verification without vs with feedback carried through correction (with feedback =
+# Thought-ICS-F). Each problem counts with its current answer; a stopped problem keeps its answer.
+def trajectory(r, ds):
+    gens = {it["iteration"]: ok(it["answer"], r["ground_truth"], ds, it["correct"])
+            for it in r["iterations"] if "gen_status" in it}
+    cur, traj = gens[0], []
+    for n in range(11):
+        cur = gens.get(n, cur)
+        traj.append(cur)
+    return traj
 
 
-def trajectories(pattern):
-    """{(model, dataset_tag): {pid: [correct after n=0..10]}} for the Thought-ICS runs matching pattern."""
-    out = {}
-    for d in sorted(glob.glob(str(EXP / pattern))):
-        d = Path(d)
-        if not (d / "thought_results.jsonl").exists():
-            continue
-        c = json.load(open(d / "config.json"))
-        key = (c["model"], d.name.split("_self")[0])
-        T = {}
-        for line in open(d / "thought_results.jsonl"):
-            r = json.loads(line)
-            gens = {it["iteration"]: ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
-                    for it in r["iterations"] if "gen_status" in it}
-            cur, traj = gens[0], []
-            for n in range(11):
-                cur = gens.get(n, cur)
-                traj.append(cur)
-            T[r["problem_id"]] = traj
-        out[key] = T  # latest run per (model, dataset) wins (sorted by timestamp)
-    return out
-
-
-S = trajectories("*_self_2*/")
-FB = trajectories(f"*_self-fb-{FEEDBACK_VARIANT}_2*/")
-keys = sorted(set(S) & set(FB)) if FB else sorted(S)
-print(f"\naccuracy over correction iterations: {len(keys)} (model, dataset) pairs"
-      f"{'' if FB else ' -- no ' + FEEDBACK_VARIANT + ' runs yet, plotting without-feedback only'}")
-curve = lambda T: [100 * np.mean([T[k][p][n] for k in keys for p in T[k]]) for n in range(11)]
-s_curve = curve(S)
+NOFB, FB = runs("self-cove"), runs("thought-ics-f")
+keys = [k for k in NOFB if k in FB]
+sums, n_prob = {"nofb": np.zeros(11), "fb": np.zeros(11)}, 0
+for k in keys:
+    ds = json.load(open(NOFB[k] / "config.json"))["dataset"]
+    A, B = jsonl(NOFB[k] / "thought_results.jsonl"), jsonl(FB[k] / "thought_results.jsonl")
+    for pid, r in A.items():
+        assert r["iterations"][0]["answer"] == B[pid]["iterations"][0]["answer"], (k, pid)   # same first attempt
+        sums["nofb"] += trajectory(r, ds)
+        sums["fb"] += trajectory(B[pid], ds)
+        n_prob += 1
+nofb, fb = list(100 * sums["nofb"] / n_prob), list(100 * sums["fb"] / n_prob)
+print(f"\naccuracy over correction iterations, CoVe-style verification: {len(keys)} (model, dataset) pairs, "
+      f"{n_prob} problems")
+print("  without feedback:", " ".join(f"{v:5.1f}" for v in nofb))
+print("  with feedback   :", " ".join(f"{v:5.1f}" for v in fb))
 its = list(range(11))   # n = 0 is the shared first attempt
 fig, ax = plt.subplots(1, 1, figsize=(6, 4))
-ax.plot(its, [s_curve[0]] * 11, marker="o", linewidth=2, markersize=8, label="Initial", color="#1f77b4")
-ax.plot(its, s_curve, marker="s", linewidth=2, markersize=8, label="Final (without feedback)", color="#ff7f0e")
-allv = list(s_curve)
-if FB:
-    f_curve = curve(FB)
-    ax.plot(its, f_curve, marker="^", linewidth=2, markersize=8, label="Final (with feedback)", color="#d62728")
-    allv += f_curve
-    print("  with feedback   :", " ".join(f"{v:5.1f}" for v in f_curve))
-print("  without feedback:", " ".join(f"{v:5.1f}" for v in s_curve))
+ax.plot(its, [nofb[0]] * 11, marker="o", linewidth=2, markersize=8, label="Initial", color="#1f77b4")
+ax.plot(its, nofb, marker="s", linewidth=2, markersize=8, label="Final (without feedback)", color="#ff7f0e")
+ax.plot(its, fb, marker="^", linewidth=2, markersize=8, label="Final (with feedback)", color="#d62728")
 ax.set_xlabel("Correction Iteration", fontsize=14)
 ax.set_ylabel("Accuracy (%)", fontsize=14)
 ax.legend(loc="upper right", fontsize=11)
 ax.set_xlim(-0.5, 10.5)
-ax.set_ylim(max(0, min(allv) - 5), min(100, max(allv) + 5))
+ax.set_ylim(max(0, min(nofb + fb) - 5), min(100, max(nofb + fb) + 5))
 ax.set_xticks(its)
 ax.tick_params(axis="both", labelsize=12)
 ax.grid(alpha=0.3)
@@ -550,29 +570,26 @@ save(fig, "chain_thought_length_by_model")
 
 
 # ---- Fig §5.3: self_correction_lift_errorbar (fully autonomous) ----------------------------
-# lift over the shared first attempt (final - first), paired 95% bootstrap CI over problems; a model
-# is plotted only when Self-Refine, CoVe and Thought-ICS-F have all finished all six datasets.
-def lift_rows():
-    out = defaultdict(list)
-    for sv in sorted({p.rsplit("_self_2", 1)[0] for p in glob.glob(str(EXP / "*_self_2*"))}):
-        lat = lambda pat, f: ([d for d in sorted(glob.glob(pat)) if Path(d, f).exists()] or [None])[-1]
-        b = lat(f"{sv}_baselines_*", "cove_results.jsonl")
-        fa = lat(f"{sv}_self-fb-{FEEDBACK_VARIANT}_2*", "thought_results.jsonl")
-        s = lat(f"{sv}_self_2*", "thought_results.jsonl")
-        if not (b and fa and s):
-            continue
-        c = json.load(open(Path(s) / "config.json"))
-        L = lambda p: {json.loads(l)["problem_id"]: json.loads(l) for l in open(p)}
-        SRr, CVr, Fr = L(Path(b) / "self_refine_results.jsonl"), L(Path(b) / "cove_results.jsonl"), L(Path(fa) / "thought_results.jsonl")
-        for pid, r in L(Path(s) / "thought_results.jsonl").items():
-            g = lambda it: ok(it["answer"], r["ground_truth"], c["dataset"], it["correct"])
-            last = lambda rr: g([it for it in rr["iterations"] if "gen_status" in it][-1])
-            out[c["model"]].append({"ds": c["dataset"], "init": g(r["iterations"][0]), "sr": g(SRr[pid]["iterations"][-1]),
-                                    "cove": g(CVr[pid]["iterations"][-1]), "f": last(Fr[pid])})
-    return out
-
-
-LR = lift_rows()
+# Lift over the shared first attempt (final - first) of Self-Refine, CoVe and Thought-ICS-F, paired
+# 95% bootstrap CI over problems. The first attempt is iteration 0 of the `self` run, which all
+# three start from.
+INIT, SRB, CVB, TF = (runs("self"), runs("self-refine", "self_refine_results.jsonl"),
+                      runs("cove", "cove_results.jsonl"), runs("thought-ics-f"))
+LR = defaultdict(list)
+for k in INIT:
+    if not (k in SRB and k in CVB and k in TF):
+        continue
+    ds = json.load(open(INIT[k] / "config.json"))["dataset"]
+    SRr, CVr, Fr = (jsonl(SRB[k] / "self_refine_results.jsonl"), jsonl(CVB[k] / "cove_results.jsonl"),
+                    jsonl(TF[k] / "thought_results.jsonl"))
+    for pid, r in jsonl(INIT[k] / "thought_results.jsonl").items():
+        a0 = r["iterations"][0]["answer"]
+        assert a0 == SRr[pid]["iterations"][0]["answer"] == CVr[pid]["iterations"][0]["answer"] \
+            == Fr[pid]["iterations"][0]["answer"], (k, pid)   # same first attempt
+        g = lambda it: ok(it["answer"], r["ground_truth"], ds, it["correct"])
+        LR[k[0]].append({"ds": k[1], "init": g(r["iterations"][0]), "sr": g(SRr[pid]["iterations"][-1]),
+                         "cove": g(CVr[pid]["iterations"][-1]),
+                         "f": g([it for it in Fr[pid]["iterations"] if "gen_status" in it][-1])})
 done = [m for m in ORDER if len({r["ds"] for r in LR.get(m, [])}) == 6]
 print("\nself_correction_lift_errorbar: lift over the first attempt [95% bootstrap CI]")
 series = []
@@ -582,11 +599,8 @@ for key, name, col in (("sr", "Self-Refine", "darkblue"), ("cove", "CoVe", "#5b9
         if m not in done:
             est.append((np.nan, np.nan, np.nan))
             continue
-        R = LR[m]
-        rnd = random.Random(0)
-        f = lambda Sx: 100 * sum(r[key] - r["init"] for r in Sx) / len(Sx)
-        v = sorted(f([R[rnd.randrange(len(R))] for _ in R]) for _ in range(5000))
-        est.append((f(R), v[125], v[4874]))
+        rows = [(r["init"], r[key]) for r in LR[m]]
+        est.append(boot_lift(rows, 1))
         print(f"  {name:14s} {m:11s} {est[-1][0]:+5.1f} [{est[-1][1]:+5.1f}, {est[-1][2]:+5.1f}]")
     series.append((name, col, 0.7, est))
 if len(done) < len(ORDER):

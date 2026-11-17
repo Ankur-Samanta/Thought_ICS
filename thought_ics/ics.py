@@ -7,14 +7,17 @@ localization -> resampling from the localized prefix, with the same budgets, sam
 chat templates (see ``protocol.py``). Both run in one job on one vLLM engine, batched over problems.
 
 Verification is either an oracle (the model is told when its answer is wrong; ``--verify oracle``)
-or the model itself (``--verify self``). Under self-verification, ``--feedback all`` carries the
-verification reasoning into localization and both reasonings into resampling (Thought-ICS-F);
-``--feedback loc`` carries the verification reasoning into localization only.
+or the model itself (``--verify self``). Self-verification is Self-Refine-style (the model checks
+the response with the response in view; ``--verifier self-refine``) or CoVe-style (verification
+questions answered independently of the response, then a judgment; ``--verifier cove``). With
+``--feedback``, the verification reasoning is shown to the localizer, and both the verification and
+the localization reasoning to the resampling step. Thought-ICS-F = CoVe-style verification with
+feedback.
 
     python -m thought_ics.ics --model qwen32b --dataset aime                      # oracle-verified
-    python -m thought_ics.ics --model qwen32b --dataset aime --verify self       # self-verified
-    python -m thought_ics.ics --model qwen32b --dataset aime --verify self --feedback all \
-        --method thought --init-from <self-verified run dir>                     # Thought-ICS-F
+    python -m thought_ics.ics --model qwen32b --dataset aime --verify self --method thought
+    python -m thought_ics.ics --model qwen32b --dataset aime --verify self --method thought \
+        --verifier cove --feedback --init-from <self-verified run dir>           # Thought-ICS-F
 """
 
 import argparse
@@ -48,9 +51,10 @@ MODELS = {
     "gptoss20b": {"hf": "openai/gpt-oss-20b", "tp": 1, "final_prefill": True, "prefix_caching": False},
     "gptoss120b": {"hf": "openai/gpt-oss-120b", "tp": 4, "final_prefill": True, "prefix_caching": False},
 }
-# run-directory tag per setting
-MODE_TAG = {("oracle", None): "oracle", ("self", None): "self", ("self", "loc"): "self-fb-loc",
-            ("self", "all"): "self-fb-all"}
+# run-directory tag per setting: (verify, verifier, feedback)
+MODE_TAG = {("oracle", None, False): "oracle",
+            ("self", "self-refine", False): "self", ("self", "self-refine", True): "self-fb",
+            ("self", "cove", False): "self-cove", ("self", "cove", True): "thought-ics-f"}
 # gpt-oss: an explicitly empty analysis block, then the final channel, so the turn has the
 # harmony structure the model was trained on while all solution reasoning stays visible.
 HARMONY_FINAL_HEADER = "<|channel|>analysis<|message|><|end|><|start|>assistant<|channel|>final<|message|>"
@@ -249,13 +253,60 @@ def gen_token_solutions(eng: Engine, cfg, jobs: List[dict]) -> List[dict]:
     return states
 
 
-def verify(eng: Engine, cfg, prompt_texts: List[str]) -> List[dict]:
-    """Self-verification calls (chat-templated, like localization). An unparseable verdict counts as
-    NO (the response continues to localization)."""
-    outs = localize(eng, cfg, prompt_texts, max_tokens=cfg.verify_max_tokens)
+def verify(eng: Engine, cfg, items: List[dict]) -> List[dict]:
+    """Self-verification of the current responses; items: {"question", "text", "thoughts"}.
+    Chat-templated calls with the localizer's sampling settings. A reply with no verdict is
+    continued with a verdict line (P.VERDICT_FOLLOWUP); if that gives none either, the verdict is
+    None and counts as NO (the response goes on to localization)."""
+    if cfg.verifier == "cove":
+        outs = verify_cove(eng, cfg, items)
+    else:
+        texts = [P.verify_prompt(x["question"], x["text"], boxed_answer(x["text"])) for x in items]
+        outs = [{"verify_prompt": t, **o} for t, o in
+                zip(texts, localize(eng, cfg, texts, max_tokens=cfg.verify_max_tokens))]
+    follow = []
     for o in outs:
         o["verdict"] = P.parse_verdict(o["response"])
+        if o["verdict"] is None:
+            follow.append(o)
+    if follow:
+        tail = eng.tok.encode(P.VERDICT_FOLLOWUP, add_special_tokens=False)
+        fids = [(o["_ids"] + tail)[-(eng.max_model_len - 8):] for o in follow]
+        fouts = eng.generate(fids, [sp(cfg, max_tokens=P.VERDICT_FOLLOWUP_TOKENS, temperature=0.0,
+                                       skip_special_tokens=False) for _ in follow])
+        for o, fo in zip(follow, fouts):
+            o["verdict_followup"] = fo["text"]
+            o["verdict"] = P.parse_followup_verdict(fo["text"])
+    for o in outs:
+        o.pop("_ids", None)
     return outs
+
+
+def verify_cove(eng: Engine, cfg, items: List[dict]) -> List[dict]:
+    """CoVe-style verification: plan verification questions about the response, answer each in a
+    separate call that sees only the problem, then judge the response against those answers. The
+    judge's reply is the verification response; n_tokens counts all three stages."""
+    info = [{"question": x["question"], "steps": P.numbered_steps(x.get("thoughts"), x["text"]),
+             "answer": boxed_answer(x["text"])} for x in items]
+    plans = localize(eng, cfg, [P.COVE_PLAN_PROMPT.format(**x) for x in info], max_tokens=P.COVE_PLAN_MAX_TOKENS)
+    qs = [P.parse_questions(response_text(p["response"])) for p in plans]
+    flat = [(i, q) for i, Q in enumerate(qs) for q in Q]
+    ans = localize(eng, cfg, [P.COVE_ANSWER_PROMPT.format(question=info[i]["question"], q=q) for i, q in flat],
+                   max_tokens=P.COVE_ANSWER_MAX_TOKENS)
+    qa: List[List[str]] = [[] for _ in items]
+    n_ans = [0] * len(items)
+    for (i, q), o in zip(flat, ans):
+        qa[i].append(f"Q: {q}\nA: {response_text(o['response']).strip()}")
+        n_ans[i] += o["n_tokens"]
+    n_tok = lambda t: len(eng.chat_ids(t))
+    texts = [P.cove_judge_prompt(n_tok, eng.max_model_len, x["question"], x["steps"], x["answer"], q)
+             for x, q in zip(info, qa)]
+    judges = localize(eng, cfg, texts, max_tokens=cfg.verify_max_tokens)
+    out = []
+    for t, j, p, q, na in zip(texts, judges, plans, qa, n_ans):
+        out.append({"verify_prompt": t, **j, "n_tokens": j["n_tokens"] + p["n_tokens"] + na,
+                    "factored": {"plan": p["response"], "questions": len(q), "qa": q}})
+    return out
 
 
 def localize(eng: Engine, cfg, prompt_texts: List[str], max_tokens: Optional[int] = None) -> List[dict]:
@@ -265,8 +316,8 @@ def localize(eng: Engine, cfg, prompt_texts: List[str], max_tokens: Optional[int
     params = [sp(cfg, max_tokens=max(1, min(budget, eng.max_model_len - len(i))),
                  temperature=cfg.localization_temp, skip_special_tokens=False) for i in ids]
     outs = eng.generate(ids, params)
-    return [{"response": o["text"], "finish_reason": o["finish_reason"],
-             "n_tokens": len(o["ids"]), "prompt_tokens": len(i)} for o, i in zip(outs, ids)]
+    return [{"response": o["text"], "finish_reason": o["finish_reason"], "n_tokens": len(o["ids"]),
+             "prompt_tokens": len(i), "_ids": i + o["ids"]} for o, i in zip(outs, ids)]
 
 
 # --- ICS loop -----------------------------------------------------------------------
@@ -385,8 +436,7 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
     logger.info(f"[{method}] init accuracy {sum(done.values())}/{len(records)}")
 
     SELF = cfg.verify == "self"
-    MODE = cfg.feedback if SELF else None
-    CARRY = MODE is not None
+    CARRY = SELF and cfg.feedback
     critique: Dict[int, str] = {}  # latest verifier critique per problem (replaced each iteration)
     crit_cut: Dict[int, int] = {}
     gen_text = [template.format(question=p["problem"]) for p in problems]
@@ -397,12 +447,11 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
         if not active:
             break
         if SELF:
-            vtexts = [P.verify_prompt(problems[i]["problem"], current[i]["text"], boxed_answer(current[i]["text"]))
-                      for i in active]
-            verdicts = verify(eng, cfg, vtexts)
+            verdicts = verify(eng, cfg, [{"question": problems[i]["problem"], "text": current[i]["text"],
+                                          "thoughts": current[i].get("thoughts")} for i in active])
             still = []
-            for i, vt, v in zip(active, vtexts, verdicts):
-                vinfo = {"verify_prompt": vt, **v}
+            for i, v in zip(active, verdicts):
+                vinfo = dict(v)
                 if v["verdict"] is True:  # verified as correct: stop
                     stopped[i] = True
                     exit_reason[i] = "verified"
@@ -424,18 +473,19 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
             for i in active:
                 # localizer keeps its full budget; the resample prompt leaves the full generation budget
                 fits = [(lambda c, i=i: len(eng.chat_ids(loc_text(i, c))), eng.max_model_len - cfg.localization_max_tokens)]
-                if MODE == "all":
-                    fits.append((lambda c, i=i: len(eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], c))),
+                fits.append((lambda c, i=i: len(eng.gen_prompt_ids(P.feedback_gen_prompt(gen_text[i], c))),
                                  eng.max_model_len - cfg.response_length))
                 critique[i], crit_cut[i] = fit_critique(eng, cfg, critique[i], fits)
         texts = [loc_text(i, critique[i] if CARRY else None) for i in active]
         locs = localize(eng, cfg, texts)
+        for lo in locs:
+            lo.pop("_ids", None)
 
         jobs, job_idx, loc_info, failed = [], [], {}, {}
         loc_msg: Dict[int, str] = {}
 
         def resample_ids(i):
-            if MODE != "all":
+            if not CARRY:
                 return prompt_ids[i]
             # the localizer's reply goes in after the (already fitted) critique; cut its tail if needed
             m, c = fit_critique(eng, cfg, loc_msg[i], [(lambda x: len(eng.gen_prompt_ids(
@@ -446,9 +496,8 @@ def run_method(eng: Engine, cfg, method: str, problems: List[dict],
             g = current[i]
             info = {"loc_prompt": text, **loc}
             loc_info[i] = info
-            if MODE == "all":
-                loc_msg[i] = response_text(loc["response"]).strip()
             if CARRY:
+                loc_msg[i] = response_text(loc["response"]).strip()
                 info.update(critique=critique[i], critique_tokens_cut=crit_cut.get(i, 0))
             if method == "thought":
                 n = len(g["thoughts"])
@@ -581,9 +630,11 @@ def main():
     ap.add_argument("--method", choices=["both", "thought"], default="both",
                     help="both = Thought-ICS, then Token-ICS from the same first attempts")
     ap.add_argument("--verify", choices=["oracle", "self"], default="oracle")
-    ap.add_argument("--feedback", choices=["loc", "all"], default=None,
-                    help="with --verify self: loc = verification reasoning to the localizer; all = also "
-                         "both reasonings to the resampling step (Thought-ICS-F)")
+    ap.add_argument("--verifier", choices=["self-refine", "cove"], default="self-refine",
+                    help="with --verify self: Self-Refine-style or CoVe-style self-verification")
+    ap.add_argument("--feedback", action="store_true",
+                    help="with --verify self: carry the verification reasoning to the localizer, and the "
+                         "verification and localization reasoning to the resampling step")
     ap.add_argument("--init-from", default=None,
                     help="run directory whose Thought-ICS first attempts this run starts from")
     ap.add_argument("--max-ics-iterations", type=int, default=P.MAX_ICS_ITERATIONS)
@@ -592,15 +643,17 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out-dir", default="results")
     cfg = ap.parse_args()
-    if cfg.feedback and cfg.verify != "self":
-        ap.error("--feedback requires --verify self")
+    if cfg.verify != "self":
+        if cfg.feedback or cfg.verifier != "self-refine":
+            ap.error("--verifier / --feedback require --verify self")
+        cfg.verifier = None
     for k in ("response_length", "localization_max_tokens", "verify_max_tokens", "max_tokens_per_thought",
               "max_thoughts", "max_empty_retries", "generation_temp", "localization_temp", "top_p", "top_k"):
         setattr(cfg, k, getattr(P, k.upper()))
 
     m = MODELS[cfg.model]
     problems = load_benchmark(cfg.dataset)[:cfg.limit]
-    run_dir = Path(cfg.out_dir) / (f"{cfg.model}_{run_tag(cfg.dataset)}_{MODE_TAG[(cfg.verify, cfg.feedback)]}"
+    run_dir = Path(cfg.out_dir) / (f"{cfg.model}_{run_tag(cfg.dataset)}_{MODE_TAG[(cfg.verify, cfg.verifier, cfg.feedback)]}"
                                    f"_{datetime.now():%Y%m%d_%H%M%S}")
     run_dir.mkdir(parents=True, exist_ok=True)
     try:

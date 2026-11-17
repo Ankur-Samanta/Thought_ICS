@@ -84,7 +84,7 @@ def _cfg(**kw):
                 response_length=10**5, localization_max_tokens=P.LOCALIZATION_MAX_TOKENS,
                 localization_temp=P.LOCALIZATION_TEMP, generation_temp=P.GENERATION_TEMP,
                 top_p=P.TOP_P, top_k=P.TOP_K, max_ics_iterations=3,
-                max_empty_retries=P.MAX_EMPTY_RETRIES, verify="oracle", feedback=None, init_from=None,
+                max_empty_retries=P.MAX_EMPTY_RETRIES, verify="oracle", verifier=None, feedback=False, init_from=None,
                 verify_max_tokens=12288)
     base.update(kw)
     return types.SimpleNamespace(**base)
@@ -159,6 +159,9 @@ def test_parsers():
     assert P.parse_error_step("x \\boxed{9}", 5) == (1, "default")
     assert P.parse_error_step("error in Step 4 here", 5) == (4, "prose")
     assert P.parse_error_step("no idea", 5) == (1, "default")
+    assert P.parse_error_step("checked it\n\n4", 5) == (4, "bare")     # a bare step number as the last line
+    assert P.parse_error_step("**0**", 5) == (0, "bare")
+    assert P.parse_error_step("the answer is 12", 5) == (1, "default")       # not a step number of this chain
     assert P.parse_error_quote('\\boxed{ERROR_QUOTE: "a b c"}') == ("a b c", "boxed")
     assert P.parse_error_quote("\\boxed{NO_ERROR}") == ("", "boxed")
     assert P.parse_error_quote('so ERROR_QUOTE: "x y" maybe') == ("x y", "prose")
@@ -364,7 +367,7 @@ class SelfVerifyEngine(FakeEngine):
 def test_self_verified_correction(monkeypatch):
     _patch_resample_marker(monkeypatch)
     eng = SelfVerifyEngine()
-    r = R.run_method(eng, _cfg(verify="self"), "thought", PROBLEMS[:1])[0]
+    r = R.run_method(eng, _cfg(verify="self", verifier="self-refine"), "thought", PROBLEMS[:1])[0]
     its = r["iterations"]
     assert not its[0]["correct"]
     assert its[1]["localization"]["verification"]["verdict"] is False and its[1]["correct"]
@@ -375,7 +378,7 @@ def test_self_verified_correction(monkeypatch):
 def test_self_verified_vl_disagreement():
     eng = SelfVerifyEngine()
     eng.loc_no_error = True
-    r = R.run_method(eng, _cfg(verify="self", response_length=5000), "token", PROBLEMS[:1],
+    r = R.run_method(eng, _cfg(verify="self", verifier="self-refine", response_length=5000), "token", PROBLEMS[:1],
                      shared_init=_token_init(PROBLEMS[:1]))[0]
     assert r["exit"] == "vl_disagreement" and r["final_correct"] == r["iterations"][0]["correct"]
 
@@ -389,7 +392,7 @@ def test_self_verified_initially_verified_never_resamples():
                     o.update(text="so \\boxed{42}", ids=self.tok.encode("so \\boxed{42}"))
             return outs
     eng = Right()
-    r = R.run_method(eng, _cfg(verify="self", response_length=5000), "token", PROBLEMS[:1],
+    r = R.run_method(eng, _cfg(verify="self", verifier="self-refine", response_length=5000), "token", PROBLEMS[:1],
                      shared_init=_token_init(PROBLEMS[:1], chain=("so \\boxed{42}",)))[0]
     assert r["exit"] == "verified" and len([i for i in r["iterations"] if "gen_status" in i]) == 1
     s = R.summarize("token", [r])
@@ -401,6 +404,9 @@ def test_parse_verdict_latex_wrapped():
     assert P.parse_verdict("\\boxed{\\textbf{YES}}") is True
     assert P.parse_verdict("\\boxed{ $YES$ }") is True
     assert P.parse_verdict("no box") is None
+    assert P.parse_verdict("so the answer is correct.\nYES") is True        # off-format final verdict
+    assert P.parse_verdict("boxed{NO}<|eot_id|>") is False
+    assert P.parse_verdict("yes, I think so") is None                       # only an upper-case YES / NO counts
 
 
 # --- Self-Refine / CoVe baselines --------------------------------------------------------
@@ -424,6 +430,7 @@ class BaselineEngine:
         for ids, prm in zip(prompt_ids, params):
             text = self.tok.decode(ids)
             self.calls.append((text[:6], prm.max_tokens))
+            self.prompts = getattr(self, "prompts", []) + [text]
             if "Provide feedback on this solution" in text:
                 sol = text.split("Solution to review:")[1]
                 v = "YES, correct." if "\\boxed{42}" in sol else "NO. The step is wrong."
@@ -437,7 +444,8 @@ class BaselineEngine:
             elif text.startswith("<chat>Answer the following question"):
                 out = "Yes."
             elif "Final Solution:" in text:
-                out = "final \\boxed{42}"
+                fa = getattr(self, "final_answers", None)
+                out = f"final \\boxed{{{next(fa) if fa else 42}}}"
             else:
                 raise AssertionError(text[:80])
             outs.append({"ids": self.tok.encode(out), "text": out, "finish_reason": "stop", "stop_reason": None})
@@ -446,7 +454,7 @@ class BaselineEngine:
 
 def _bcfg(**kw):
     from types import SimpleNamespace
-    return SimpleNamespace(**{"budget": 16384, "temp": 0.5, "top_p": 0.9, "top_k": 50, "max_iterations": 10, **kw})
+    return SimpleNamespace(**{"budget": 16384, "temp": 0.5, "top_p": 0.9, "top_k": 50, "max_iterations": 10, "dataset": "aime", **kw})
 
 
 def test_self_refine_up_to_n_stops_on_yes():
@@ -469,14 +477,25 @@ def test_self_refine_cap():
     assert len(recs[0]["iterations"]) == 4 and not recs[0]["stopped_early"] and not recs[0]["final_correct"]
 
 
-def test_cove_single_pass():
+def test_cove_repeats_until_answer_unchanged():
     from thought_ics import baselines as B
     eng = BaselineEngine()
     recs = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])
     r = recs[0]
-    assert len(r["verifications"]) == 2 and len(r["iterations"]) == 2 and r["final_correct"]
-    # factored: verification questions are answered without the baseline solution in context
-    assert sum(1 for c, _ in eng.calls if c == "<chat>") == 3
+    # round 1 revises 7 -> 42, round 2 leaves 42 unchanged: stop
+    assert [it["answer"] for it in r["iterations"]] == ["7", "42", "42"] and r["final_correct"]
+    assert len(r["rounds"]) == 2 and all(len(rd["verifications"]) == 2 for rd in r["rounds"])
+    # factored: verification questions are answered without the solution in context
+    asks = [t for t in eng.prompts if t.startswith("<chat>Answer the following question")]
+    assert len(asks) == 4 and not any("boxed" in t for t in asks)
+
+
+def test_cove_iteration_cap():
+    from thought_ics import baselines as B
+    eng = BaselineEngine()
+    eng.final_answers = iter(range(100))     # every revision changes the answer
+    r = B.run_cove(eng, _bcfg(max_iterations=3), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
+    assert len(r["rounds"]) == 3 and len(r["iterations"]) == 4
 
 
 def test_feedback_verdict_markdown():
@@ -517,7 +536,8 @@ def test_cove_overflow_does_not_crash():
         return outs
     eng.generate = gen
     r = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
-    assert r["tokens_cut_to_fit"] > 0 and r["final_correct"]
+    finals = [t for t in eng.prompts if "Final Solution:" in t]
+    assert r["final_correct"] and all(len(t) <= eng.max_model_len - B.MIN_OUTPUT_ROOM for t in finals)
 
 
 class CritiqueEngine(SelfVerifyEngine):
@@ -532,34 +552,95 @@ class CritiqueEngine(SelfVerifyEngine):
         return outs
 
 
-def test_carry_feedback_modes(monkeypatch):
+def test_carry_feedback(monkeypatch):
     _patch_resample_marker(monkeypatch)
-    for mode in ("loc", "all"):
-        for method in ("thought", "token"):
-            eng = CritiqueEngine()
-            seen = []
-            orig = eng.generate
-            eng.generate = lambda ids, prm, orig=orig, seen=seen, eng=eng: (seen.extend(eng.tok.decode(i) for i in ids), orig(ids, prm))[1]
-            r = R.run_method(eng, _cfg(verify="self", feedback=mode, response_length=5000), method, PROBLEMS[:1],
-                             shared_init=_token_init(PROBLEMS[:1]) if method == "token" else None)[0]
-            loc = r["iterations"][1]["localization"]
-            assert loc["critique"] == "hidden scratch\n\nCRITIQUE: step 2 is wrong. \\boxed{NO}"  # reasoning + final
-            assert "Your check of it:\nhidden scratch\n\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
-            assert "<|channel|>" not in loc["loc_prompt"]
-            gens = [t for t in seen if not t.startswith("<chat>")]
-            fb = [t for t in gens if "Feedback on a previous attempt" in t]
-            if mode == "loc":
-                assert not fb and "resample_localization" not in loc
+    for method in ("thought", "token"):
+        eng = CritiqueEngine()
+        seen = []
+        orig = eng.generate
+        eng.generate = lambda ids, prm, orig=orig, seen=seen, eng=eng: (seen.extend(eng.tok.decode(i) for i in ids), orig(ids, prm))[1]
+        r = R.run_method(eng, _cfg(verify="self", verifier="self-refine", feedback=True, response_length=5000), method,
+                         PROBLEMS[:1], shared_init=_token_init(PROBLEMS[:1]) if method == "token" else None)[0]
+        loc = r["iterations"][1]["localization"]
+        assert loc["critique"] == "hidden scratch\n\nCRITIQUE: step 2 is wrong. \\boxed{NO}"  # reasoning + final
+        assert "Your check of it:\nhidden scratch\n\nCRITIQUE: step 2 is wrong." in loc["loc_prompt"]
+        assert "<|channel|>" not in loc["loc_prompt"]
+        fb = [t for t in seen if not t.startswith("<chat>") and "Feedback on a previous attempt" in t]
+        assert fb and "CRITIQUE: step 2 is wrong." in fb[0]
+        assert "Where the previous attempt first went wrong:\n" + P.unbox(loc["resample_localization"]) in fb[0]
+        assert P.FEEDBACK_GEN_CLOSE in fb[0] and "\\boxed{NO}" not in fb[0].split("Feedback on a previous attempt")[1].split("Taking this feedback")[0]
+        assert loc["resample_localization"] == R.response_text(loc["response"]).strip()
+
+
+class CoveVerifyEngine(SelfVerifyEngine):
+    """CoVe-style verifier: plans two questions; answers them; the judge says YES iff the solution
+    boxes 42. With off_format, the judge gives no verdict and the follow-up completes it."""
+    off_format = False
+
+    def generate(self, prompt_ids, params):
+        outs, rest = [], []
+        for ids, prm in zip(prompt_ids, params):
+            text = self.tok.decode(ids)
+            if text.endswith(P.VERDICT_FOLLOWUP):
+                out = "YES}" if "looks fine" in text else "NO}"
+            elif text.startswith("<chat>You are checking") and "Independent verification:" not in text:
+                out = "Q1: What is 6*7?\nQ2: Is step 2 justified?"
+            elif text.startswith("<chat>Answer the following question about a problem"):
+                assert "Solution to check" not in text and "step 1 bad" not in text   # problem only
+                out = "It is 42."
+            elif text.startswith("<chat>You are checking"):
+                ok = "Final answer: 42" in text
+                out = ("looks fine" if ok else "looks wrong") if self.off_format else ("\\boxed{YES}" if ok else "\\boxed{NO}")
             else:
-                assert fb and "CRITIQUE: step 2 is wrong." in fb[0]
-                assert "Where the previous attempt first went wrong:\n" + P.unbox(loc["resample_localization"]) in fb[0]
-                assert P.FEEDBACK_GEN_CLOSE in fb[0] and "\\boxed{NO}" not in fb[0].split("Feedback on a previous attempt")[1].split("Taking this feedback")[0]
-                assert loc["resample_localization"] == R.response_text(loc["response"]).strip()
+                outs.append(None); rest.append((ids, prm)); continue
+            outs.append({"ids": self.tok.encode(out), "text": out, "finish_reason": "stop", "stop_reason": None})
+        sub = iter(super().generate([r[0] for r in rest], [r[1] for r in rest]) if rest else [])
+        return [o if o is not None else next(sub) for o in outs]
+
+
+def test_cove_style_verification(monkeypatch):
+    _patch_resample_marker(monkeypatch)
+    for off_format in (False, True):
+        eng = CoveVerifyEngine()
+        eng.off_format = off_format
+        r = R.run_method(eng, _cfg(verify="self", verifier="cove"), "thought", PROBLEMS[:1])[0]
+        its = r["iterations"]
+        v = its[1]["localization"]["verification"]
+        assert v["verdict"] is False and v["factored"]["questions"] == 2
+        assert "Step 1: step 0 ok" in v["verify_prompt"] and "Q: What is 6*7?\nA: It is 42." in v["verify_prompt"]
+        assert ("verdict_followup" in v) == off_format
+        assert its[1]["correct"] and its[2]["stopped"] == "verified" and r["final_correct"]
+    # with feedback, the judge's reply is the verification reasoning carried to the localizer
+    r = R.run_method(CoveVerifyEngine(), _cfg(verify="self", verifier="cove", feedback=True), "thought", PROBLEMS[:1])[0]
+    loc = r["iterations"][1]["localization"]
+    assert loc["critique"] == R.response_text(loc["verification"]["response"]).strip()
+    assert "Your check of it:\n" + loc["critique"] in loc["loc_prompt"]
+
+
+def test_unparseable_verdict_counts_as_no():
+    class NoVerdict(SelfVerifyEngine):
+        def generate(self, prompt_ids, params):
+            outs = super().generate(prompt_ids, params)
+            for o, ids in zip(outs, prompt_ids):
+                t = self.tok.decode(ids)
+                if t.startswith("<chat>You are reviewing") or t.endswith(P.VERDICT_FOLLOWUP):
+                    o.update(text="hmm", ids=self.tok.encode("hmm"))
+            return outs
+    eng = NoVerdict()
+    r = R.run_method(eng, _cfg(verify="self", verifier="self-refine", response_length=5000), "token", PROBLEMS[:1],
+                     shared_init=_token_init(PROBLEMS[:1]))[0]
+    v = r["iterations"][1]["localization"]["verification"]
+    assert v["verdict"] is None and v["verdict_followup"] == "hmm" and "gen_status" in r["iterations"][1]
+
+
+def test_run_tags():
+    assert R.MODE_TAG[("self", "cove", True)] == "thought-ics-f"
+    assert len(set(R.MODE_TAG.values())) == len(R.MODE_TAG)
 
 
 def test_no_carry_feedback_unchanged():
     eng = CritiqueEngine()
-    r = R.run_method(eng, _cfg(verify="self", response_length=5000), "token", PROBLEMS[:1],
+    r = R.run_method(eng, _cfg(verify="self", verifier="self-refine", response_length=5000), "token", PROBLEMS[:1],
                      shared_init=_token_init(PROBLEMS[:1]))[0]
     loc = r["iterations"][1]["localization"]
     assert "critique" not in loc and "Your check of it" not in loc["loc_prompt"]
@@ -593,8 +674,9 @@ def test_cove_overflow_from_question_does_not_crash():
                 o["text"] = "1. " + "loop " * 3000 + "?"
         return outs
     eng.generate = gen
-    r = B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])[0]
-    assert r["tokens_cut_to_fit"] > 0
+    B.run_cove(eng, _bcfg(), [{"problem": "pa", "answer": "42", "unique_id": "a"}], ["x \\boxed{7}"])
+    finals = [t for t in eng.prompts if "Final Solution:" in t]
+    assert finals and all(len(t) <= eng.max_model_len - B.MIN_OUTPUT_ROOM for t in finals)
 
 
 def test_unbox():

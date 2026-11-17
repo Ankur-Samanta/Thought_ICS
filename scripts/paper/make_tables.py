@@ -2,10 +2,19 @@
 
     python scripts/paper/make_tables.py [out_dir]
 
-Default out_dir: paper_assets/tables. Writes:
-  l2_results.tex   self-correction under oracle verification, per model x dataset:
-                   Init (the first attempt shared by both methods), Token-ICS, Thought-ICS final accuracy.
-Math datasets regraded with math_verify, runs truncated at the first correct attempt (as report.py).
+Default out_dir: paper_assets/tables. Writes the rows of each table (the paper supplies the header):
+  l2_results.tex                oracle verification, per model x dataset: Init (the first attempt
+                                shared by both methods), Token-ICS, MV@10, Thought-ICS
+  localization_paired.tex       Thought-ICS vs Token-ICS localization on the same responses
+  compute_analysis.tex          Thought-ICS compute on the oracle-verification runs
+  correction_diversity.tex      answer diversity across correction iterations (oracle verification)
+  verification_styles.tex       first self-verification: Self-Refine-style vs CoVe-style
+  verification_styles_lift.tex  lift with feedback under each verification style, paired difference
+  feedback_ablation.tex         lift without / with feedback under each verification style
+  compute_thought_ics_f.tex     Thought-ICS-F compute
+  main_results_full.tex         Initial, Self-Refine, CoVe, Thought-ICS-F per model x dataset
+Math datasets are regraded with Math-Verify; oracle-verification runs are truncated at the first
+correct attempt (an equivalence-checking oracle would have stopped there).
 """
 import glob
 import json
@@ -19,10 +28,10 @@ REPO = Path(__file__).resolve().parents[2]
 EXP = REPO / "results"
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else REPO / "paper_assets" / "tables"
 OUT.mkdir(parents=True, exist_ok=True)
-ORDER = ["llama3b", "qwen7b", "llama8b", "qwen14b", "gptoss20b", "qwen32b", "llama70b", "gptoss120b"]
+ORDER = ["llama3b", "llama8b", "llama70b", "qwen7b", "qwen14b", "qwen32b", "gptoss20b", "gptoss120b"]   # by family
 NAME = {"llama3b": "LLaMA-3B", "qwen7b": "Qwen-7B", "llama8b": "LLaMA-8B", "qwen14b": "Qwen-14B",
         "gptoss20b": "OSS-20B", "qwen32b": "Qwen-32B", "llama70b": "LLaMA-70B", "gptoss120b": "OSS-120B"}
-DS = [("amc23", "AMC23"), ("aime", "AIME"), ("math500", "MATH-L5"), ("csqa", "CSQA"), ("gpqa", "GPQA")]
+DS = [("amc23", "AMC23"), ("aime", "AIME"), ("math500", "MATH-L5"), ("csqa", "CSQA"), ("gpqa", "GPQA"), ("mathqa", "MathQA")]
 MATH = {"amc23", "aime", "math500"}
 _mv = {}
 
@@ -218,3 +227,161 @@ for j, meth in enumerate(("token", "thought")):
     lines.append(f"{first:28s} & {'Token-ICS' if meth == 'token' else 'Thought-ICS'} & {len(G):,} & {sum(len(g) for g in G)/len(G):.1f} & {uniq:.2f} & {same:.1f}\\% & {100*sum(ch)/len(ch):.1f}\\% \\\\".replace(",", "{,}"))
 (OUT / "correction_diversity.tex").write_text("\n".join(lines) + "\n")
 print("\nwrote correction_diversity.tex"); print("\n".join(lines))
+
+
+# ---- fully autonomous runs (Sec. 5) -------------------------------------------------------------
+# Runs per (model, dataset): self (Self-Refine-style verification), self-fb (with feedback),
+# self-cove (CoVe-style), thought-ics-f (CoVe-style with feedback), self-refine and cove baselines.
+# All start from the first attempts of the `self` run (iteration 0), which is checked.
+TAGS = {"amc23": "amc23", "aime": "aime", "math500": "math500_L5", "csqa": "csqa", "gpqa": "gpqa", "mathqa": "mathqa"}
+
+
+def run(m, ds, kind, need):
+    cands = [Path(d) for d in sorted(glob.glob(str(EXP / f"{m}_{TAGS[ds]}_{kind}_2*"))) if Path(d, need).exists()]
+    if not cands:
+        raise SystemExit(f"missing run: {m} {ds} {kind}")
+    return cands[-1]
+
+
+def jsonl(path):
+    return {r["problem_id"]: r for r in map(json.loads, open(path))}
+
+
+ICS_KINDS = ("self", "self-fb", "self-cove", "thought-ics-f")
+auto = {}   # (model, ds) -> {kind: {pid: record}}
+for m in ORDER:
+    for ds, _ in DS:
+        R = {k: jsonl(run(m, ds, k, "thought_results.jsonl") / "thought_results.jsonl") for k in ICS_KINDS}
+        R["self-refine"] = jsonl(run(m, ds, "self-refine", "self_refine_results.jsonl") / "self_refine_results.jsonl")
+        R["cove"] = jsonl(run(m, ds, "cove", "cove_results.jsonl") / "cove_results.jsonl")
+        for pid, r in R["self"].items():
+            assert all(R[k][pid]["iterations"][0]["answer"] == r["iterations"][0]["answer"] for k in R), (m, ds, pid)
+        auto[(m, ds)] = R
+
+
+def final_ok(kind, r, ds):
+    """Correctness of the final answer: the last generated solution."""
+    last = [it for it in r["iterations"] if "gen_status" in it or kind in ("self-refine", "cove")][-1]
+    return ok(last["answer"], r["ground_truth"], ds, last["correct"])
+
+
+def lift_rows(m, kinds):
+    """[(initial ok, final ok of each kind)] over all problems of model m, datasets in table order."""
+    rows = []
+    for ds, _ in DS:
+        R = auto[(m, ds)]
+        for pid, r in R["self"].items():
+            it0 = r["iterations"][0]
+            rows.append((ok(it0["answer"], r["ground_truth"], ds, it0["correct"]),)
+                        + tuple(final_ok(k, R[k][pid], ds) for k in kinds))
+    return rows
+
+
+def boot(rows, f, B=5000, seed=0):
+    rnd = random.Random(seed)
+    v = sorted(f([rows[rnd.randrange(len(rows))] for _ in rows]) for _ in range(B))
+    return f(rows), v[int(.025 * B)], v[int(.975 * B)]
+
+
+def lift(rows, j):
+    return 100 * sum(r[j] - r[0] for r in rows) / len(rows)
+
+
+sgn = lambda v: f"$+${v:.1f}" if v >= 0 else f"$-${-v:.1f}"
+pct = lambda a, b: 100 * a / max(1, b)
+
+# verification_styles.tex: the first self-verification of each initial response in the runs with
+# carried feedback, Self-Refine-style (`self-fb`) vs CoVe-style (`thought-ics-f`), the runs compared in
+# verification_styles_lift.tex. Recall: share of incorrect responses flagged as incorrect;
+# specificity: share of correct responses accepted.
+lines, tot = [], {k: [0, 0, 0, 0] for k in ("self-fb", "thought-ics-f")}
+for m in ORDER:
+    cells = []
+    for k in ("self-fb", "thought-ics-f"):
+        c = [0, 0, 0, 0]   # flagged wrong, wrong, accepted correct, correct
+        for ds, _ in DS:
+            for r in auto[(m, ds)][k].values():
+                it0 = r["iterations"][0]
+                v = r["iterations"][1].get("verification") or r["iterations"][1]["localization"]["verification"]
+                if ok(it0["answer"], r["ground_truth"], ds, it0["correct"]):
+                    c[2] += v["verdict"] is True
+                    c[3] += 1
+                else:
+                    c[0] += v["verdict"] is not True
+                    c[1] += 1
+        tot[k] = [a + b for a, b in zip(tot[k], c)]
+        cells += [f"{pct(c[0], c[1]):.0f}", f"{pct(c[2], c[3]):.0f}"]
+    lines.append(f"{NAME[m]} & " + " & ".join(cells) + " \\\\")
+lines.append("\\midrule")
+lines.append("All & " + " & ".join(f"{pct(t[0], t[1]):.0f} & {pct(t[2], t[3]):.0f}" for t in tot.values()) + " \\\\")
+(OUT / "verification_styles.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote verification_styles.tex"); print("\n".join(lines))
+
+# feedback_ablation.tex: lift of Thought-ICS under both verification styles, without / with feedback;
+# All = pooled over all problems.
+lines, pooled = [], []
+for m in ORDER:
+    rows = lift_rows(m, ICS_KINDS)
+    pooled += rows
+    lines.append(f"{NAME[m]} & " + " & ".join(sgn(lift(rows, j)) for j in (1, 2, 3, 4)) + " \\\\")
+lines.append("\\midrule")
+lines.append("All & " + " & ".join(sgn(lift(pooled, j)) for j in (1, 2, 3, 4)) + " \\\\")
+(OUT / "feedback_ablation.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote feedback_ablation.tex"); print("\n".join(lines))
+
+# verification_styles_lift.tex: lift with feedback, Self-Refine-style vs CoVe-style (= Thought-ICS-F),
+# paired difference with a 95% bootstrap CI.
+lines = []
+for m in ORDER:
+    rows = lift_rows(m, ("self-fb", "thought-ics-f"))
+    e, lo, hi = boot(rows, lambda S: 100 * sum(r[2] - r[1] for r in S) / len(S))
+    lines.append(f"{NAME[m]} & {sgn(lift(rows, 1))} & {sgn(lift(rows, 2))} & {sgn(e)} [{sgn(lo)}, {sgn(hi)}] \\\\")
+(OUT / "verification_styles_lift.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote verification_styles_lift.tex"); print("\n".join(lines))
+
+# compute_thought_ics_f.tex: mean generated tokens per problem beyond the initial response
+# (verification: all CoVe-style calls; localization; correction: resampled tokens past the kept
+# prefix) and mean correction iterations (resamples) per problem, over all problems of the model.
+lines = []
+f = lambda v: f"{v:,.0f}".replace(",", "{,}")
+for m in ORDER:
+    V = L_ = C = N = n = 0
+    for ds, _ in DS:
+        for r in auto[(m, ds)]["thought-ics-f"].values():
+            n += 1
+            for it in r["iterations"][1:]:
+                loc = it.get("localization") or {}
+                v = it.get("verification") or loc.get("verification")
+                V += v["n_tokens"] if v else 0
+                L_ += loc.get("n_tokens", 0)
+                if "gen_status" in it:
+                    C += it["n_new_tokens"]
+                    N += 1
+    lines.append(f"{NAME[m]} & {f(V / n)} & {f(L_ / n)} & {f(C / n)} & {f((V + L_ + C) / n)} & {N / n:.2f} \\\\")
+(OUT / "compute_thought_ics_f.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote compute_thought_ics_f.tex"); print("\n".join(lines))
+
+# main_results_full.tex: accuracy per model and dataset: Initial, Self-Refine, CoVe, Thought-ICS-F.
+lines = []
+METHODS = [("Initial", None), ("Self-Refine", "self-refine"), ("CoVe", "cove"), ("Thought-ICS-F", "thought-ics-f")]
+for i, m in enumerate(ORDER):
+    accs = {}
+    for ds, _ in DS:
+        R = auto[(m, ds)]
+        for label, k in METHODS:
+            if k is None:
+                v = [ok(r["iterations"][0]["answer"], r["ground_truth"], ds, r["iterations"][0]["correct"])
+                     for r in R["self"].values()]
+            else:
+                v = [final_ok(k, r, ds) for r in R[k].values()]
+            accs[(label, ds)] = 100 * sum(v) / len(v)
+    for j, (label, _) in enumerate(METHODS):
+        cells = []
+        for ds, _ in DS:
+            v, best = accs[(label, ds)], max(accs[(l, ds)] for l, _ in METHODS)
+            cells.append(f"\\textbf{{{v:.1f}}}" if abs(v - best) < 1e-9 else f"{v:.1f}")
+        lines.append(f"{NAME[m] if j == 0 else ''} & {label} & " + " & ".join(cells) + " \\\\")
+    if i < len(ORDER) - 1:
+        lines.append("\\midrule")
+(OUT / "main_results_full.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote main_results_full.tex"); print("\n".join(lines))

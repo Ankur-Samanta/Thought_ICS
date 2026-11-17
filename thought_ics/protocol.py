@@ -91,7 +91,8 @@ def chain_text(thoughts: List[str]) -> str:
     """The chain as shown to the localizer: '\\nStep i: <thought>'."""
     out = ""
     for i, t in enumerate(thoughts, 1):
-        out += f"\nStep {i}: {re.sub(r'\n\s*\n', chr(10), t.strip())}"
+        body = re.sub(r"\n\s*\n", "\n", t.strip())
+        out += f"\nStep {i}: {body}"
     return out
 
 
@@ -227,7 +228,8 @@ def feedback_gen_prompt(gen_prompt_text: str, critique: str, localization: Optio
 
 
 def verify_prompt(question: str, solution: str, answer: str) -> str:
-    """Self-verification prompt. Both methods verify the same plain-text solution."""
+    """Self-Refine-style self-verification prompt: the model verifies the response with the full
+    response in view. Both methods verify the same plain-text solution."""
     return f"""You are reviewing a solution to a problem. Analyze it carefully to see if they arrived at the right answer.
 
 Problem: {question}
@@ -243,16 +245,110 @@ Conclude with \\boxed{{YES}} if the solution is correct, or \\boxed{{NO}} if it 
 MANDATORY final line: your response MUST end with \\boxed{{YES}} or \\boxed{{NO}} on its own line."""
 
 
+# --- CoVe-style self-verification (the verification step of Chain-of-Verification) --------------
+# (1) plan verification questions with the response in view, (2) answer each question in a separate
+# call that sees only the problem, (3) judge the response against the independent answers. The
+# judge's reply is the verification response (carried forward as feedback in Thought-ICS-F).
+COVE_MAX_QUESTIONS = 5
+COVE_PLAN_MAX_TOKENS = 2048
+COVE_ANSWER_MAX_TOKENS = 2048
+
+COVE_PLAN_PROMPT = """You are checking a step-by-step solution to a problem. Write verification questions that would reveal whether the solution is correct: each question should check one specific fact, calculation or deduction that the solution relies on, and must be answerable on its own, without seeing the solution.
+
+Problem: {question}
+
+Solution to check:
+{steps}
+
+Final answer: {answer}
+
+List at most 5 questions, one per line, numbered "Q1:", "Q2:", and so on. Write only the questions."""
+
+COVE_ANSWER_PROMPT = """Answer the following question about a problem. Work it out yourself, briefly and carefully, and state your answer clearly at the end.
+
+Problem: {question}
+
+Question: {q}"""
+
+COVE_JUDGE_PROMPT = """You are checking a step-by-step solution to a problem. Each verification question below was answered independently, without seeing the solution.
+
+Problem: {question}
+
+Solution to check:
+{steps}
+
+Final answer: {answer}
+
+Independent verification:
+{qa}
+
+Compare the solution with the independent answers. A disagreement on something the final answer depends on means the solution is likely wrong; check such a disagreement carefully yourself before deciding.
+
+Conclude with \\boxed{{YES}} if the solution's final answer is correct, or \\boxed{{NO}} if it is incorrect.
+MANDATORY final line: your response MUST end with \\boxed{{YES}} or \\boxed{{NO}} on its own line."""
+
+
+def numbered_steps(thoughts: Optional[List[str]], solution: str) -> str:
+    """The response as numbered thoughts ('Step k: ...', blank-line separated); an unstructured
+    response is a single step."""
+    return "\n\n".join(f"Step {k}: {t.strip()}" for k, t in enumerate(thoughts or [solution], 1))
+
+
+def parse_questions(text: str, k: int = COVE_MAX_QUESTIONS) -> List[str]:
+    """Verification questions from a plan: lines numbered 'Q1:', 'Q2:', ...; otherwise lines ending
+    with a question mark. At most k."""
+    qs = re.findall(r"^\s*\**\s*Q\s*\d+\s*[:.)]\**\s*(.+?)\s*$", text or "", flags=re.M)
+    if not qs:
+        qs = [ln.strip(" -*") for ln in (text or "").splitlines() if ln.strip().endswith("?")]
+    return [q for q in qs if q][:k]
+
+
+def cove_judge_prompt(n_tokens, max_len: int, question: str, steps: str, answer: str, qa: List[str],
+                      reserve: int = 4096) -> str:
+    """Judge prompt that fits the context: the independent answers are shortened (keeping their
+    endings, where the answer is stated) until the prompt leaves `reserve` tokens for the judgment.
+    n_tokens(text) -> prompt length in tokens."""
+    keep = 4000
+    while True:
+        trimmed = [x if len(x) <= keep else "Q/A (shortened): ..." + x[-keep:] for x in qa]
+        text = COVE_JUDGE_PROMPT.format(question=question, steps=steps, answer=answer,
+                                        qa="\n\n".join(trimmed) or "(no questions)")
+        if n_tokens(text) <= max_len - reserve or keep <= 200:
+            return text
+        keep //= 2
+
+
+# --- Verdicts -------------------------------------------------------------------------------
+# A reply with no parseable verdict (off-format, or cut off at the budget) is continued with this
+# line and a few greedy tokens; if that still gives no verdict, the verdict counts as NO.
+VERDICT_FOLLOWUP = "\n\nFinal verdict: \\boxed{"
+VERDICT_FOLLOWUP_TOKENS = 4
+_SPECIAL = ("<|eot_id|>", "<|im_end|>", "<|return|>", "<|end|>", "<|endoftext|>")
+_YES_NO = re.compile(r"(?<![A-Za-z])(YES|NO)(?![A-Za-z])")
+
+
 def parse_verdict(response: str) -> Optional[bool]:
-    """True = model says correct, False = says incorrect, None = unparseable."""
-    b = _last_boxed(response)
+    """True = the model says correct, False = says incorrect, None = no verdict. The last
+    \\boxed{YES} / \\boxed{NO}; otherwise a final YES or NO in the last 120 characters (e.g. a
+    bare 'YES' line, or 'boxed{NO}' without the backslash)."""
+    b = _last_boxed(response or "")
     if b is not None:
         u = re.sub(r"\\(text|mathrm|textbf|mathbf|textsf)\s*\{([^{}]*)\}", r"\2", b).strip().strip("$ ").upper()
         if u.startswith("YES"):
             return True
         if u.startswith("NO"):
             return False
-    return None
+    text = response or ""
+    for t in _SPECIAL:
+        text = text.replace(t, "")
+    hits = _YES_NO.findall(text.strip()[-120:])
+    return (hits[-1] == "YES") if hits else None
+
+
+def parse_followup_verdict(text: str) -> Optional[bool]:
+    """Verdict from the tokens generated after VERDICT_FOLLOWUP."""
+    u = text.strip().upper()
+    return True if u.startswith("YES") else False if u.startswith("NO") else None
 
 
 # --- Parsing ------------------------------------------------------------------------
@@ -272,11 +368,16 @@ def _last_boxed(text: str) -> Optional[str]:
     return text[start:i - 1].strip() if depth == 0 else None
 
 
+_STEP_LINE = re.compile(r"(?:(?:the\s+)?(?:first\s+)?(?:erroneous\s+)?(?:step|answer|final answer)\s*(?:is|:)?\s*)?"
+                        r"(?:\\?boxed\s*[{.]?\s*|\*\*)?(\d+)\s*\}?\**\.?", re.I)
+
+
 def parse_error_step(response: str, chain_length: int) -> Tuple[int, str]:
-    """Step number from a localization response: the last \\boxed{N}, else the last "Step N".
+    """Step number from a localization response: the last \\boxed{N}; else the last "Step N";
+    else a final line that is only a step number (e.g. '3', 'boxed{3}', '**3**', 'Answer: 3').
 
     Returns (step, status): step 0 = no erroneous step, otherwise 1-indexed. status is "boxed",
-    "prose", or "default" (no valid step number: a failed localization).
+    "prose", "bare", or "default" (no valid step number: a failed localization).
     """
     boxed = _last_boxed(response)
     if boxed is not None:
@@ -293,6 +394,17 @@ def parse_error_step(response: str, chain_length: int) -> Tuple[int, str]:
         n = int(steps[-1].group(1))
         if 1 <= n <= chain_length:
             return n, "prose"
+    text = response.rsplit("<|channel|>final<|message|>", 1)[-1]
+    for t in _SPECIAL:
+        text = text.replace(t, "")
+    lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
+    m = _STEP_LINE.fullmatch(lines[-1]) if lines else None
+    if m:
+        n = int(m.group(1))
+        if n == 0:
+            return 0, "bare"
+        if 1 <= n <= chain_length:
+            return n, "bare"
     return 1, "default"
 
 

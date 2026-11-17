@@ -4,16 +4,19 @@
 #   scripts/submit.sh <experiment> <model|all> <benchmark|all> [extra args for the module]
 #
 # experiments (results go to $OUT_DIR, default ./results):
-#   oracle        Thought-ICS + Token-ICS under oracle verification          (thought_ics.ics)
-#   self          Thought-ICS + Token-ICS under self-verification            (thought_ics.ics --verify self)
-#   self-fb-all   Thought-ICS-F: verification and localization feedback      (needs the `self` runs)
-#   self-fb-loc   ablation: verification feedback to the localizer only      (needs the `self` runs)
-#   baselines     Self-Refine and CoVe                                       (needs the `self` runs)
-#   mv            majority vote over 10 samples (MV@10)
+#   oracle         Thought-ICS + Token-ICS under oracle verification (Sec. 4)
+#   self           Thought-ICS, Self-Refine-style self-verification (Sec. 5.1; first attempts for the rest)
+#   self-fb        the same, with feedback carried through correction         (needs the `self` runs)
+#   self-cove      Thought-ICS, CoVe-style self-verification                  (needs the `self` runs)
+#   thought-ics-f  Thought-ICS-F: CoVe-style self-verification with feedback  (needs the `self` runs)
+#   self-refine    Self-Refine baseline                                       (needs the `self` runs)
+#   cove           CoVe baseline                                              (needs the `self` runs)
+#   mv             majority vote over 10 samples (MV@10)
 #
 # Experiments that start from the `self` runs' first attempts wait (afterok) for a queued or running
 # `self` job of the same model and benchmark, and otherwise use the latest finished `self` run.
 # Smoke test: scripts/submit.sh self gptoss20b aime --limit 5 --max-ics-iterations 2
+# (--max-ics-iterations is for the ICS runs; the baselines take --max-iterations)
 #
 # Cluster settings can be overridden through the environment: PARTITION, CONDA_PATH, CONDA_ENV,
 # TIME, OUT_DIR, DRY_RUN=1 (print the jobs instead of submitting them).
@@ -35,16 +38,19 @@ declare -A RUN_TAG=([math500]=math500_L5)
 
 experiment=${1:?experiment}; model=${2:?model or all}; bench=${3:?benchmark or all}; shift 3
 case "$experiment" in
-    oracle)      module=thought_ics.ics;           args="--verify oracle";;
-    self)        module=thought_ics.ics;           args="--verify self";;
-    self-fb-all) module=thought_ics.ics;           args="--verify self --feedback all --method thought";;
-    self-fb-loc) module=thought_ics.ics;           args="--verify self --feedback loc --method thought";;
-    baselines)   module=thought_ics.baselines;     args="";;
-    mv)          module=thought_ics.majority_vote; args="";;
-    *) sed -n '2,20p' "$0"; exit 1;;
+    oracle)        module=thought_ics.ics;           args="--verify oracle";;
+    self)          module=thought_ics.ics;           args="--verify self --method thought";;
+    self-fb)       module=thought_ics.ics;           args="--verify self --method thought --feedback";;
+    self-cove)     module=thought_ics.ics;           args="--verify self --method thought --verifier cove";;
+    thought-ics-f) module=thought_ics.ics;           args="--verify self --method thought --verifier cove --feedback";;
+    self-refine)   module=thought_ics.baselines;     args="--method self-refine";;
+    cove)          module=thought_ics.baselines;     args="--method cove";;
+    mv)            module=thought_ics.majority_vote; args="";;
+    *) sed -n '2,22p' "$0"; exit 1;;
 esac
-needs_self=0
-[[ "$experiment" == self-fb-* || "$experiment" == baselines ]] && needs_self=1
+needs_self=0; baseline=0
+[[ "$experiment" == self-refine || "$experiment" == cove ]] && baseline=1
+[[ "$experiment" != oracle && "$experiment" != self && "$experiment" != mv ]] && needs_self=1
 
 models=("$model"); [ "$model" = all ] && models=("${MODELS[@]}")
 benches=("$bench"); [ "$bench" = all ] && benches=("${BENCHMARKS[@]}")
@@ -58,7 +64,7 @@ for m in "${models[@]}"; do
         if [ $needs_self = 1 ]; then
             jid=$(squeue -u "$USER" -h -n "ics_self_${m}_${b}" -o %i 2>/dev/null | head -1 || true)
             if [ -n "$jid" ]; then
-                if [ "$experiment" = baselines ]; then
+                if [ $baseline = 1 ]; then
                     dep="--dependency=afterok:${jid}"   # baselines find the finished run themselves
                 else
                     echo "self run for $m $b still in the queue (job $jid); submit $experiment once it has finished"; continue

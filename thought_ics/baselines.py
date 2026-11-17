@@ -8,13 +8,19 @@ into one response), use the same engine, chat templates, sampling settings and p
   feedback -> stop if it says YES -> refine from scratch with the feedback, for up to 10
   iterations (the number of correction attempts Thought-ICS gets).
 - CoVe (Dhuliawala et al., 2023), factored variant: plan up to 4 verification questions, answer
-  each without the solution in context, then write a final solution. One pass, by design.
+  each without the solution in context, then write a revised solution. CoVe was proposed as one
+  such pass; to give it the same number of correction iterations, the pass is repeated on the
+  current solution up to 10 times, stopping once a revision leaves the answer unchanged (the
+  answer equivalence of majority voting).
 
 Text carried into a later prompt (Self-Refine feedback, CoVe verification answers) is the model's
 whole response; for gpt-oss that is its analysis reasoning followed by its final message, as for
 Thought-ICS-F. Verdicts and question lists are parsed from the final message.
 
-    python -m thought_ics.baselines --model gptoss20b --dataset aime --init-from <self-verified run dir>
+    python -m thought_ics.baselines --model gptoss20b --dataset aime --method self-refine \
+        --init-from <self-verified run dir>
+    python -m thought_ics.baselines --model gptoss20b --dataset aime --method cove \
+        --init-from <self-verified run dir>
 """
 import argparse
 import json
@@ -28,6 +34,7 @@ from typing import List, Tuple
 
 from thought_ics import protocol as P
 from thought_ics.benchmarks import BENCHMARKS, load_benchmark, run_tag
+from thought_ics.majority_vote import same
 from thought_ics.ics import MODELS, Engine, boxed_answer, final_message, is_correct, response_text, sp
 
 # --- Self-Refine prompts and feedback parser (verbatim) --------------------------------
@@ -290,45 +297,60 @@ def run_self_refine(eng, cfg, problems, init):
 
 
 def run_cove(eng, cfg, problems, init):
+    """Factored CoVe, repeated: plan -> answer the verification questions independently -> revise,
+    applied to the current solution up to cfg.max_iterations times; a problem stops once a revision
+    leaves its answer unchanged."""
     n = len(problems)
-    plans = call(eng, cfg, [PLAN_VERIFICATION_PROMPT.format(problem=p["problem"], baseline=init[k])
-                            for k, p in enumerate(problems)], solution=False)
-    qs = [parse_verification_questions(pl["text"])[:4] for pl in plans]
-    flat = [(k, q) for k in range(n) for q in qs[k]]
-    ans = call(eng, cfg, [EXECUTE_VERIFICATION_PROMPT.format(question=q) for _, q in flat], solution=False)
-    by = [[] for _ in range(n)]
-    for (k, q), a in zip(flat, ans):
-        by[k].append((q, a))
-    finals, cut_k = [], {}
-    for k, p in enumerate(problems):
-        nq = len(by[k])
+    cur = list(init)
+    recs = [{"problem_id": p["unique_id"], "ground_truth": p["answer"],
+             "iterations": [sol_record(init[k], p["answer"], iteration=0)], "rounds": []}
+            for k, p in enumerate(problems)]
+    active = list(range(n))
+    for it in range(1, cfg.max_iterations + 1):
+        if not active:
+            break
+        plans = call(eng, cfg, [PLAN_VERIFICATION_PROMPT.format(problem=problems[k]["problem"], baseline=cur[k])
+                                for k in active], solution=False)
+        qs = [parse_verification_questions(pl["text"])[:4] for pl in plans]
+        flat = [(j, q) for j in range(len(active)) for q in qs[j]]
+        ans = call(eng, cfg, [EXECUTE_VERIFICATION_PROMPT.format(question=q) for _, q in flat], solution=False)
+        by = [[] for _ in active]
+        for (j, q), a in zip(flat, ans):
+            by[j].append((q, a))
+        finals = []
+        for j, k in enumerate(active):
+            nq = len(by[j])
 
-        def build(parts, k=k, p=p, nq=nq):  # parts = questions + answers (both model-written eval text)
-            vt = "".join(f"Q{i}: {q}\nA{i}: {a}\n\n" for i, (q, a) in enumerate(zip(parts[:nq], parts[nq:]), 1))
-            if not vt.strip():
-                vt = "(No verification questions generated)"
-            return FINAL_RESPONSE_PROMPT.format(problem=p["problem"], baseline=init[k], verifications=vt)
-        prompt, c = fit(eng, build, [q for q, _ in by[k]] + [a["full"] for _, a in by[k]])
-        finals.append(prompt)
-        cut_k[k] = c
-    outs = call(eng, cfg, finals, solution=True)
-    recs = []
-    for k, p in enumerate(problems):
-        recs.append({"problem_id": p["unique_id"], "ground_truth": p["answer"],
-                     "iterations": [sol_record(init[k], p["answer"], iteration=0),
-                                    sol_record(outs[k]["text"], p["answer"], iteration=1,
-                                               finish_reason=outs[k]["finish_reason"], n_tokens=outs[k]["n_tokens"])],
-                     "plan": plans[k], "verifications": [{"question": q, **a} for q, a in by[k]],
-                     "tokens_cut_to_fit": cut_k[k]})
-        recs[-1]["final_correct"] = recs[-1]["iterations"][-1]["correct"]
-    logger.info(f"[cove] accuracy {sum(r['final_correct'] for r in recs)}/{n}")
+            def build(parts, k=k, nq=nq):
+                vt = "".join(f"Q{i}: {q}\nA{i}: {a}\n\n" for i, (q, a) in enumerate(zip(parts[:nq], parts[nq:]), 1))
+                if not vt.strip():
+                    vt = "(No verification questions generated)"
+                return FINAL_RESPONSE_PROMPT.format(problem=problems[k]["problem"], baseline=cur[k], verifications=vt)
+            prompt, _ = fit(eng, build, [q for q, _ in by[j]] + [a["full"] for _, a in by[j]])
+            finals.append(prompt)
+        outs = call(eng, cfg, finals, solution=True)
+        still = []
+        for j, k in enumerate(active):
+            prev = recs[k]["iterations"][-1]["answer"]
+            rec = sol_record(outs[j]["text"], problems[k]["answer"], iteration=it,
+                             finish_reason=outs[j]["finish_reason"], n_tokens=outs[j]["n_tokens"])
+            recs[k]["iterations"].append(rec)
+            recs[k]["rounds"].append({"plan": plans[j], "verifications": [{"question": q, **a} for q, a in by[j]]})
+            cur[k] = outs[j]["text"]
+            if not same(prev, rec["answer"], cfg.dataset):
+                still.append(k)
+        active = still
+        logger.info(f"[cove] round {it}: accuracy {sum(r['iterations'][-1]['correct'] for r in recs)}/{n}, "
+                    f"still revising {len(active)}")
+    for r in recs:
+        r["final_correct"] = r["iterations"][-1]["correct"]
     return recs
 
 
 def summarize(method, recs):
     n = len(recs)
     calls = [it["feedback"] for r in recs for it in r["iterations"] if "feedback" in it] if method == "self_refine" \
-        else [r["plan"] for r in recs] + [v for r in recs for v in r["verifications"]]
+        else [rd["plan"] for r in recs for rd in r["rounds"]] + [v for r in recs for rd in r["rounds"] for v in rd["verifications"]]
     sols = [it for r in recs for it in r["iterations"][1:]]
     out = {"method": method, "n_problems": n,
            "init_accuracy": sum(r["iterations"][0]["correct"] for r in recs) / n,
@@ -341,7 +363,9 @@ def summarize(method, recs):
         for c in calls:
             out["feedback_parse"][c["parse"]] = out["feedback_parse"].get(c["parse"], 0) + 1
     else:
-        out["mean_questions"] = sum(len(r["verifications"]) for r in recs) / n
+        rounds = [rd for r in recs for rd in r["rounds"]]
+        out["mean_rounds"] = len(rounds) / n
+        out["mean_questions"] = sum(len(rd["verifications"]) for rd in rounds) / max(1, len(rounds))
     return out
 
 
@@ -349,11 +373,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", required=True, choices=sorted(MODELS))
     ap.add_argument("--dataset", required=True, choices=BENCHMARKS)
-    ap.add_argument("--method", choices=["self_refine", "cove", "both"], default="both")
+    ap.add_argument("--method", required=True, choices=["self-refine", "cove"])
     ap.add_argument("--init-from", default=None,
                     help="self-verified run directory whose Thought-ICS first attempts the baselines start "
                          "from (default: the latest matching run in --out-dir)")
-    ap.add_argument("--max-iterations", type=int, default=P.MAX_ICS_ITERATIONS, help="Self-Refine iterations")
+    ap.add_argument("--max-iterations", type=int, default=P.MAX_ICS_ITERATIONS,
+                    help="correction iterations (= the attempts Thought-ICS gets)")
     ap.add_argument("--limit", type=int, default=None, help="only the first N problems (smoke tests)")
     ap.add_argument("--gpu-mem", type=float, default=0.85)
     ap.add_argument("--seed", type=int, default=42)
@@ -370,7 +395,7 @@ def main():
         cfg.init_from = str(cands[-1])
     problems = load_benchmark(cfg.dataset)[:cfg.limit]
     init = load_init(Path(cfg.init_from), problems)
-    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{tag}_baselines_{datetime.now():%Y%m%d_%H%M%S}"
+    run_dir = Path(cfg.out_dir) / f"{cfg.model}_{tag}_{cfg.method}_{datetime.now():%Y%m%d_%H%M%S}"
     run_dir.mkdir(parents=True, exist_ok=True)
     try:
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent, text=True).strip()
@@ -382,16 +407,15 @@ def main():
     logger.info(f"Config: {json.dumps(config)}")
     eng = Engine(m["hf"], m["tp"], P.MAX_MODEL_LEN, cfg.seed, cfg.gpu_mem, m["final_prefill"],
                  m.get("prefix_caching", True))
-    summaries = {}
-    for method in (["self_refine", "cove"] if cfg.method == "both" else [cfg.method]):
-        t0 = time.time()
-        recs = (run_self_refine if method == "self_refine" else run_cove)(eng, cfg, problems, init)
-        with open(run_dir / f"{method}_results.jsonl", "w") as f:
-            for r in recs:
-                f.write(json.dumps(r) + "\n")
-        summaries[method] = {**summarize(method, recs), "wall_seconds": time.time() - t0}
-        logger.info(f"[{method}] summary: {json.dumps(summaries[method])}")
-        (run_dir / "summary.json").write_text(json.dumps(summaries, indent=2))
+    method = cfg.method.replace("-", "_")
+    t0 = time.time()
+    recs = (run_self_refine if method == "self_refine" else run_cove)(eng, cfg, problems, init)
+    with open(run_dir / f"{method}_results.jsonl", "w") as f:
+        for r in recs:
+            f.write(json.dumps(r) + "\n")
+    summary = {method: {**summarize(method, recs), "wall_seconds": time.time() - t0}}
+    logger.info(f"[{method}] summary: {json.dumps(summary[method])}")
+    (run_dir / "summary.json").write_text(json.dumps(summary, indent=2))
     logger.info(f"Done: {run_dir}")
 
 

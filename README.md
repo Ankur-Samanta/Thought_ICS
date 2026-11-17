@@ -39,11 +39,16 @@ return τ
 Verification comes from one of two sources:
 
 - an **oracle**, which tells the model when its answer is wrong but not where;
-- the model itself (**self-verification**).
+- the model itself (**self-verification**), in one of two styles:
+  - *Self-Refine-style*: the model checks the response with the full response in view;
+  - *CoVe-style* (the verification step of Chain-of-Verification): the model plans verification
+    questions about the response, answers each one in a separate call that sees only the problem,
+    and judges the response against these answers.
 
-**Thought-ICS-F** passes the verification reasoning to the localizer, and passes both reasonings to
-the resampled completion. **Token-ICS** runs the same loop on the same first attempt, joined into
-unstructured text. It localizes errors by quoting them exactly.
+With **feedback**, the verification reasoning *v* is passed to the localizer, and *v* and the
+localization reasoning *ℓ* are passed to the resampled completion. **Thought-ICS-F** is CoVe-style
+self-verification with feedback. **Token-ICS** runs the same loop on the same first attempt, joined
+into unstructured text. It localizes errors by quoting them exactly.
 
 All methods share one protocol:
 
@@ -66,7 +71,7 @@ attempts, Thought-ICS achieves a higher self-correction lift than Token-ICS on e
 <p align="center"><img src="docs/figures/l2_errorbar.png" width="70%"></p>
 
 **Structure enables precise self-localization.** We compare against a three-judge oracle. Resampling
-from a clean prefix fixes 2.6× more answers than resampling from an erroneous one.
+from a clean prefix fixes 2.7× more answers than resampling from an erroneous one.
 
 <p align="center">
 <img src="docs/figures/self_localization_vs_oracle.png" width="45%">
@@ -75,7 +80,8 @@ from a clean prefix fixes 2.6× more answers than resampling from an erroneous o
 
 **Fully autonomous self-correction.** Self-verification degrades over correction iterations, and how
 reliable it is depends on the model family. Carrying verification and localization feedback through
-correction (Thought-ICS-F) improves downstream self-correction.
+correction improves self-correction. Thought-ICS-F matches or outperforms Self-Refine and CoVe for
+all models of 14B parameters and above.
 
 <p align="center">
 <img src="docs/figures/self_verification_by_terminal_iteration_part1a.png" width="45%">
@@ -87,8 +93,8 @@ correction (Thought-ICS-F) improves downstream self-correction.
 ```
 thought_ics/
   protocol.py        prompts, parsers and budgets (shared by every method)
-  ics.py             engine, thought-by-thought generation, Thought-ICS / Token-ICS / Thought-ICS-F
-  baselines.py       Self-Refine and Chain-of-Verification
+  ics.py             engine, thought-by-thought generation, verification, Thought-ICS / Token-ICS
+  baselines.py       Self-Refine and Chain-of-Verification (CoVe)
   majority_vote.py   MV@k
   benchmarks.py      the six benchmarks, frozen to the exact evaluated problems
 data/benchmarks/     problem sets (GPQA: ids and hashes only, rebuilt from Hugging Face)
@@ -117,20 +123,24 @@ accept its terms and log in with `huggingface-cli login`.
 and reads cluster settings from the environment (`PARTITION`, `CONDA_ENV`, ...). Results go to `results/`.
 
 ```bash
-# oracle-verified Thought-ICS and Token-ICS (Sec. 4)
-scripts/submit.sh oracle all all
-# self-verified Thought-ICS and Token-ICS (Sec. 5.1)
-scripts/submit.sh self all all
-# after the self-verified runs finish (they provide the shared first attempts):
-scripts/submit.sh self-fb-all all all   # Thought-ICS-F (Sec. 5.2-5.3)
-scripts/submit.sh self-fb-loc all all   # ablation: feedback to the localizer only
-scripts/submit.sh baselines all all     # Self-Refine and CoVe
-scripts/submit.sh mv all all            # MV@10
+scripts/submit.sh oracle all all          # Thought-ICS and Token-ICS, oracle verification (Sec. 4)
+scripts/submit.sh mv all all              # MV@10 (App.)
+scripts/submit.sh self all all            # Thought-ICS, Self-Refine-style self-verification (Sec. 5.1)
+# after the `self` runs finish (they provide the first attempts shared by all of the following):
+scripts/submit.sh self-fb all all         # ... with feedback (Sec. 5.2, App.)
+scripts/submit.sh self-cove all all       # Thought-ICS, CoVe-style self-verification (Sec. 5.2)
+scripts/submit.sh thought-ics-f all all   # Thought-ICS-F: CoVe-style, with feedback (Sec. 5.2-5.3)
+scripts/submit.sh self-refine all all     # Self-Refine (Sec. 5.3)
+scripts/submit.sh cove all all            # CoVe (Sec. 5.3)
 ```
 
 You can also start a single run directly, for example
-`python -m thought_ics.ics --model gptoss20b --dataset aime --verify self`. Add
+`python -m thought_ics.ics --model gptoss20b --dataset aime --verify self --method thought`. Add
 `--limit 5 --max-ics-iterations 2` for a smoke test.
+
+CoVe was proposed as a single verify-and-revise pass. To give every method the same number of
+correction iterations, the CoVe baseline repeats this pass on the current solution up to 10 times
+and stops once a revision leaves the answer unchanged.
 
 **Oracle localization labels** (Sec. 4.2) come from `scripts/oracle/pipeline.sh`. It does four things:
 
@@ -145,8 +155,7 @@ See `scripts/oracle/README.md` for details.
 
 ```bash
 python scripts/report_oracle_verified.py     # Sec. 4: accuracy, lift, localization mechanics
-python scripts/report_self_verified.py       # Sec. 5.1: exits and verifier recall / specificity
-python scripts/report_autonomous.py          # Sec. 5.2-5.3: Thought-ICS-F vs baselines, ablation
+python scripts/report_self_verified.py       # Sec. 5: exits and verifier recall / specificity
 python scripts/oracle/paired_stats.py results/oracle/part1 results/oracle/part2
 python scripts/paper/make_figures.py         # -> paper_assets/figures
 python scripts/paper/make_tables.py          # -> paper_assets/tables
@@ -156,9 +165,16 @@ python scripts/paper/tree_example.py         # appendix tree example
 Math benchmarks are graded by mathematical equivalence (Math-Verify), and multiple-choice benchmarks
 by answer letter.
 
+**Parsing.** A verdict is read from the last `\boxed{YES}` / `\boxed{NO}`, or else from a final
+YES or NO at the end of the reply. A reply with neither is continued with `Final verdict: \boxed{`
+and a few greedy tokens; if that gives no verdict either, it counts as NO. A step number is read from
+the last `\boxed{N}`, else the last "Step N", else a final line that is only a number. A
+localization with no valid step number is a failed localization and uses up the correction attempt.
+
 ## Run outputs
 
-Each run directory `results/<model>_<benchmark>_<setting>_<timestamp>/` contains three files:
+Each run directory `results/<model>_<benchmark>_<setting>_<timestamp>/` contains three files
+(`<setting>`: `oracle`, `self`, `self-fb`, `self-cove`, `thought-ics-f`, `self-refine`, `cove`, `mv10`):
 
 - `config.json`: every setting, and the git commit;
 - `summary.json`;
