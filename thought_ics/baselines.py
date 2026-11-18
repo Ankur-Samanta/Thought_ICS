@@ -210,9 +210,8 @@ MIN_OUTPUT_ROOM = 4096
 def fit(eng, build, parts):
     """build(parts) -> prompt text. If the solution-writing prompt would leave less than
     MIN_OUTPUT_ROOM tokens of context, cut the fed-back evaluation texts in `parts` (Self-Refine
-    feedback / CoVe verification questions and answers) from the end, longest first, until it fits. Only
-    happens when an evaluation looped to its budget (<3% of calls); the solution and problem
-    are never cut. Returns (prompt, tokens_cut)."""
+    feedback / CoVe verification questions and answers) from the end, longest first, until it fits.
+    The solution and problem are never cut. Returns (prompt, tokens_cut)."""
     limit = eng.max_model_len - MIN_OUTPUT_ROOM
     toks = [eng.tok.encode(t, add_special_tokens=False) for t in parts]
     cut = 0
