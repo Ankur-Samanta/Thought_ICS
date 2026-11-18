@@ -11,6 +11,7 @@ Default out_dir: paper_assets/tables. Writes the rows of each table (the paper s
   verification_styles.tex       first self-verification: Self-Refine-style vs CoVe-style
   verification_styles_lift.tex  lift with feedback under each verification style, paired difference
   feedback_ablation.tex         lift without / with feedback under each verification style
+  thought_ics_f_vs_baselines.tex  Thought-ICS-F minus Self-Refine / CoVe lift, paired CI
   compute_thought_ics_f.tex     Thought-ICS-F compute
   main_results_full.tex         Initial, Self-Refine, CoVe, Thought-ICS-F per model x dataset
 Math datasets are regraded with Math-Verify; oracle-verification runs are truncated at the first
@@ -338,6 +339,18 @@ for m in ORDER:
     lines.append(f"{NAME[m]} & {sgn(lift(rows, 1))} & {sgn(lift(rows, 2))} & {sgn(e)} [{sgn(lo)}, {sgn(hi)}] \\\\")
 (OUT / "verification_styles_lift.tex").write_text("\n".join(lines) + "\n")
 print("\nwrote verification_styles_lift.tex"); print("\n".join(lines))
+
+# thought_ics_f_vs_baselines.tex: lift of Thought-ICS-F minus that of each baseline, paired 95% bootstrap CI.
+lines = []
+for m in ORDER:
+    rows = lift_rows(m, ("thought-ics-f", "self-refine", "cove"))
+    cells = []
+    for j in (2, 3):
+        e, lo, hi = boot(rows, lambda S, j=j: 100 * sum(r[1] - r[j] for r in S) / len(S))
+        cells.append(f"{sgn(e)} [{sgn(lo)}, {sgn(hi)}]")
+    lines.append(f"{NAME[m]} & " + " & ".join(cells) + " \\\\")
+(OUT / "thought_ics_f_vs_baselines.tex").write_text("\n".join(lines) + "\n")
+print("\nwrote thought_ics_f_vs_baselines.tex"); print("\n".join(lines))
 
 # compute_thought_ics_f.tex: mean generated tokens per problem beyond the initial response
 # (verification: all CoVe-style calls; localization; correction: resampled tokens past the kept
