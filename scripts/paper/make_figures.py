@@ -4,7 +4,7 @@
 
 Main paper: l2_errorbar, self_localization_vs_oracle(_token), edit_accuracy_clean_vs_erroneous,
 localization_error_distribution, self_verification_by_terminal_iteration_part1a (self-verification by
-correction iteration), self_verification_by_terminal_iteration_part1b (with vs without feedback, CoVe-style),
+correction iteration), feedback_lift_errorbar (without vs with feedback),
 self_correction_lift_errorbar. Appendix: self_verification_by_model, confusion_matrix_by_iteration,
 oracle_localization_agreement, edit_accuracy_clean_vs_erroneous_token, chain_thought_length_by_model. File names follow the paper's \\includegraphics paths.
 
@@ -424,51 +424,36 @@ plt.tight_layout()
 save(fig, "confusion_matrix_by_iteration")
 
 
-# ---- Fig: self_verification_by_terminal_iteration_part1b (Sec. 5.2) ------------------------
-# Accuracy over all problems after n correction iterations, Thought-ICS under CoVe-style
-# self-verification without vs with feedback carried through correction (with feedback =
-# Thought-ICS-F). Each problem counts with its current answer; a stopped problem keeps its answer.
-def trajectory(r, ds):
-    gens = {it["iteration"]: ok(it["answer"], r["ground_truth"], ds, it["correct"])
-            for it in r["iterations"] if "gen_status" in it}
-    cur, traj = gens[0], []
-    for n in range(11):
-        cur = gens.get(n, cur)
-        traj.append(cur)
-    return traj
-
-
+# ---- Fig: feedback_lift_errorbar (Sec. 5.2) ----------------------------------------------
+# Lift over the shared first attempt of Thought-ICS under CoVe-style self-verification, without vs
+# with feedback carried through correction (with feedback = Thought-ICS-F), per model; paired 95%
+# bootstrap CIs. Also printed: the feedback gain (with - without) per model with its paired CI.
 NOFB, FB = runs("self-cove"), runs("thought-ics-f")
-keys = [k for k in NOFB if k in FB]
-sums, n_prob = {"nofb": np.zeros(11), "fb": np.zeros(11)}, 0
-for k in keys:
+FBR = defaultdict(list)   # model -> [(init, final without, final with)]
+for k in NOFB:
+    if k not in FB:
+        continue
     ds = json.load(open(NOFB[k] / "config.json"))["dataset"]
     A, B = jsonl(NOFB[k] / "thought_results.jsonl"), jsonl(FB[k] / "thought_results.jsonl")
     for pid, r in A.items():
         assert r["iterations"][0]["answer"] == B[pid]["iterations"][0]["answer"], (k, pid)   # same first attempt
-        sums["nofb"] += trajectory(r, ds)
-        sums["fb"] += trajectory(B[pid], ds)
-        n_prob += 1
-nofb, fb = list(100 * sums["nofb"] / n_prob), list(100 * sums["fb"] / n_prob)
-print(f"\naccuracy over correction iterations, CoVe-style verification: {len(keys)} (model, dataset) pairs, "
-      f"{n_prob} problems")
-print("  without feedback:", " ".join(f"{v:5.1f}" for v in nofb))
-print("  with feedback   :", " ".join(f"{v:5.1f}" for v in fb))
-its = list(range(11))   # n = 0 is the shared first attempt
-fig, ax = plt.subplots(1, 1, figsize=(6, 4))
-ax.plot(its, [nofb[0]] * 11, marker="o", linewidth=2, markersize=8, label="Initial", color="#1f77b4")
-ax.plot(its, nofb, marker="s", linewidth=2, markersize=8, label="Final (without feedback)", color="#ff7f0e")
-ax.plot(its, fb, marker="^", linewidth=2, markersize=8, label="Final (with feedback)", color="#d62728")
-ax.set_xlabel("Correction Iteration", fontsize=14)
-ax.set_ylabel("Accuracy (%)", fontsize=14)
-ax.legend(loc="upper right", fontsize=11)
-ax.set_xlim(-0.5, 10.5)
-ax.set_ylim(max(0, min(nofb + fb) - 5), min(100, max(nofb + fb) + 5))
-ax.set_xticks(its)
-ax.tick_params(axis="both", labelsize=12)
-ax.grid(alpha=0.3)
-fig.tight_layout()
-save(fig, "self_verification_by_terminal_iteration_part1b")
+        g = lambda it, r=r: ok(it["answer"], r["ground_truth"], ds, it["correct"])
+        last = lambda rr: g([it for it in rr["iterations"] if "gen_status" in it][-1])
+        FBR[k[0]].append((g(r["iterations"][0]), last(r), last(B[pid])))
+print("\nfeedback_lift_errorbar: CoVe-style Thought-ICS lift without / with feedback [95% bootstrap CI]")
+est = {1: [], 2: []}
+for m in ORDER:
+    for j in (1, 2):
+        est[j].append(boot_lift(FBR[m], j))
+    gain = boot_lift([(r[1], r[2]) for r in FBR[m]], 1)
+    print(f"  {m:11s} without {est[1][-1][0]:+5.1f} [{est[1][-1][1]:+5.1f}, {est[1][-1][2]:+5.1f}]  "
+          f"with {est[2][-1][0]:+5.1f} [{est[2][-1][1]:+5.1f}, {est[2][-1][2]:+5.1f}]  "
+          f"gain {gain[0]:+5.1f} [{gain[1]:+5.1f}, {gain[2]:+5.1f}]")
+fig, ax = plt.subplots(figsize=(9, 6))
+lift_bars(ax, [("Without feedback", "#ff7f0e", 0.7, est[1]), ("With feedback", "#d62728", 0.7, est[2])], 0.28)
+ax.legend(loc="upper left", fontsize=16)
+plt.tight_layout()
+save(fig, "feedback_lift_errorbar")
 
 
 # ---- Fig (appendix): oracle_localization_agreement ----------------------------------------
